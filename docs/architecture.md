@@ -14,6 +14,9 @@ This system delivers:
 2. AI-assisted SKU normalization with admin review for low-confidence cases.
 3. A multi-supplier purchasing experience for buyers, including RFQ/quote flow.
 4. Regional/seasonal market intelligence on top of aggregated data.
+5. **Platform-owner analytics layer**: real-time stock visibility across
+   7 federal districts and 20 warehouses, deficit detection, and redistribution
+   recommendations — the primary internal ROI driver behind the B2B portal.
 
 ## Personas & surfaces
 
@@ -85,9 +88,12 @@ flowchart LR
 
 **Buyer Code App** (`apps/buyer-code-app/`):
 - `/` — Home: alerts, last order, KPIs
-- `/search` — cross-supplier search; **headline feature**: one canonical SKU
-  expands to N supplier offers sorted by total landed cost, with badges for
-  in-stock / lead time / region
+- `/search` — cross-supplier search; **headline feature**: two-level results table.
+  Level 1: one row per canonical SKU (brand, model, size, total stock, min price).
+  Level 2 (expand row): offers per warehouse with city, year, country, lead time,
+  актуальность, stock, price. Filters: Ширина / Профиль / Диаметр / Сезон /
+  Город / Бренды / Год / Поставщики. Quick-pick: Popular sizes matrix R13–R21.
+  See `docs/references/` for UI reference screenshots.
 - `/cart` — multi-supplier cart, automatically split into per-supplier orders
 - `/rfq/new` — RFQ composer, triggers `RFQ Broadcast` flow
 - `/orders` — history with BPF tracker
@@ -95,7 +101,7 @@ flowchart LR
 - Side panel: Copilot Studio chat (MarketBot)
 
 **Operations Model-driven App**: three areas.
-- Catalog: Suppliers, Canonical Products, Regions
+- Catalog: Suppliers, **Warehouses**, Canonical Products, Regions
 - Operations: Orders (BPF), RFQs, Quotes, **Data Conflicts queue**, Audit
 - Integrations: Import Jobs, Flow runs, Connector health
 
@@ -108,12 +114,45 @@ Builder synchronously and lets the operator Approve/Reject.
 2. Supplier Scorecard (fill rate, price competitiveness, sync reliability)
 3. Data Quality Trends (% auto-resolved, AI confidence distribution)
 4. Top-moving SKUs by region
+5. **Stock Distribution Map** — heatmap of stock by district/city (platform owner)
+6. **Redistribution Advisor** — table of deficit alerts with recommended source
 
 Datasource: Dataverse direct query. Tiles embedded in both Code App and MDA.
+
+#### Platform owner analytics — key Power BI slicers
+
+The platform's primary internal value is visibility across all 20 warehouses
+in real time. Power BI slicers planned:
+
+| Slicer | Grain | Use case |
+|---|---|---|
+| Federal district | 7 districts | Compare regions by stock / demand |
+| City | 20+ cities | Locate nearest surplus for redistribution |
+| Season | Summer / WinterStudded / WinterFriction / AllSeason | Seasonal planning |
+| Brand / Model | canonical SKU | Track specific product performance |
+| Week / Month | time | Demand dynamics, YoY comparison |
+| Supplier | 3 sources | Reliability and fill rate per supplier |
+
+**Redistribution logic (Stock Redistribution Advisor flow, MVP2):**
+
+```
+For each canonical SKU:
+  For each district D:
+    stock_D = SUM(supplieroffer.stock) WHERE warehouse.region = D
+    IF stock_D < threshold_low:
+      Find adjacent district A with stock_A > threshold_high
+      Create MarketSignal(type=RedistributionAdvice, region=D, targetregion=A,
+                          severity=Warning/Critical based on gap)
+```
+
+Thresholds are stored as environment variables (Power Platform Env Variables).
+Adjacency between districts is a static lookup table in Dataverse or hardcoded
+in the flow (7 nodes, simple map: ЦФО↔СЗФО, ЦФО↔ПФО, ПФО↔УрФО, etc.).
 
 **Power Automate flows** (`B2BAgg.Integration` solution):
 1. *Hourly Supplier Sync (parent)* — scheduled, dispatches to child flows
 2. *Sync supplier (child)* — calls custom connector → Function → upserts offers
+   (upsert key: warehouse + rawsku)
 3. *Normalize SKU* — instant trigger on new/updated offer, calls AI Builder,
    creates a DataConflict if confidence < 0.85
 4. *RFQ Broadcast* — button trigger from app, fan-out to suppliers, waits
@@ -121,6 +160,8 @@ Datasource: Dataverse direct query. Tiles embedded in both Code App and MDA.
 5. *Order Approval BPF* — stage transitions, Teams notifications
 6. *Low Stock Alert* — Dataverse trigger → Teams Adaptive Card
 7. *Conflict Auto-Resolve Sweeper* — daily recompute of unresolved conflicts
+8. *Stock Redistribution Advisor* — daily scan across districts, creates
+   RedistributionAdvice MarketSignals visible in MDA and Power BI (MVP2)
 
 **AI Builder**:
 - Custom Text Classification model: raw supplier name → canonical product ID
