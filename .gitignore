@@ -1,0 +1,73 @@
+# --- Secrets & local config ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.pfx
+*.key
+
+# --- Node / Code App ---
+node_modules/
+dist/
+build/
+.vite/
+.next/
+.turbo/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.eslintcache
+
+# --- .NET / pac ---
+bin/
+obj/
+*.user
+*.suo
+
+# --- Python / Azure Functions ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+.azurefunctions/
+local.settings.json
+
+# --- Bicep / Azure ---
+*.tfstate
+*.tfstate.backup
+*.bicepparam.local
+.azure/
+
+# --- Power Platform solutions: keep unpacked sources, exclude zips ---
+solutions/**/*.zip
+solutions/**/bin/
+solutions/**/obj/
+**/PackageDeployer/Output/
+
+# --- Power BI ---
+# .pbix is the source artifact we DO commit; .pbit templates also tracked.
+# Excluded: cached datasets / dataflow exports
+*.pbids.cache
+
+# --- OS / IDE ---
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Misc ---
+*.log
+.cache/
+coverage/
+.tmp/

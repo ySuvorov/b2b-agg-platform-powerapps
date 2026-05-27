@@ -1,0 +1,48 @@
+flowchart LR
+  subgraph Users
+    B[Buyer]:::p
+    A[Admin]:::p
+    N[Analyst]:::p
+  end
+
+  subgraph "Power Platform"
+    CA["Code App<br/>(React+TS)"]
+    MDA["Model-driven App"]
+    PB["Power BI Workspace"]
+    CS["Copilot Studio<br/>MarketBot"]
+    AB["AI Builder<br/>SKU Classifier"]
+    PA["Power Automate<br/>Flows"]
+    DV[("Dataverse")]
+  end
+
+  subgraph "Azure"
+    LA["Logic App<br/>Supplier sync orchestrator"]
+    SB["Service Bus<br/>topic: stock-updates"]
+    AF["Azure Functions<br/>fetch-feed, normalize-sku, gen-pdf"]
+    BLOB["Blob Storage<br/>mock supplier feeds (3 schemas)"]
+    AI[/"Application Insights"/]
+  end
+
+  B --> CA
+  A --> MDA
+  N --> PB
+  CA -.embed.- CS
+  CA -.embed tile.- PB
+  MDA -.embed chart.- PB
+
+  CA <--> DV
+  MDA <--> DV
+  PB <--> DV
+  CS --> PA
+  PA <--> DV
+  PA <--> AB
+  PA -->|"custom connector"| AF
+  PA -->|"trigger"| LA
+
+  LA --> SB
+  LA --> BLOB
+  SB -->|"subscription"| PA
+  AF --> BLOB
+  AF --> AI
+
+  classDef p fill:#f9f,stroke:#333
