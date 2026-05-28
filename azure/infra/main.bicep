@@ -142,8 +142,10 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
     name: 'Y1'
     tier: 'Dynamic'
   }
-  kind: 'functionapp'
-  properties: {}
+  kind: 'linux'
+  properties: {
+    reserved: true  // required for Linux Consumption
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -159,8 +161,7 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
     serverFarmId: appServicePlan.id
     reserved: true  // required for Linux
     siteConfig: {
-      linuxFxVersion: 'Python|3.11'
-      pythonVersion: '3.11'
+      linuxFxVersion: 'PYTHON|3.11'
       appSettings: [
         {
           name: 'AzureWebJobsStorage'

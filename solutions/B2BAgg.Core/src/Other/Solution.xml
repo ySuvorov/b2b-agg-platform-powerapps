@@ -79,7 +79,10 @@
     </Publisher>
     <RootComponents>
       <RootComponent type="1" schemaName="b2b_canonicalproduct" behavior="0" />
+      <RootComponent type="1" schemaName="b2b_order" behavior="0" />
+      <RootComponent type="1" schemaName="b2b_orderline" behavior="0" />
       <RootComponent type="1" schemaName="b2b_region" behavior="0" />
+      <RootComponent type="1" schemaName="b2b_rfq" behavior="0" />
       <RootComponent type="1" schemaName="b2b_supplier" behavior="0" />
       <RootComponent type="1" schemaName="b2b_supplieroffer" behavior="0" />
     </RootComponents>

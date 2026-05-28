@@ -1,32 +1,75 @@
-# Buyer Code App
+# React + TypeScript + Vite
 
-Power Apps Code App (React + TypeScript + Vite + Fluent UI v9) for the
-wholesale buyer persona.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-> **Not scaffolded yet** — will be created with `pac code init` at the start
-> of MVP1 (Code App shell), then iterated through MVP2 (multi-supplier cart,
-> RFQ composer, Copilot side panel).
+It is preconfigured to work with Power Apps Code Apps.
 
-## Planned pages
+Currently, two official plugins are available:
 
-| Route | Purpose | Phase |
-|---|---|---|
-| `/` | Home — alerts, last order, KPI cards | MVP1 |
-| `/search` | Cross-supplier search with filters | MVP1 |
-| `/cart` | Multi-supplier cart (auto-split) | MVP2 |
-| `/rfq/new` | RFQ composer | MVP2 |
-| `/orders` | Order history + BPF tracker | MVP1 |
-| `/insights` | Embedded Power BI tile | MVP2 |
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Side panel
+## React Compiler
 
-Copilot Studio agent "MarketBot" embedded as an iframe panel from MVP2.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Local dev (once scaffolded)
+## Expanding the ESLint configuration
 
-```bash
-cd apps/buyer-code-app
-npm install
-npm run dev          # local Vite dev server, pac dev proxy
-pac code push        # deploy to Power Apps
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
