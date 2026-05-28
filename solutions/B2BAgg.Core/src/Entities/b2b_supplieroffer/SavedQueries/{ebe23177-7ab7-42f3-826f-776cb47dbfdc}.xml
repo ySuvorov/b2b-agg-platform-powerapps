@@ -10,8 +10,10 @@
     <layoutxml>
       <grid name="resultset" jump="b2b_name" select="1" icon="1" preview="1">
         <row name="result" id="b2b_supplierofferid">
-          <cell name="b2b_name" width="300" />
-          <cell name="createdon" width="125" />
+          <cell name="b2b_raw_sku" width="100" />
+          <cell name="b2b_stock" width="112" />
+          <cell name="b2b_price" width="100" />
+          <cell name="b2b_supplier" width="100" />
         </row>
       </grid>
     </layoutxml>
@@ -20,12 +22,13 @@
       <fetch version="1.0" mapping="logical">
         <entity name="b2b_supplieroffer">
           <attribute name="b2b_supplierofferid" />
-          <attribute name="b2b_name" />
-          <attribute name="createdon" />
-          <order attribute="b2b_name" descending="false" />
           <filter type="and">
             <condition attribute="statecode" operator="eq" value="0" />
           </filter>
+          <attribute name="b2b_raw_sku" />
+          <attribute name="b2b_stock" />
+          <attribute name="b2b_price" />
+          <attribute name="b2b_supplier" />
         </entity>
       </fetch>
     </fetchxml>

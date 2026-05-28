@@ -5,7 +5,7 @@
     <IntroducedVersion>1.0</IntroducedVersion>
     <FormPresentation>1</FormPresentation>
     <FormActivationState>1</FormActivationState>
-    <form>
+    <form headerdensity="HighWithControls">
       <tabs>
         <tab verticallayout="true" id="{a6704833-a416-4409-b722-09caba73a5f1}" IsUserDefined="1">
           <labels>
@@ -20,7 +20,7 @@
                   </labels>
                   <rows>
                     <row>
-                      <cell id="{7e9fc130-6f70-4d10-af44-c6e8b58ce640}">
+                      <cell id="{7e9fc130-6f70-4d10-af44-c6e8b58ce640}" visible="true">
                         <labels>
                           <label description="Name" languagecode="1033" />
                         </labels>
@@ -28,11 +28,59 @@
                       </cell>
                     </row>
                     <row>
-                      <cell id="{78053b75-55e0-45f8-badd-3fbdcb4354f5}">
+                      <cell id="{78053b75-55e0-45f8-badd-3fbdcb4354f5}" visible="false">
                         <labels>
                           <label description="Owner" languagecode="1033" />
                         </labels>
                         <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{eadeec9f-bc42-46ab-b6c9-e3ac522730fe}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Region" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_region" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="b2b_region" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{db7d0791-e95f-4c1b-bf32-f03521a451db}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Is Active" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_is_active" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="b2b_is_active" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7b8dfa27-6e6b-40f1-bd53-1f3b31764241}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Tier" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_tier" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="b2b_tier" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{db1a0468-2fe2-463e-889a-53444e619347}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Trust Score" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_trust_score" classid="{C3EFE0C3-0EC6-42BE-8349-CBD9079DFD8E}" datafieldname="b2b_trust_score" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{93d7e1e3-b261-4133-8b9e-a0ca85ed5021}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Feed Endpoint" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_feed_endpoint" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="b2b_feed_endpoint" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{63da8838-c6a4-41b1-b08e-6c5dd6ef151a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Last Sync" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_last_sync" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="b2b_last_sync" disabled="false" />
                       </cell>
                     </row>
                   </rows>
@@ -42,6 +90,51 @@
           </columns>
         </tab>
       </tabs>
+      <header id="{0fd97f96-98aa-4a87-ab86-5a054b9e958d}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{754591c4-1d22-4de1-9f9c-15541746dd47}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{bfa16821-da15-4656-9c17-c8a036bebf04}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{7e041bd8-68eb-43a1-93be-c77378c8102c}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{9759cae6-8b47-481d-aee2-4004377d54c5}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{1617e763-ed6f-4bf7-8248-204eeecc82a9}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{5f3f68c3-add1-4c44-ae50-c4c529b20a01}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{6aa0b68e-1734-4101-bb51-9a99e31e171c}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
     </form>
     <IsCustomizable>1</IsCustomizable>
     <CanBeDeleted>1</CanBeDeleted>

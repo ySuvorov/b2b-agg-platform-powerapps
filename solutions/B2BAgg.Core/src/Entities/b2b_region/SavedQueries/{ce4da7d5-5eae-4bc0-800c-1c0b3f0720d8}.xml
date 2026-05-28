@@ -11,7 +11,6 @@
       <grid name="resultset" jump="b2b_name" select="1" icon="1" preview="1">
         <row name="result" id="b2b_regionid">
           <cell name="b2b_name" width="300" />
-          <cell name="createdon" width="125" />
         </row>
       </grid>
     </layoutxml>
@@ -21,7 +20,6 @@
         <entity name="b2b_region">
           <attribute name="b2b_regionid" />
           <attribute name="b2b_name" />
-          <attribute name="createdon" />
           <order attribute="b2b_name" descending="false" />
           <filter type="and">
             <condition attribute="statecode" operator="eq" value="0" />

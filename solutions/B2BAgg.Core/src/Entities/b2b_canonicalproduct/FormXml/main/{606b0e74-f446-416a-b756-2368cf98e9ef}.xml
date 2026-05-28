@@ -5,7 +5,7 @@
     <IntroducedVersion>1.0</IntroducedVersion>
     <FormPresentation>1</FormPresentation>
     <FormActivationState>1</FormActivationState>
-    <form>
+    <form headerdensity="HighWithControls">
       <tabs>
         <tab verticallayout="true" id="{abd554b3-35da-478f-80e8-93caa7ed96fd}" IsUserDefined="1">
           <labels>
@@ -28,11 +28,27 @@
                       </cell>
                     </row>
                     <row>
-                      <cell id="{b51ef382-e30e-482e-b82c-1e397a3ced70}">
+                      <cell id="{b51ef382-e30e-482e-b82c-1e397a3ced70}" visible="false">
                         <labels>
                           <label description="Owner" languagecode="1033" />
                         </labels>
                         <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6021963f-dc42-49f3-bd23-71c2ef500f74}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Brand" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_brand" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="b2b_brand" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8320b683-93b3-4b0e-a8dc-04984edf03bf}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Season" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_season" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="b2b_season" disabled="false" />
                       </cell>
                     </row>
                   </rows>
@@ -42,6 +58,51 @@
           </columns>
         </tab>
       </tabs>
+      <header id="{8e86130c-fded-4ed2-8f60-b3a3b94046c3}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{15863cf9-1190-4496-964c-0bc406bdcb40}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{541d1eea-2fc7-496f-b4bf-c3bbb7861bd5}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{f29b6a17-cd1a-4caa-8b4a-ed106e6ec18a}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{9182e35a-bb4b-4801-8f2d-a04344d5e002}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{8dfa6060-b0a5-4caf-a671-154f9efff3e4}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{d2a08de1-a7b2-4554-8468-b323d4242ad5}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{1b7aac67-393d-48c2-aeea-b00665a19c5f}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
     </form>
     <IsCustomizable>1</IsCustomizable>
     <CanBeDeleted>1</CanBeDeleted>

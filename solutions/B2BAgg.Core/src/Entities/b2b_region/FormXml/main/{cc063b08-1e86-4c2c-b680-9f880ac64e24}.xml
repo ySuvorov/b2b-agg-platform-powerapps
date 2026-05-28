@@ -5,7 +5,7 @@
     <IntroducedVersion>1.0</IntroducedVersion>
     <FormPresentation>1</FormPresentation>
     <FormActivationState>1</FormActivationState>
-    <form>
+    <form headerdensity="HighWithControls">
       <tabs>
         <tab verticallayout="true" id="{7b4c35af-1363-4cfc-b8e1-e54b61e2d1d8}" IsUserDefined="1">
           <labels>
@@ -28,11 +28,27 @@
                       </cell>
                     </row>
                     <row>
-                      <cell id="{ff538237-8935-4693-808e-39255d094861}">
+                      <cell id="{ff538237-8935-4693-808e-39255d094861}" visible="false">
                         <labels>
                           <label description="Owner" languagecode="1033" />
                         </labels>
                         <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2c02296c-3299-4d86-9091-17ae1c723aa7}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Climate Zone" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_climate_zone" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="b2b_climate_zone" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3f537ce8-90fb-4e31-ba3a-efcf78877ace}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Federal District" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_federal_district" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="b2b_federal_district" disabled="false" />
                       </cell>
                     </row>
                   </rows>
@@ -42,6 +58,51 @@
           </columns>
         </tab>
       </tabs>
+      <header id="{12245347-0cb7-47f4-870a-cd7078f22835}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{7f752fbd-dfac-4adc-b4f4-240d1f558ec5}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{9d54ed05-80f6-40e3-904b-9b02225ca7fa}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{746c17fc-0fea-4d67-8a45-cabad47f1f5a}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{a786f0f2-605f-4b46-8939-e180661ea434}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{50871077-441d-4e38-8b2d-af14a5bbecf2}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{89822dac-a0f9-47f7-a81b-341e8bcf15b8}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{fc2a6d91-54cc-4b13-ab10-26bc290d7777}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
     </form>
     <IsCustomizable>1</IsCustomizable>
     <CanBeDeleted>1</CanBeDeleted>

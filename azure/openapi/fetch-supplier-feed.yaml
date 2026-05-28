@@ -1,0 +1,165 @@
+swagger: "2.0"
+x-ms-connector-name: FetchSupplierFeed
+
+info:
+  title: "B2BAgg Supplier Feed"
+  version: "1.0"
+  description: >
+    Retrieves raw product feed data from B2B tire suppliers.
+    Each supplier exposes a JSON array of tire listings including SKU,
+    pricing, stock levels, and logistics metadata.
+    Used by the B2B Market Intelligence & Supplier Aggregation Platform
+    to ingest supplier data into Dataverse via Power Automate flows.
+
+host: func-b2bagg-dev.azurewebsites.net
+basePath: /api
+schemes:
+  - https
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+securityDefinitions:
+  apiKeyHeader:
+    type: apiKey
+    in: header
+    name: x-functions-key
+  apiKeyQuery:
+    type: apiKey
+    in: query
+    name: code
+
+security:
+  - apiKeyHeader: []
+  - apiKeyQuery: []
+
+paths:
+  /feed/{supplier_id}:
+    get:
+      operationId: GetSupplierFeed
+      summary: Get supplier feed
+      description: >
+        Returns the raw JSON feed for a given supplier. The response is an
+        array of FeedItem objects containing product, pricing, and stock data.
+        Supported supplier IDs: numeric keys 1, 2, 3 and slugs
+        rosshinaopt, tyrecenter-spb, koleso-ru.
+      x-ms-visibility: important
+      parameters:
+        - name: supplier_id
+          in: path
+          required: true
+          type: string
+          x-ms-summary: Supplier ID
+          description: >
+            Supplier identifier. Accepted values: numeric (1, 2, 3) or
+            slug (rosshinaopt, tyrecenter-spb, koleso-ru).
+      responses:
+        "200":
+          description: Feed items array returned successfully
+          headers:
+            X-Supplier-Id:
+              type: string
+              description: The resolved supplier identifier
+            X-Container:
+              type: string
+              description: Azure Blob Storage container name used to source the feed
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/FeedItem"
+        "404":
+          description: Supplier not found or feed file not found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+definitions:
+  FeedItem:
+    type: object
+    description: A single tire product entry from a supplier feed
+    required:
+      - sku
+    properties:
+      sku:
+        type: string
+        description: Raw SKU / article number as provided by the supplier
+        x-ms-summary: Raw SKU
+      brand:
+        type: string
+        description: Tire brand name (e.g. Michelin, Continental)
+        x-ms-summary: Brand
+      model:
+        type: string
+        description: Tire model name (e.g. Pilot Sport 4)
+        x-ms-summary: Model
+      width:
+        type: integer
+        description: Section width in millimetres (e.g. 225)
+        x-ms-summary: Width (mm)
+      profile:
+        type: integer
+        description: Aspect ratio / profile percentage (e.g. 45)
+        x-ms-summary: Profile
+      diameter:
+        type: integer
+        description: Rim diameter in inches (e.g. 17)
+        x-ms-summary: Diameter (in)
+      load_index:
+        type: string
+        description: >
+          Load index value. Stored as string to accommodate suppliers that
+          use non-numeric codes (e.g. "91", "XL").
+        x-ms-summary: Load Index
+      speed_index:
+        type: string
+        description: Speed rating letter (e.g. Y, W, H, V)
+        x-ms-summary: Speed Index
+      season:
+        type: string
+        description: Season category
+        x-ms-summary: Season
+        enum:
+          - Summer
+          - Winter
+          - AllSeason
+          - WinterStudded
+          - WinterFriction
+      stock:
+        type: integer
+        description: Available stock quantity in the supplier warehouse
+        x-ms-summary: Stock quantity
+      price:
+        type: number
+        format: double
+        description: Supplier price in local currency (RUB)
+        x-ms-summary: Price
+      warehouse:
+        type: string
+        description: Warehouse location label (e.g. Moscow-Nord)
+        x-ms-summary: Warehouse
+      year:
+        type: integer
+        description: Manufacturing year (e.g. 2023)
+        x-ms-summary: Year
+      country:
+        type: string
+        description: Country of manufacture (e.g. France)
+        x-ms-summary: Country of manufacture
+
+  ErrorResponse:
+    type: object
+    description: Standard error envelope returned on 4xx / 5xx responses
+    properties:
+      error:
+        type: string
+        description: Human-readable error message
+        x-ms-summary: Error message
+      status:
+        type: integer
+        description: HTTP status code echoed in the response body
+        x-ms-summary: Status code

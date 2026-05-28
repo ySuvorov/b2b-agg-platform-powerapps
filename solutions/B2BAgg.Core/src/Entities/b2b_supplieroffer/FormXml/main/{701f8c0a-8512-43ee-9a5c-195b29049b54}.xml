@@ -5,7 +5,7 @@
     <IntroducedVersion>1.0</IntroducedVersion>
     <FormPresentation>1</FormPresentation>
     <FormActivationState>1</FormActivationState>
-    <form>
+    <form headerdensity="HighWithControls">
       <tabs>
         <tab verticallayout="true" id="{7a54e8f2-f9e0-4665-9992-b19c7f2757ec}" IsUserDefined="1">
           <labels>
@@ -28,11 +28,43 @@
                       </cell>
                     </row>
                     <row>
-                      <cell id="{cf6c6ab6-2746-461c-b46a-acfb15dd6c37}">
+                      <cell id="{cf6c6ab6-2746-461c-b46a-acfb15dd6c37}" visible="false">
                         <labels>
                           <label description="Owner" languagecode="1033" />
                         </labels>
                         <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{28a9c4cf-6b99-44ab-b4cb-dc9d42b3c326}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Raw SKU" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_raw_sku" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="b2b_raw_sku" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{495ae6e9-29ff-4983-8217-38c98990b04d}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Stock (units)" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_stock" classid="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}" datafieldname="b2b_stock" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d22ed4af-9920-4cac-aa87-74d29b97c1c1}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Price" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_price" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="b2b_price" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{050f87e4-5359-4e19-a593-7c261f0d45b8}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Supplier" languagecode="1033" />
+                        </labels>
+                        <control id="b2b_supplier" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="b2b_supplier" disabled="false" />
                       </cell>
                     </row>
                   </rows>
@@ -42,6 +74,51 @@
           </columns>
         </tab>
       </tabs>
+      <header id="{908ee30c-c767-442c-89fa-058082c6e9d0}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{44405c2a-d8dc-4e68-9a37-1b74c635463d}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{241a81d8-1a52-423e-ae12-c9b85dfc0ffe}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{7474d483-db93-44b3-b514-c2598515597f}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{c63a2ce7-4b30-4cfb-b9a3-00fdf15bb5b3}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{9cb7d172-41d0-44f5-bff6-a1cd0c2087ae}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{ee2f9a37-600a-4611-92be-71ab9c969b00}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{82b94374-8975-4b39-b037-84b5e8f62c78}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
     </form>
     <IsCustomizable>1</IsCustomizable>
     <CanBeDeleted>1</CanBeDeleted>

@@ -10,8 +10,9 @@
     <layoutxml>
       <grid name="resultset" jump="b2b_order_number" select="1" icon="1" preview="1">
         <row name="result" id="b2b_orderid">
-          <cell name="b2b_order_number" width="300" />
-          <cell name="createdon" width="125" />
+          <cell name="statecode" width="109" />
+          <cell name="b2b_total_amount" width="121" />
+          <cell name="createdon" width="134" />
         </row>
       </grid>
     </layoutxml>
@@ -20,12 +21,12 @@
       <fetch version="1.0" mapping="logical">
         <entity name="b2b_order">
           <attribute name="b2b_orderid" />
-          <attribute name="b2b_order_number" />
           <attribute name="createdon" />
-          <order attribute="b2b_order_number" descending="false" />
           <filter type="and">
             <condition attribute="statecode" operator="eq" value="0" />
           </filter>
+          <attribute name="statecode" />
+          <attribute name="b2b_total_amount" />
         </entity>
       </fetch>
     </fetchxml>

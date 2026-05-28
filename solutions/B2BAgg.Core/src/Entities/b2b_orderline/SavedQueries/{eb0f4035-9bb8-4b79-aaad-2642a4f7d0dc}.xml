@@ -10,8 +10,9 @@
     <layoutxml>
       <grid name="resultset" jump="b2b_line_ref" select="1" icon="1" preview="1">
         <row name="result" id="b2b_orderlineid">
-          <cell name="b2b_line_ref" width="300" />
-          <cell name="createdon" width="125" />
+          <cell name="b2b_qty" width="100" />
+          <cell name="b2b_unit_price" width="100" />
+          <cell name="b2b_supplieroffer_id" width="122" />
         </row>
       </grid>
     </layoutxml>
@@ -20,12 +21,12 @@
       <fetch version="1.0" mapping="logical">
         <entity name="b2b_orderline">
           <attribute name="b2b_orderlineid" />
-          <attribute name="b2b_line_ref" />
-          <attribute name="createdon" />
-          <order attribute="b2b_line_ref" descending="false" />
           <filter type="and">
             <condition attribute="statecode" operator="eq" value="0" />
           </filter>
+          <attribute name="b2b_unit_price" />
+          <attribute name="b2b_qty" />
+          <attribute name="b2b_supplieroffer_id" />
         </entity>
       </fetch>
     </fetchxml>

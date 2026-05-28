@@ -10,8 +10,9 @@
     <layoutxml>
       <grid name="resultset" jump="b2b_name" select="1" icon="1" preview="1">
         <row name="result" id="b2b_supplierid">
-          <cell name="b2b_name" width="300" />
-          <cell name="createdon" width="125" />
+          <cell name="b2b_name" width="210" />
+          <cell name="b2b_region" width="148" />
+          <cell name="b2b_is_active" width="100" />
         </row>
       </grid>
     </layoutxml>
@@ -21,11 +22,12 @@
         <entity name="b2b_supplier">
           <attribute name="b2b_supplierid" />
           <attribute name="b2b_name" />
-          <attribute name="createdon" />
           <order attribute="b2b_name" descending="false" />
           <filter type="and">
             <condition attribute="statecode" operator="eq" value="0" />
           </filter>
+          <attribute name="b2b_region" />
+          <attribute name="b2b_is_active" />
         </entity>
       </fetch>
     </fetchxml>

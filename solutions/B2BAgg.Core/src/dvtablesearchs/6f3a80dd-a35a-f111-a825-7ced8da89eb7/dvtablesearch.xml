@@ -1,0 +1,11 @@
+<dvtablesearch dvtablesearchid="6f3a80dd-a35a-f111-a825-7ced8da89eb7">
+  <appmoduleuniquename>b2b_B2BAggOperations</appmoduleuniquename>
+  <iscustomizable>1</iscustomizable>
+  <m365appmoduleid>
+    <uniquename>b2b_B2BAggOperations</uniquename>
+  </m365appmoduleid>
+  <name>M365_Primary_model_b2b_B2BAggOperations</name>
+  <searchtype>0</searchtype>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</dvtablesearch>

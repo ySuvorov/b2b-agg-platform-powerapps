@@ -1,0 +1,10 @@
+<mcpserver name="b2b_B2BAggOperations_MCPServer">
+  <description>MCP Server for app B2BAgg Operations</description>
+  <displayname>B2BAgg Operations MCP Server</displayname>
+  <iscustom>0</iscustom>
+  <iscustomizable>1</iscustomizable>
+  <isremote>0</isremote>
+  <serverurl>https://agent365.svc.cloud.microsoft/mcp/environments/07d24b90-f536-e197-8f64-13b16ce6cbe7/servers/b2b_B2BAggOperations_MCPServer</serverurl>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</mcpserver>
