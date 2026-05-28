@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="b2b_supplier_region_rel" />
+  <EntityRelationship Name="b2b_supplieroffer_canonical_rel" />
+  <EntityRelationship Name="b2b_supplieroffer_supplier_rel" />
+  <EntityRelationship Name="business_unit_b2b_canonicalproduct" />
+  <EntityRelationship Name="business_unit_b2b_region" />
+  <EntityRelationship Name="business_unit_b2b_supplier" />
+  <EntityRelationship Name="business_unit_b2b_supplieroffer" />
+  <EntityRelationship Name="lk_b2b_canonicalproduct_createdby" />
+  <EntityRelationship Name="lk_b2b_canonicalproduct_modifiedby" />
+  <EntityRelationship Name="lk_b2b_region_createdby" />
+  <EntityRelationship Name="lk_b2b_region_modifiedby" />
+  <EntityRelationship Name="lk_b2b_supplier_createdby" />
+  <EntityRelationship Name="lk_b2b_supplier_modifiedby" />
+  <EntityRelationship Name="lk_b2b_supplieroffer_createdby" />
+  <EntityRelationship Name="lk_b2b_supplieroffer_modifiedby" />
+  <EntityRelationship Name="owner_b2b_canonicalproduct" />
+  <EntityRelationship Name="owner_b2b_region" />
+  <EntityRelationship Name="owner_b2b_supplier" />
+  <EntityRelationship Name="owner_b2b_supplieroffer" />
+  <EntityRelationship Name="team_b2b_canonicalproduct" />
+  <EntityRelationship Name="team_b2b_region" />
+  <EntityRelationship Name="team_b2b_supplier" />
+  <EntityRelationship Name="team_b2b_supplieroffer" />
+  <EntityRelationship Name="TransactionCurrency_b2b_supplieroffer" />
+  <EntityRelationship Name="user_b2b_canonicalproduct" />
+  <EntityRelationship Name="user_b2b_region" />
+  <EntityRelationship Name="user_b2b_supplier" />
+  <EntityRelationship Name="user_b2b_supplieroffer" />
+</EntityRelationships>

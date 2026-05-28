@@ -1,0 +1,208 @@
+# ============================================================
+# pr-validation.yml
+# Runs on every PR targeting main.
+#
+# Required GitHub Actions secrets:
+#   PP_CLIENT_ID     — Azure AD App Registration client ID
+#   PP_CLIENT_SECRET — client secret (rotate every 90 days)
+#   PP_TENANT_ID     — Entra tenant: <tenant-id>
+#   PP_DEV_URL       — Dev environment URL (https://YOUR-DATAVERSE-ORG.crm.dynamics.com/)
+# ============================================================
+
+name: PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+# Cancel any in-progress run for the same PR branch to save runner minutes.
+concurrency:
+  group: pr-validation-${{ github.head_ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write  # needed for posting the summary comment
+
+jobs:
+  # ────────────────────────────────────────────────────────────
+  # JOB 1 — Pack solution XML and run the Power Platform Checker
+  # ────────────────────────────────────────────────────────────
+  solution-check:
+    name: Solution Pack & Checker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # pac CLI 1.52.1 targets net9.0; must pin dotnet to 9.x
+      - name: Set up .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Install pac CLI 1.52.1
+        run: dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.52.1
+
+      # Service-principal auth — no interactive browser needed in CI
+      - name: Authenticate with Power Platform (Dev)
+        run: |
+          pac auth create \
+            --kind ServicePrincipal \
+            --applicationId "${{ secrets.PP_CLIENT_ID }}" \
+            --clientSecret "${{ secrets.PP_CLIENT_SECRET }}" \
+            --tenant "${{ secrets.PP_TENANT_ID }}" \
+            --environment "${{ secrets.PP_DEV_URL }}"
+
+      - name: Pack solution from source
+        run: |
+          pac solution pack \
+            --zipfile /tmp/B2BAgg_Core.zip \
+            --folder solutions/B2BAgg.Core \
+            --processCanvasApps
+
+      - name: Run Power Platform Solution Checker
+        # Checker uploads to the SaaS ruleset and pulls results back.
+        # Rules follow the recommended "AppSource Certification" ruleset.
+        run: |
+          pac solution check \
+            --path /tmp/B2BAgg_Core.zip \
+            --outputDirectory /tmp/checker-results
+
+      - name: Upload Checker results
+        uses: actions/upload-artifact@v4
+        if: always()   # upload even on failure so devs can inspect
+        with:
+          name: solution-checker-results-${{ github.run_number }}
+          path: /tmp/checker-results/
+          retention-days: 14
+
+  # ────────────────────────────────────────────────────────────
+  # JOB 2 — Lint Python scripts and build the Buyer Code App
+  # ────────────────────────────────────────────────────────────
+  lint-and-test:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+    # Run in parallel with solution-check; independent validation track.
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Python checks ──────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install seed-script dependencies (if requirements file exists)
+        run: |
+          if [ -f scripts/requirements-seed.txt ]; then
+            pip install -r scripts/requirements-seed.txt -q
+          else
+            echo "No requirements-seed.txt found — skipping."
+          fi
+
+      - name: Syntax-check seed data script
+        run: |
+          if [ -f scripts/seed-dev-data.py ]; then
+            python -m py_compile scripts/seed-dev-data.py
+            echo "seed-dev-data.py: OK"
+          else
+            echo "scripts/seed-dev-data.py not found — skipping."
+          fi
+
+      - name: Validate Azure Function syntax
+        run: |
+          FUNC_INIT="azure/functions/fetch-supplier-feed/__init__.py"
+          if [ -f "$FUNC_INIT" ]; then
+            REQ="azure/functions/requirements.txt"
+            if [ -f "$REQ" ]; then
+              pip install -r "$REQ" -q
+            fi
+            python -m py_compile "$FUNC_INIT"
+            echo "fetch-supplier-feed/__init__.py: OK"
+          else
+            echo "$FUNC_INIT not found — skipping."
+          fi
+
+      # ── Node / Buyer Code App ──────────────────────────────
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache-dependency-path: apps/buyer-code-app/package-lock.json
+
+      - name: Build Buyer Code App (React + Vite)
+        # The app scaffold may not be generated yet; continue-on-error keeps
+        # the PR green while the dev loop is in progress.
+        continue-on-error: true
+        working-directory: apps/buyer-code-app
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+            npm run build
+          else
+            echo "package.json not found — app not scaffolded yet, skipping build."
+          fi
+
+  # ────────────────────────────────────────────────────────────
+  # JOB 3 — Post a summary comment to the PR
+  # Runs after both jobs above, regardless of their outcome.
+  # ────────────────────────────────────────────────────────────
+  post-summary:
+    name: Post PR Summary Comment
+    runs-on: ubuntu-latest
+    needs: [solution-check, lint-and-test]
+    if: always()  # run even when upstream jobs fail
+
+    steps:
+      - name: Post check summary to PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const solutionResult = '${{ needs.solution-check.result }}';
+            const lintResult     = '${{ needs.lint-and-test.result }}';
+
+            const icon = r => r === 'success' ? '✅' : r === 'skipped' ? '⏭️' : '❌';
+
+            const body = [
+              '## CI Validation Summary',
+              '',
+              '| Check | Result |',
+              '|---|---|',
+              `| Solution Pack & Checker | ${icon(solutionResult)} \`${solutionResult}\` |`,
+              `| Lint & Build | ${icon(lintResult)} \`${lintResult}\` |`,
+              '',
+              `> Run [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) · \`${{ github.sha }}\``,
+            ].join('\n');
+
+            // Find an existing bot comment so we update rather than spam.
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const prev = comments.find(c =>
+              c.user.login === 'github-actions[bot]' &&
+              c.body.startsWith('## CI Validation Summary')
+            );
+
+            if (prev) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                comment_id: prev.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

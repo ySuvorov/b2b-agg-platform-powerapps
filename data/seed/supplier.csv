@@ -1,0 +1,4 @@
+b2b_name,b2b_tier,b2b_trust_score,b2b_feed_endpoint,b2b_is_active
+Rosshinaopt,1,92.5,https://b2baggstore.blob.core.windows.net/feed-supplier-en/feed.json,true
+TyreCenter SPB,2,78.0,https://b2baggstore.blob.core.windows.net/feed-supplier-ru/feed.json,true
+Koleso.ru,3,61.5,https://b2baggstore.blob.core.windows.net/feed-supplier-xml/feed.json,true

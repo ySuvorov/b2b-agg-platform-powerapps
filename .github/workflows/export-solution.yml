@@ -1,0 +1,109 @@
+# ============================================================
+# export-solution.yml
+# Manual workflow: export the latest B2BAgg_Core solution from
+# a Power Platform environment, unpack it, and commit back to main.
+#
+# Use this after making changes directly in the PP UI (forms,
+# views, BPF tweaks) so the solution source stays in sync.
+#
+# Required secrets:
+#   PP_CLIENT_ID     — Azure AD App Registration client ID
+#   PP_CLIENT_SECRET — client secret
+#   PP_TENANT_ID     — Entra tenant
+#   PP_DEV_URL       — Dev environment URL
+#   PP_TEST_URL      — Test environment URL
+# ============================================================
+
+name: Export Solution
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Source environment to export from'
+        required: true
+        type: choice
+        default: dev
+        options:
+          - dev
+          - test
+      managed:
+        description: 'Export as managed solution?'
+        required: true
+        type: boolean
+        default: false
+
+# Only one export at a time per branch — prevents conflicting commits.
+concurrency:
+  group: export-solution-${{ github.ref_name }}
+  cancel-in-progress: false  # let exports finish rather than abort mid-commit
+
+permissions:
+  contents: write  # needed to push the unpacked changes back to the branch
+
+jobs:
+  export:
+    name: Export & Unpack B2BAgg_Core
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Use the default GITHUB_TOKEN so the push at the end is authorised.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      # pac CLI 1.52.1 targets net9.0; must pin dotnet to 9.x
+      - name: Set up .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Install pac CLI 1.52.1
+        run: dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.52.1
+
+      # Resolve the correct URL based on the selected environment input.
+      - name: Resolve environment URL
+        id: env-url
+        run: |
+          if [ "${{ inputs.environment }}" = "test" ]; then
+            echo "url=${{ secrets.PP_TEST_URL }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "url=${{ secrets.PP_DEV_URL }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Authenticate with Power Platform
+        run: |
+          pac auth create \
+            --kind ServicePrincipal \
+            --applicationId "${{ secrets.PP_CLIENT_ID }}" \
+            --clientSecret "${{ secrets.PP_CLIENT_SECRET }}" \
+            --tenant "${{ secrets.PP_TENANT_ID }}" \
+            --environment "${{ steps.env-url.outputs.url }}"
+
+      - name: Export solution from Power Platform
+        run: |
+          mkdir -p /tmp/export
+          pac solution export \
+            --name B2BAgg_Core \
+            --path /tmp/export \
+            --managed ${{ inputs.managed }}
+
+      - name: Unpack solution into source tree
+        run: |
+          pac solution unpack \
+            --zipfile /tmp/export/B2BAgg_Core.zip \
+            --folder solutions/B2BAgg.Core \
+            --processCanvasApps \
+            --allowDelete
+
+      - name: Commit and push exported changes
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add solutions/B2BAgg.Core
+          git diff --cached --quiet \
+            && echo "No solution changes detected — nothing to commit." \
+            || git commit -m "chore: export B2BAgg_Core from ${{ inputs.environment }} [skip ci]"
+          git push

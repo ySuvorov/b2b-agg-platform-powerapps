@@ -1,0 +1,115 @@
+# ============================================================
+# deploy-dev.yml
+# Pack the solution from source and import it into B2BAgg-Dev.
+#
+# Triggers:
+#   • Manual: workflow_dispatch (on-demand deploy from any branch)
+#   • Automatic: push to main that touches solutions/**
+#
+# Required secrets:
+#   PP_CLIENT_ID     — Azure AD App Registration client ID
+#   PP_CLIENT_SECRET — client secret
+#   PP_TENANT_ID     — Entra tenant
+#   PP_DEV_URL       — Dev environment URL (https://YOUR-DATAVERSE-ORG.crm.dynamics.com/)
+# ============================================================
+
+name: Deploy → Dev
+
+on:
+  workflow_dispatch:
+    # Allows triggering manually from the Actions tab, useful for
+    # deploying a feature branch for review before it merges.
+
+  push:
+    branches:
+      - main
+    paths:
+      - 'solutions/**'   # only deploy when solution source changes
+
+# One deploy to Dev at a time; cancel any stale queued run on the same branch.
+concurrency:
+  group: deploy-dev-${{ github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  deployments: write    # needed to create GitHub deployment statuses
+
+jobs:
+  deploy:
+    name: Pack & Import into Dev
+    runs-on: ubuntu-latest
+
+    # GitHub Environments let you add required reviewers or wait-timers later.
+    environment:
+      name: dev
+      url: https://YOUR-DATAVERSE-ORG.crm.dynamics.com/
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # pac CLI 1.52.1 targets net9.0; must pin dotnet to 9.x
+      - name: Set up .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Install pac CLI 1.52.1
+        run: dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.52.1
+
+      - name: Authenticate with Power Platform (Dev)
+        run: |
+          pac auth create \
+            --kind ServicePrincipal \
+            --applicationId "${{ secrets.PP_CLIENT_ID }}" \
+            --clientSecret "${{ secrets.PP_CLIENT_SECRET }}" \
+            --tenant "${{ secrets.PP_TENANT_ID }}" \
+            --environment "${{ secrets.PP_DEV_URL }}"
+
+      - name: Pack solution from source
+        run: |
+          pac solution pack \
+            --zipfile /tmp/B2BAgg_Core.zip \
+            --folder solutions/B2BAgg.Core \
+            --processCanvasApps
+
+      - name: Import solution into Dev
+        run: |
+          pac solution import \
+            --path /tmp/B2BAgg_Core.zip \
+            --activate-plugins \
+            --force-overwrite \
+            --async false
+
+      - name: Create GitHub deployment status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobStatus = '${{ job.status }}';
+            const state = jobStatus === 'success' ? 'success' : 'failure';
+            const desc  = state === 'success'
+              ? 'B2BAgg_Core imported into Dev successfully.'
+              : 'Import into Dev failed — check the Actions log.';
+
+            // Create a deployment record pointing at the current SHA.
+            const deploy = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              ref:   context.sha,
+              environment: 'dev',
+              description: 'B2BAgg Core solution',
+              auto_merge: false,
+              required_contexts: [],
+            });
+
+            await github.rest.repos.createDeploymentStatus({
+              owner:         context.repo.owner,
+              repo:          context.repo.repo,
+              deployment_id: deploy.data.id,
+              state,
+              description:   desc,
+              environment_url: 'https://YOUR-DATAVERSE-ORG.crm.dynamics.com/',
+              log_url: `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`,
+            });

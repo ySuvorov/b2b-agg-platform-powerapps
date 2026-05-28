@@ -1,0 +1,194 @@
+b2b_supplier_name,b2b_canonical_name,b2b_raw_name,b2b_raw_sku,b2b_price,b2b_currency,b2b_stock,b2b_warehouse_city,b2b_lead_time_days
+Rosshinaopt,Michelin Pilot Sport 4 225/45 R17,Michelin Pilot Sport 4 225/45R17,MPS4-22545R17,127.50,USD,48,Moscow,2
+Rosshinaopt,Michelin Pilot Sport 4 235/45 R18,Michelin Pilot Sport 4 235/45R18,MPS4-23545R18,148.90,USD,32,Moscow,2
+Rosshinaopt,Michelin Pilot Sport 4 245/40 R18,Michelin Pilot Sport 4 245/40R18,MPS4-24540R18,159.00,USD,27,Moscow,2
+Rosshinaopt,Michelin Pilot Sport 4 255/40 R19,Michelin Pilot Sport 4 255/40R19,MPS4-25540R19,182.50,USD,18,Moscow,3
+Rosshinaopt,Michelin CrossClimate 2 205/55 R16,Michelin CrossClimate 2 205/55R16,MCC2-20555R16,112.00,USD,65,Moscow,2
+Rosshinaopt,Michelin CrossClimate 2 215/55 R17,Michelin CrossClimate 2 215/55R17,MCC2-21555R17,124.50,USD,42,Moscow,2
+Rosshinaopt,Michelin CrossClimate 2 225/50 R17,Michelin CrossClimate 2 225/50R17,MCC2-22550R17,131.00,USD,38,Moscow,2
+Rosshinaopt,Michelin Alpin 6 195/65 R15,Michelin Alpin 6 195/65R15,MA6-19565R15,89.90,USD,74,Moscow,1
+Rosshinaopt,Michelin Alpin 6 205/60 R16,Michelin Alpin 6 205/60R16,MA6-20560R16,97.50,USD,61,Moscow,1
+Rosshinaopt,Michelin Alpin 6 215/55 R16,Michelin Alpin 6 215/55R16,MA6-21555R16,104.00,USD,53,Moscow,1
+Rosshinaopt,Continental PremiumContact 6 205/55 R16,Continental PremiumContact 6 205/55R16,CPC6-20555R16,108.00,USD,59,Moscow,2
+Rosshinaopt,Continental PremiumContact 6 225/45 R17,Continental PremiumContact 6 225/45R17,CPC6-22545R17,121.00,USD,44,Moscow,2
+Rosshinaopt,Continental PremiumContact 6 235/50 R18,Continental PremiumContact 6 235/50R18,CPC6-23550R18,143.00,USD,29,Moscow,2
+Rosshinaopt,Continental WinterContact TS860 185/60 R15,Continental WinterContact TS860 185/60R15,CWC-18560R15,78.50,USD,82,Moscow,1
+Rosshinaopt,Continental WinterContact TS860 195/65 R15,Continental WinterContact TS860 195/65R15,CWC-19565R15,85.00,USD,77,Moscow,1
+Rosshinaopt,Continental WinterContact TS860 205/55 R16,Continental WinterContact TS860 205/55R16,CWC-20555R16,94.50,USD,66,Moscow,1
+Rosshinaopt,Continental WinterContact TS860 215/60 R16,Continental WinterContact TS860 215/60R16,CWC-21560R16,102.00,USD,51,Moscow,2
+Rosshinaopt,Continental AllSeasonContact 2 185/65 R15,Continental AllSeasonContact 2 185/65R15,CAS2-18565R15,82.00,USD,71,Yekaterinburg,3
+Rosshinaopt,Continental AllSeasonContact 2 205/55 R16,Continental AllSeasonContact 2 205/55R16,CAS2-20555R16,95.00,USD,63,Yekaterinburg,3
+Rosshinaopt,Bridgestone Turanza T005 205/55 R16,Bridgestone Turanza T005 205/55R16,BT005-20555R16,99.00,USD,57,Moscow,2
+Rosshinaopt,Bridgestone Turanza T005 215/55 R17,Bridgestone Turanza T005 215/55R17,BT005-21555R17,111.50,USD,43,Moscow,2
+Rosshinaopt,Bridgestone Turanza T005 225/50 R17,Bridgestone Turanza T005 225/50R17,BT005-22550R17,118.00,USD,37,Moscow,2
+Rosshinaopt,Bridgestone Blizzak LM005 185/65 R15,Bridgestone Blizzak LM005 185/65R15,BLM-18565R15,86.50,USD,69,Yekaterinburg,3
+Rosshinaopt,Bridgestone Blizzak LM005 205/55 R16,Bridgestone Blizzak LM005 205/55R16,BLM-20555R16,97.00,USD,54,Yekaterinburg,3
+Rosshinaopt,Bridgestone Blizzak LM005 215/60 R16,Bridgestone Blizzak LM005 215/60R16,BLM-21560R16,105.50,USD,46,Yekaterinburg,3
+Rosshinaopt,Bridgestone Weather Control A005 195/65 R15,Bridgestone Weather Control A005 195/65R15,BWC-19565R15,91.00,USD,58,Moscow,2
+Rosshinaopt,Nokian Hakkapeliitta 10 205/55 R16,Nokian Hakkapeliitta 10 205/55R16,NH10-20555R16,115.00,USD,35,Moscow,2
+Rosshinaopt,Nokian Hakkapeliitta 10 215/55 R17,Nokian Hakkapeliitta 10 215/55R17,NH10-21555R17,128.00,USD,22,Moscow,3
+Rosshinaopt,Nokian Wetproof 195/65 R15,Nokian Wetproof 195/65R15,NWP-19565R15,79.50,USD,67,Moscow,1
+Rosshinaopt,Nokian Wetproof 205/55 R16,Nokian Wetproof 205/55R16,NWP-20555R16,89.00,USD,55,Moscow,1
+TyreCenter SPB,Michelin Pilot Sport 4 225/45 R17,Мишлен Пилот Спорт 4 225/45R17,MI-225-45-17-PS4,133.00,USD,22,Saint-Petersburg,3
+TyreCenter SPB,Michelin Pilot Sport 4 235/45 R18,Мишлен Пилот Спорт 4 235/45R18,MI-235-45-18-PS4,155.00,USD,14,Saint-Petersburg,3
+TyreCenter SPB,Michelin Pilot Sport 4 245/40 R18,Мишлен Пилот Спорт 4 245/40R18,MI-245-40-18-PS4,166.50,USD,9,Saint-Petersburg,4
+TyreCenter SPB,Michelin CrossClimate 2 205/55 R16,Мишлен КроссКлаймат 2 205/55R16,MI-205-55-16-CC2,117.50,USD,31,Saint-Petersburg,3
+TyreCenter SPB,Michelin CrossClimate 2 215/55 R17,Мишлен КроссКлаймат 2 215/55R17,MI-215-55-17-CC2,130.00,USD,19,Saint-Petersburg,3
+TyreCenter SPB,Michelin CrossClimate 2 225/50 R17,Мишлен КроссКлаймат 2 225/50R17,MI-225-50-17-CC2,137.50,USD,16,Saint-Petersburg,3
+TyreCenter SPB,Michelin Alpin 6 195/65 R15,Мишлен Альпин 6 195/65R15,MI-195-65-15-A6,94.00,USD,45,Saint-Petersburg,2
+TyreCenter SPB,Michelin Alpin 6 205/60 R16,Мишлен Альпин 6 205/60R16,MI-205-60-16-A6,102.00,USD,38,Saint-Petersburg,2
+TyreCenter SPB,Michelin Alpin 6 215/55 R16,Мишлен Альпин 6 215/55R16,MI-215-55-16-A6,109.50,USD,29,Saint-Petersburg,2
+TyreCenter SPB,Continental PremiumContact 6 205/55 R16,Континенталь ПремиумКонтакт 6 205/55R16,CO-205-55-16-PC6,113.00,USD,36,Saint-Petersburg,3
+TyreCenter SPB,Continental PremiumContact 6 225/45 R17,Континенталь ПремиумКонтакт 6 225/45R17,CO-225-45-17-PC6,127.00,USD,24,Saint-Petersburg,3
+TyreCenter SPB,Continental WinterContact TS860 185/60 R15,Континенталь ВинтерКонтакт ТС860 185/60R15,CO-185-60-15-TS860,82.00,USD,52,Saint-Petersburg,2
+TyreCenter SPB,Continental WinterContact TS860 195/65 R15,Континенталь ВинтерКонтакт ТС860 195/65R15,CO-195-65-15-TS860,89.00,USD,47,Saint-Petersburg,2
+TyreCenter SPB,Continental WinterContact TS860 205/55 R16,Континенталь ВинтерКонтакт ТС860 205/55R16,CO-205-55-16-TS860,99.00,USD,40,Saint-Petersburg,2
+TyreCenter SPB,Continental WinterContact TS860 215/60 R16,Континенталь ВинтерКонтакт ТС860 215/60R16,CO-215-60-16-TS860,107.00,USD,33,Saint-Petersburg,3
+TyreCenter SPB,Bridgestone Turanza T005 205/55 R16,Бриджстоун Туранза Т005 205/55R16,BS-205-55-16-T005,104.00,USD,28,Saint-Petersburg,3
+TyreCenter SPB,Bridgestone Turanza T005 215/55 R17,Бриджстоун Туранза Т005 215/55R17,BS-215-55-17-T005,117.00,USD,20,Saint-Petersburg,3
+TyreCenter SPB,Bridgestone Blizzak LM005 185/65 R15,Бриджстоун Близзак ЛМ005 185/65R15,BS-185-65-15-LM005,91.00,USD,43,Saint-Petersburg,2
+TyreCenter SPB,Bridgestone Blizzak LM005 205/55 R16,Бриджстоун Близзак ЛМ005 205/55R16,BS-205-55-16-LM005,102.00,USD,35,Saint-Petersburg,2
+TyreCenter SPB,Bridgestone Blizzak LM005 215/60 R16,Бриджстоун Близзак ЛМ005 215/60R16,BS-215-60-16-LM005,111.00,USD,27,Saint-Petersburg,3
+TyreCenter SPB,Nokian Hakkapeliitta 10 205/55 R16,Нокиан Хакапелиитта 10 205/55R16,NK-205-55-16-H10,121.00,USD,17,Saint-Petersburg,3
+TyreCenter SPB,Nokian Hakkapeliitta 10 215/55 R17,Нокиан Хакапелиитта 10 215/55R17,NK-215-55-17-H10,134.50,USD,11,Saint-Petersburg,4
+TyreCenter SPB,Nokian Wetproof 195/65 R15,Нокиан Ветпруф 195/65R15,NK-195-65-15-WP,83.50,USD,39,Saint-Petersburg,2
+TyreCenter SPB,Nokian Wetproof 205/55 R16,Нокиан Ветпруф 205/55R16,NK-205-55-16-WP,93.50,USD,31,Saint-Petersburg,2
+TyreCenter SPB,Continental AllSeasonContact 2 185/65 R15,Континенталь ОлСизон Контакт 2 185/65R15,CO-185-65-15-ASC2,86.00,USD,44,Kazan,4
+TyreCenter SPB,Continental AllSeasonContact 2 205/55 R16,Континенталь ОлСизон Контакт 2 205/55R16,CO-205-55-16-ASC2,99.50,USD,36,Kazan,4
+TyreCenter SPB,Bridgestone Weather Control A005 195/65 R15,Бриджстоун Везер Контрол А005 195/65R15,BS-195-65-15-A005,95.50,USD,28,Kazan,4
+Koleso.ru,Michelin Pilot Sport 4 225/45 R17,Michelin PS4 225/45/17,MICH_PIL_SP4_225_45_R17,119.90,USD,15,Novosibirsk,5
+Koleso.ru,Michelin Pilot Sport 4 235/45 R18,Michelin PS4 235/45/18,MICH_PIL_SP4_235_45_R18,140.00,USD,8,Novosibirsk,5
+Koleso.ru,Michelin Pilot Sport 4 245/40 R18,Michelin PS4 245/40/18,MICH_PIL_SP4_245_40_R18,150.50,USD,5,Novosibirsk,6
+Koleso.ru,Michelin CrossClimate 2 205/55 R16,Michelin CC2 205/55/16,MICH_CC2_205_55_R16,105.00,USD,23,Novosibirsk,5
+Koleso.ru,Michelin CrossClimate 2 215/55 R17,Michelin CC2 215/55/17,MICH_CC2_215_55_R17,116.00,USD,17,Novosibirsk,5
+Koleso.ru,Michelin CrossClimate 2 225/50 R17,Michelin CC2 225/50/17,MICH_CC2_225_50_R17,122.50,USD,12,Novosibirsk,5
+Koleso.ru,Michelin Alpin 6 195/65 R15,Michelin Alpin6 195/65/15,MICH_ALP6_195_65_R15,84.00,USD,41,Krasnodar,5
+Koleso.ru,Michelin Alpin 6 205/60 R16,Michelin Alpin6 205/60/16,MICH_ALP6_205_60_R16,91.00,USD,33,Krasnodar,5
+Koleso.ru,Michelin Alpin 6 215/55 R16,Michelin Alpin6 215/55/16,MICH_ALP6_215_55_R16,97.50,USD,26,Krasnodar,5
+Koleso.ru,Continental PremiumContact 6 205/55 R16,Conti PC6 205/55/16,CONT_PC6_205_55_R16,101.00,USD,32,Novosibirsk,5
+Koleso.ru,Continental PremiumContact 6 225/45 R17,Conti PC6 225/45/17,CONT_PC6_225_45_R17,113.50,USD,21,Novosibirsk,5
+Koleso.ru,Continental WinterContact TS860 185/60 R15,Conti WC TS860 185/60/15,CONT_WC860_185_60_R15,73.50,USD,54,Novosibirsk,4
+Koleso.ru,Continental WinterContact TS860 195/65 R15,Conti WC TS860 195/65/15,CONT_WC860_195_65_R15,79.50,USD,49,Novosibirsk,4
+Koleso.ru,Continental WinterContact TS860 205/55 R16,Conti WC TS860 205/55/16,CONT_WC860_205_55_R16,88.50,USD,39,Novosibirsk,5
+Koleso.ru,Continental WinterContact TS860 215/60 R16,Conti WC TS860 215/60/16,CONT_WC860_215_60_R16,95.50,USD,30,Novosibirsk,5
+Koleso.ru,Continental AllSeasonContact 2 185/65 R15,Conti ASC2 185/65/15,CONT_ASC2_185_65_R15,77.00,USD,44,Krasnodar,5
+Koleso.ru,Continental AllSeasonContact 2 205/55 R16,Conti ASC2 205/55/16,CONT_ASC2_205_55_R16,89.00,USD,36,Krasnodar,5
+Koleso.ru,Bridgestone Turanza T005 205/55 R16,Bridgestone T005 205/55/16,BRDG_T005_205_55_R16,93.00,USD,28,Novosibirsk,5
+Koleso.ru,Bridgestone Turanza T005 215/55 R17,Bridgestone T005 215/55/17,BRDG_T005_215_55_R17,104.50,USD,19,Novosibirsk,5
+Koleso.ru,Bridgestone Turanza T005 225/50 R17,Bridgestone T005 225/50/17,BRDG_T005_225_50_R17,111.00,USD,14,Novosibirsk,6
+Koleso.ru,Bridgestone Blizzak LM005 185/65 R15,Bridgestone LM005 185/65/15,BRDG_LM005_185_65_R15,81.00,USD,47,Krasnodar,5
+Koleso.ru,Bridgestone Blizzak LM005 205/55 R16,Bridgestone LM005 205/55/16,BRDG_LM005_205_55_R16,91.00,USD,38,Krasnodar,5
+Koleso.ru,Bridgestone Blizzak LM005 215/60 R16,Bridgestone LM005 215/60/16,BRDG_LM005_215_60_R16,99.00,USD,29,Krasnodar,5
+Koleso.ru,Bridgestone Weather Control A005 195/65 R15,Bridgestone A005 195/65/15,BRDG_A005_195_65_R15,85.50,USD,33,Novosibirsk,5
+Koleso.ru,Nokian Hakkapeliitta 10 205/55 R16,Nokian H10 205/55/16,NOK_HAK10_205_55_R16,108.00,USD,19,Novosibirsk,5
+Koleso.ru,Nokian Hakkapeliitta 10 215/55 R17,Nokian H10 215/55/17,NOK_HAK10_215_55_R17,120.50,USD,13,Novosibirsk,6
+Koleso.ru,Nokian Wetproof 195/65 R15,Nokian WP 195/65/15,NOK_WP_195_65_R15,74.50,USD,42,Krasnodar,4
+Koleso.ru,Nokian Wetproof 205/55 R16,Nokian WP 205/55/16,NOK_WP_205_55_R16,83.00,USD,34,Krasnodar,5
+Rosshinaopt,Michelin Pilot Sport 4 225/45 R17,Michelin Pilot Sport 4 225/45R17,MPS4-22545R17-B,125.00,USD,12,Saint-Petersburg,3
+Rosshinaopt,Continental PremiumContact 6 205/55 R16,Continental PremiumContact 6 205/55R16,CPC6-20555R16-EKB,106.00,USD,24,Yekaterinburg,4
+Rosshinaopt,Nokian Hakkapeliitta 10 205/55 R16,Nokian Hakkapeliitta 10 205/55R16,NH10-20555R16-NSK,113.00,USD,8,Novosibirsk,4
+Rosshinaopt,Nokian Hakkapeliitta 10 215/55 R17,Nokian Hakkapeliitta 10 215/55R17,NH10-21555R17-NSK,126.00,USD,5,Novosibirsk,4
+TyreCenter SPB,Michelin Pilot Sport 4 255/40 R19,Мишлен Пилот Спорт 4 255/40R19,MI-255-40-19-PS4,191.00,USD,0,Saint-Petersburg,7
+TyreCenter SPB,Michelin Alpin 6 195/65 R15,Мишлен Альпин 6 195/65R15,MI-195-65-15-A6-V2,92.50,USD,18,Novosibirsk,5
+TyreCenter SPB,Continental PremiumContact 6 235/50 R18,Континенталь ПремиумКонтакт 6 235/50R18,CO-235-50-18-PC6,149.50,USD,11,Yekaterinburg,5
+TyreCenter SPB,Bridgestone Turanza T005 225/50 R17,Бриджстоун Туранза Т005 225/50R17,BS-225-50-17-T005,123.50,USD,15,Yekaterinburg,4
+TyreCenter SPB,Bridgestone Weather Control A005 195/65 R15,Бриджстоун Везер Контрол А005 195/65R15,BS-195-65-15-A005-V2,99.50,USD,21,Novosibirsk,5
+Koleso.ru,Michelin Pilot Sport 4 255/40 R19,Michelin PS4 255/40/19,MICH_PIL_SP4_255_40_R19,172.00,USD,3,Novosibirsk,7
+Koleso.ru,Continental PremiumContact 6 235/50 R18,Conti PC6 235/50/18,CONT_PC6_235_50_R18,134.50,USD,9,Novosibirsk,6
+Rosshinaopt,Michelin CrossClimate 2 205/55 R16,Michelin CrossClimate 2 205/55R16,MCC2-20555R16-KZN,110.00,USD,19,Kazan,3
+Rosshinaopt,Bridgestone Blizzak LM005 185/65 R15,Bridgestone Blizzak LM005 185/65R15,BLM-18565R15-KRD,84.50,USD,31,Krasnodar,3
+TyreCenter SPB,Continental AllSeasonContact 2 185/65 R15,Континенталь ОлСизон Контакт 2 185/65R15,CO-185-65-15-ASC2-V2,88.00,USD,22,Saint-Petersburg,3
+TyreCenter SPB,Nokian Wetproof 195/65 R15,Нокиан Ветпруф 195/65R15,NK-195-65-15-WP-V2,81.50,USD,26,Yekaterinburg,4
+Koleso.ru,Continental WinterContact TS860 185/60 R15,Conti WC TS860 185/60/15,CONT_WC860_185_60_R15-NSK,72.00,USD,27,Novosibirsk,5
+Koleso.ru,Nokian Wetproof 205/55 R16,Nokian WP 205/55/16,NOK_WP_205_55_R16-KRD,81.00,USD,20,Krasnodar,5
+Rosshinaopt,Michelin Pilot Sport 4 235/45 R18,Michelin Pilot Sport 4 235/45R18,MPS4-23545R18-EKB,146.00,USD,14,Yekaterinburg,4
+Rosshinaopt,Michelin Alpin 6 205/60 R16,Michelin Alpin 6 205/60R16,MA6-20560R16-KZN,95.50,USD,28,Kazan,2
+Rosshinaopt,Continental WinterContact TS860 205/55 R16,Continental WinterContact TS860 205/55R16,CWC-20555R16-EKB,92.50,USD,35,Yekaterinburg,3
+TyreCenter SPB,Michelin CrossClimate 2 205/55 R16,Мишлен КроссКлаймат 2 205/55R16,MI-205-55-16-CC2-V2,115.00,USD,14,Kazan,4
+TyreCenter SPB,Bridgestone Blizzak LM005 185/65 R15,Бриджстоун Близзак ЛМ005 185/65R15,BS-185-65-15-LM005-V2,89.00,USD,20,Novosibirsk,5
+TyreCenter SPB,Continental WinterContact TS860 185/60 R15,Континенталь ВинтерКонтакт ТС860 185/60R15,CO-185-60-15-TS860-V2,80.00,USD,31,Yekaterinburg,4
+Koleso.ru,Michelin Alpin 6 205/60 R16,Michelin Alpin6 205/60/16,MICH_ALP6_205_60_R16-V2,89.00,USD,18,Novosibirsk,6
+Koleso.ru,Bridgestone Turanza T005 205/55 R16,Bridgestone T005 205/55/16,BRDG_T005_205_55_R16-KRD,91.00,USD,23,Krasnodar,5
+Koleso.ru,Continental PremiumContact 6 205/55 R16,Conti PC6 205/55/16,CONT_PC6_205_55_R16-V2,99.00,USD,17,Krasnodar,5
+Rosshinaopt,Continental AllSeasonContact 2 205/55 R16,Continental AllSeasonContact 2 205/55R16,CAS2-20555R16-MOW2,93.00,USD,41,Moscow,2
+Rosshinaopt,Bridgestone Weather Control A005 195/65 R15,Bridgestone Weather Control A005 195/65R15,BWC-19565R15-EKB,89.50,USD,22,Yekaterinburg,4
+TyreCenter SPB,Continental PremiumContact 6 205/55 R16,Континенталь ПремиумКонтакт 6 205/55R16,CO-205-55-16-PC6-V2,111.00,USD,18,Yekaterinburg,4
+TyreCenter SPB,Michelin Alpin 6 215/55 R16,Мишлен Альпин 6 215/55R16,MI-215-55-16-A6-V2,107.00,USD,15,Kazan,4
+Koleso.ru,Michelin CrossClimate 2 225/50 R17,Michelin CC2 225/50/17,MICH_CC2_225_50_R17-V2,120.50,USD,8,Krasnodar,6
+Koleso.ru,Bridgestone Blizzak LM005 205/55 R16,Bridgestone LM005 205/55/16,BRDG_LM005_205_55_R16-V2,89.50,USD,25,Novosibirsk,5
+Rosshinaopt,Nokian Wetproof 195/65 R15,Nokian Wetproof 195/65R15,NWP-19565R15-EKB,78.00,USD,34,Yekaterinburg,3
+Rosshinaopt,Michelin Pilot Sport 4 255/40 R19,Michelin Pilot Sport 4 255/40R19,MPS4-25540R19-MOW2,180.00,USD,7,Moscow,3
+TyreCenter SPB,Continental WinterContact TS860 205/55 R16,Континенталь ВинтерКонтакт ТС860 205/55R16,CO-205-55-16-TS860-V2,97.00,USD,22,Novosibirsk,5
+Koleso.ru,Michelin Alpin 6 215/55 R16,Michelin Alpin6 215/55/16,MICH_ALP6_215_55_R16-V2,95.00,USD,14,Novosibirsk,6
+Koleso.ru,Continental AllSeasonContact 2 205/55 R16,Conti ASC2 205/55/16,CONT_ASC2_205_55_R16-V2,87.50,USD,19,Novosibirsk,6
+Rosshinaopt,Bridgestone Turanza T005 215/55 R17,Bridgestone Turanza T005 215/55R17,BT005-21555R17-KZN,109.50,USD,20,Kazan,3
+TyreCenter SPB,Bridgestone Turanza T005 205/55 R16,Бриджстоун Туранза Т005 205/55R16,BS-205-55-16-T005-V2,102.00,USD,15,Kazan,4
+Koleso.ru,Nokian Hakkapeliitta 10 205/55 R16,Nokian H10 205/55/16,NOK_HAK10_205_55_R16-KRD,106.00,USD,11,Krasnodar,6
+Rosshinaopt,Continental WinterContact TS860 195/65 R15,Continental WinterContact TS860 195/65R15,CWC-19565R15-NSK,83.50,USD,42,Novosibirsk,4
+TyreCenter SPB,Michelin Pilot Sport 4 235/45 R18,Мишлен Пилот Спорт 4 235/45R18,MI-235-45-18-PS4-V2,152.00,USD,7,Kazan,5
+Koleso.ru,Bridgestone Weather Control A005 195/65 R15,Bridgestone A005 195/65/15,BRDG_A005_195_65_R15-KRD,83.50,USD,19,Krasnodar,5
+Rosshinaopt,Michelin CrossClimate 2 215/55 R17,Michelin CrossClimate 2 215/55R17,MCC2-21555R17-EKB,122.00,USD,21,Yekaterinburg,3
+Rosshinaopt,Michelin CrossClimate 2 225/50 R17,Michelin CrossClimate 2 225/50R17,MCC2-22550R17-NSK,128.50,USD,16,Novosibirsk,4
+Rosshinaopt,Continental PremiumContact 6 205/55 R16,Continental PremiumContact 6 205/55R16,CPC6-20555R16-KRD,106.50,USD,33,Krasnodar,3
+Rosshinaopt,Continental PremiumContact 6 225/45 R17,Continental PremiumContact 6 225/45R17,CPC6-22545R17-NSK,119.00,USD,19,Novosibirsk,4
+Rosshinaopt,Continental AllSeasonContact 2 185/65 R15,Continental AllSeasonContact 2 185/65R15,CAS2-18565R15-MOW2,80.50,USD,38,Moscow,2
+Rosshinaopt,Bridgestone Turanza T005 225/50 R17,Bridgestone Turanza T005 225/50R17,BT005-22550R17-EKB,115.50,USD,24,Yekaterinburg,3
+Rosshinaopt,Bridgestone Weather Control A005 195/65 R15,Bridgestone Weather Control A005 195/65R15,BWC-19565R15-NSK,89.00,USD,18,Novosibirsk,4
+Rosshinaopt,Nokian Hakkapeliitta 10 205/55 R16,Nokian Hakkapeliitta 10 205/55R16,NH10-20555R16-KZN,113.50,USD,14,Kazan,3
+Rosshinaopt,Nokian Hakkapeliitta 10 215/55 R17,Nokian Hakkapeliitta 10 215/55R17,NH10-21555R17-KRD,126.50,USD,9,Krasnodar,4
+Rosshinaopt,Nokian Wetproof 205/55 R16,Nokian Wetproof 205/55R16,NWP-20555R16-EKB,87.50,USD,28,Yekaterinburg,3
+TyreCenter SPB,Michelin CrossClimate 2 215/55 R17,Мишлен КроссКлаймат 2 215/55R17,MI-215-55-17-CC2-V2,128.50,USD,11,Yekaterinburg,4
+TyreCenter SPB,Michelin CrossClimate 2 225/50 R17,Мишлен КроссКлаймат 2 225/50R17,MI-225-50-17-CC2-V2,135.00,USD,8,Novosibirsk,5
+TyreCenter SPB,Continental PremiumContact 6 225/45 R17,Континенталь ПремиумКонтакт 6 225/45R17,CO-225-45-17-PC6-V2,125.50,USD,13,Novosibirsk,5
+TyreCenter SPB,Continental WinterContact TS860 195/65 R15,Континенталь ВинтерКонтакт ТС860 195/65R15,CO-195-65-15-TS860-V2,87.50,USD,28,Kazan,4
+TyreCenter SPB,Continental WinterContact TS860 215/60 R16,Континенталь ВинтерКонтакт ТС860 215/60R16,CO-215-60-16-TS860-V2,105.00,USD,18,Novosibirsk,5
+TyreCenter SPB,Continental AllSeasonContact 2 205/55 R16,Континенталь ОлСизон Контакт 2 205/55R16,CO-205-55-16-ASC2-V2,97.50,USD,24,Yekaterinburg,4
+TyreCenter SPB,Bridgestone Turanza T005 215/55 R17,Бриджстоун Туранза Т005 215/55R17,BS-215-55-17-T005-V2,115.00,USD,13,Novosibirsk,5
+TyreCenter SPB,Bridgestone Blizzak LM005 215/60 R16,Бриджстоун Близзак ЛМ005 215/60R16,BS-215-60-16-LM005-V2,109.00,USD,19,Kazan,4
+TyreCenter SPB,Nokian Hakkapeliitta 10 205/55 R16,Нокиан Хакапелиитта 10 205/55R16,NK-205-55-16-H10-V2,119.00,USD,10,Novosibirsk,5
+TyreCenter SPB,Nokian Hakkapeliitta 10 215/55 R17,Нокиан Хакапелиитта 10 215/55R17,NK-215-55-17-H10-V2,133.00,USD,7,Yekaterinburg,5
+TyreCenter SPB,Nokian Wetproof 205/55 R16,Нокиан Ветпруф 205/55R16,NK-205-55-16-WP-V2,92.00,USD,17,Kazan,4
+TyreCenter SPB,Bridgestone Weather Control A005 195/65 R15,Бриджстоун Везер Контрол А005 195/65R15,BS-195-65-15-A005-V3,97.00,USD,16,Novosibirsk,5
+Koleso.ru,Michelin Pilot Sport 4 225/45 R17,Michelin PS4 225/45/17,MICH_PIL_SP4_225_45_R17-V2,118.00,USD,9,Krasnodar,6
+Koleso.ru,Michelin Pilot Sport 4 235/45 R18,Michelin PS4 235/45/18,MICH_PIL_SP4_235_45_R18-V2,138.00,USD,4,Krasnodar,7
+Koleso.ru,Michelin CrossClimate 2 215/55 R17,Michelin CC2 215/55/17,MICH_CC2_215_55_R17-V2,114.00,USD,10,Yekaterinburg,5
+Koleso.ru,Michelin Alpin 6 195/65 R15,Michelin Alpin6 195/65/15,MICH_ALP6_195_65_R15-V2,82.50,USD,29,Novosibirsk,5
+Koleso.ru,Continental WinterContact TS860 215/60 R16,Conti WC TS860 215/60/16,CONT_WC860_215_60_R16-KRD,94.00,USD,17,Krasnodar,5
+Koleso.ru,Continental AllSeasonContact 2 185/65 R15,Conti ASC2 185/65/15,CONT_ASC2_185_65_R15-NSK,75.50,USD,31,Novosibirsk,5
+Koleso.ru,Bridgestone Turanza T005 215/55 R17,Bridgestone T005 215/55/17,BRDG_T005_215_55_R17-V2,102.50,USD,12,Krasnodar,6
+Koleso.ru,Bridgestone Blizzak LM005 215/60 R16,Bridgestone LM005 215/60/16,BRDG_LM005_215_60_R16-V2,97.00,USD,20,Novosibirsk,5
+Koleso.ru,Bridgestone Blizzak LM005 185/65 R15,Bridgestone LM005 185/65/15,BRDG_LM005_185_65_R15-V2,79.50,USD,33,Novosibirsk,5
+Koleso.ru,Continental PremiumContact 6 225/45 R17,Conti PC6 225/45/17,CONT_PC6_225_45_R17-NSK,111.50,USD,14,Novosibirsk,6
+Koleso.ru,Nokian Hakkapeliitta 10 215/55 R17,Nokian H10 215/55/17,NOK_HAK10_215_55_R17-NSK,118.50,USD,8,Novosibirsk,6
+Koleso.ru,Nokian Wetproof 195/65 R15,Nokian WP 195/65/15,NOK_WP_195_65_R15-NSK,73.00,USD,27,Novosibirsk,5
+Koleso.ru,Nokian Wetproof 205/55 R16,Nokian WP 205/55/16,NOK_WP_205_55_R16-V3,81.50,USD,16,Yekaterinburg,6
+Koleso.ru,Michelin Alpin 6 205/60 R16,Michelin Alpin6 205/60/16,MICH_ALP6_205_60_R16-V3,90.50,USD,13,Yekaterinburg,6
+Koleso.ru,Continental PremiumContact 6 205/55 R16,Conti PC6 205/55/16,CONT_PC6_205_55_R16-NSK,99.50,USD,22,Novosibirsk,5
+Koleso.ru,Bridgestone Turanza T005 225/50 R17,Bridgestone T005 225/50/17,BRDG_T005_225_50_R17-V2,109.00,USD,10,Yekaterinburg,6
+Rosshinaopt,Michelin Alpin 6 195/65 R15,Michelin Alpin 6 195/65R15,MA6-19565R15-NSK,88.50,USD,36,Novosibirsk,4
+Rosshinaopt,Continental WinterContact TS860 185/60 R15,Continental WinterContact TS860 185/60R15,CWC-18560R15-NSK,77.00,USD,45,Novosibirsk,4
+Rosshinaopt,Bridgestone Blizzak LM005 205/55 R16,Bridgestone Blizzak LM005 205/55R16,BLM-20555R16-MOW2,95.50,USD,30,Moscow,2
+Rosshinaopt,Bridgestone Turanza T005 205/55 R16,Bridgestone Turanza T005 205/55R16,BT005-20555R16-KRD,97.00,USD,25,Krasnodar,4
+Rosshinaopt,Continental AllSeasonContact 2 185/65 R15,Continental AllSeasonContact 2 185/65R15,CAS2-18565R15-NSK,80.50,USD,22,Novosibirsk,4
+Rosshinaopt,Nokian Wetproof 205/55 R16,Nokian Wetproof 205/55R16,NWP-20555R16-KZN,87.50,USD,19,Kazan,3
+TyreCenter SPB,Michelin Alpin 6 205/60 R16,Мишлен Альпин 6 205/60R16,MI-205-60-16-A6-V2,100.50,USD,16,Yekaterinburg,4
+TyreCenter SPB,Bridgestone Blizzak LM005 205/55 R16,Бриджстоун Близзак ЛМ005 205/55R16,BS-205-55-16-LM005-V2,100.50,USD,22,Novosibirsk,5
+TyreCenter SPB,Continental WinterContact TS860 195/65 R15,Континенталь ВинтерКонтакт ТС860 195/65R15,CO-195-65-15-TS860-V3,87.00,USD,19,Novosibirsk,5
+TyreCenter SPB,Continental AllSeasonContact 2 185/65 R15,Континенталь ОлСизон Контакт 2 185/65R15,CO-185-65-15-ASC2-V3,84.50,USD,15,Kazan,4
+TyreCenter SPB,Michelin CrossClimate 2 205/55 R16,Мишлен КроссКлаймат 2 205/55R16,MI-205-55-16-CC2-V3,116.00,USD,9,Yekaterinburg,5
+TyreCenter SPB,Nokian Wetproof 205/55 R16,Нокиан Ветпруф 205/55R16,NK-205-55-16-WP-V3,91.00,USD,13,Novosibirsk,5
+TyreCenter SPB,Bridgestone Weather Control A005 195/65 R15,Бриджстоун Везер Контрол А005 195/65R15,BS-195-65-15-A005-V4,98.00,USD,8,Kazan,5
+TyreCenter SPB,Continental AllSeasonContact 2 205/55 R16,Континенталь ОлСизон Контакт 2 205/55R16,CO-205-55-16-ASC2-V3,98.00,USD,14,Novosibirsk,5
+Koleso.ru,Michelin Pilot Sport 4 245/40 R18,Michelin PS4 245/40/18,MICH_PIL_SP4_245_40_R18-V2,148.50,USD,3,Yekaterinburg,7
+Koleso.ru,Michelin CrossClimate 2 205/55 R16,Michelin CC2 205/55/16,MICH_CC2_205_55_R16-V2,103.50,USD,16,Yekaterinburg,5
+Koleso.ru,Bridgestone Blizzak LM005 185/65 R15,Bridgestone LM005 185/65/15,BRDG_LM005_185_65_R15-KRD,79.50,USD,28,Krasnodar,5
+Koleso.ru,Continental WinterContact TS860 195/65 R15,Conti WC TS860 195/65/15,CONT_WC860_195_65_R15-KRD,78.00,USD,21,Krasnodar,5
+Koleso.ru,Continental AllSeasonContact 2 205/55 R16,Conti ASC2 205/55/16,CONT_ASC2_205_55_R16-V3,88.00,USD,11,Yekaterinburg,6
+Koleso.ru,Bridgestone Weather Control A005 195/65 R15,Bridgestone A005 195/65/15,BRDG_A005_195_65_R15-NSK,84.00,USD,15,Novosibirsk,6
+Koleso.ru,Nokian Hakkapeliitta 10 205/55 R16,Nokian H10 205/55/16,NOK_HAK10_205_55_R16-NSK,107.50,USD,8,Novosibirsk,6
+Koleso.ru,Continental PremiumContact 6 235/50 R18,Conti PC6 235/50/18,CONT_PC6_235_50_R18-KRD,132.00,USD,6,Krasnodar,7
+Koleso.ru,Michelin Alpin 6 215/55 R16,Michelin Alpin6 215/55/16,MICH_ALP6_215_55_R16-V3,96.00,USD,10,Yekaterinburg,6
+Koleso.ru,Nokian Wetproof 195/65 R15,Nokian WP 195/65/15,NOK_WP_195_65_R15-KRD,73.50,USD,18,Krasnodar,5
+Koleso.ru,Continental WinterContact TS860 205/55 R16,Conti WC TS860 205/55/16,CONT_WC860_205_55_R16-KRD,87.50,USD,24,Krasnodar,5
+Koleso.ru,Bridgestone Turanza T005 205/55 R16,Bridgestone T005 205/55/16,BRDG_T005_205_55_R16-NSK,91.50,USD,19,Novosibirsk,5
+Koleso.ru,Bridgestone Blizzak LM005 215/60 R16,Bridgestone LM005 215/60/16,BRDG_LM005_215_60_R16-KRD,97.50,USD,12,Krasnodar,6

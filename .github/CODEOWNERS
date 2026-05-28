@@ -1,0 +1,12 @@
+# CODEOWNERS — every PR that touches these paths requires review from the
+# listed GitHub user(s) before it can be merged.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# B2BAgg solution XML — Dataverse schema is the source of truth
+solutions/ @ySuvorov
+
+# Azure infrastructure (Functions, Bicep, Logic Apps)
+azure/ @ySuvorov
+
+# GitHub Actions and repo automation
+.github/ @ySuvorov
