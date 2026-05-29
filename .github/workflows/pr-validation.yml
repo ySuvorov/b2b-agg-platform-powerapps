@@ -2,11 +2,14 @@
 # pr-validation.yml
 # Runs on every PR targeting main.
 #
+# Auth: GitHub OIDC + Microsoft Entra Federated Identity Credentials (FIC) —
+# no client secret (P3 OIDC flip, audit M-3). Runs on pull_request; relies on
+# the FIC `gh-pr` subject (repo:…:pull_request).
+#
 # Required GitHub Actions secrets:
-#   PP_CLIENT_ID     — Azure AD App Registration client ID
-#   PP_CLIENT_SECRET — client secret (rotate every 90 days)
-#   PP_TENANT_ID     — Entra tenant: <tenant-id>
-#   PP_DEV_URL       — Dev environment URL (https://YOUR-DATAVERSE-ORG.crm.dynamics.com/)
+#   PP_CLIENT_ID  — Azure AD App Registration (client) ID
+#   PP_TENANT_ID  — Entra tenant: <tenant-id>
+#   PP_DEV_URL    — Dev environment URL (https://YOUR-DATAVERSE-ORG.crm.dynamics.com/)
 # ============================================================
 
 name: PR Validation
@@ -22,6 +25,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  id-token: write       # exchange the GitHub OIDC token for an Entra token (FIC)
   contents: read
   pull-requests: write  # needed for posting the summary comment
 
@@ -37,47 +41,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # pac CLI 1.52.1 targets net9.0; must pin dotnet to 9.x
-      - name: Set up .NET 9 SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.x'
+      - name: Install Power Platform CLI
+        uses: microsoft/powerplatform-actions/actions-install@v1
 
-      - name: Install pac CLI 1.52.1
-        run: dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.52.1
-
-      # Service-principal auth — no interactive browser needed in CI
-      - name: Authenticate with Power Platform (Dev)
-        run: |
-          pac auth create \
-            --kind ServicePrincipal \
-            --applicationId "${{ secrets.PP_CLIENT_ID }}" \
-            --clientSecret "${{ secrets.PP_CLIENT_SECRET }}" \
-            --tenant "${{ secrets.PP_TENANT_ID }}" \
-            --environment "${{ secrets.PP_DEV_URL }}"
-
+      # Pack the solution source into a zip. Offline — no auth needed.
       - name: Pack solution from source
-        run: |
-          pac solution pack \
-            --zipfile /tmp/B2BAgg_Core.zip \
-            --folder solutions/B2BAgg.Core \
-            --processCanvasApps
-
-      - name: Run Power Platform Solution Checker
-        # Checker uploads to the SaaS ruleset and pulls results back.
-        # Rules follow the recommended "AppSource Certification" ruleset.
-        run: |
-          pac solution check \
-            --path /tmp/B2BAgg_Core.zip \
-            --outputDirectory /tmp/checker-results
-
-      - name: Upload Checker results
-        uses: actions/upload-artifact@v4
-        if: always()   # upload even on failure so devs can inspect
+        uses: microsoft/powerplatform-actions/pack-solution@v1
         with:
-          name: solution-checker-results-${{ github.run_number }}
-          path: /tmp/checker-results/
-          retention-days: 14
+          solution-folder: solutions/B2BAgg.Core/src
+          solution-file: /tmp/B2BAgg_Core.zip
+          solution-type: Unmanaged
+
+      # Solution Checker via the marketplace action: authenticates with OIDC/FIC
+      # (app-id + tenant-id, no secret) and uploads its logs as an artifact.
+      # fail-on-analysis-error defaults to true, so this stays a real gate.
+      - name: Run Power Platform Solution Checker (OIDC)
+        uses: microsoft/powerplatform-actions/check-solution@v1
+        with:
+          path: /tmp/B2BAgg_Core.zip
+          environment-url: ${{ secrets.PP_DEV_URL }}
+          app-id: ${{ secrets.PP_CLIENT_ID }}
+          tenant-id: ${{ secrets.PP_TENANT_ID }}
+          checker-logs-artifact-name: solution-checker-results-${{ github.run_number }}
 
   # ────────────────────────────────────────────────────────────
   # JOB 2 — Lint Python scripts and build the Buyer Code App
@@ -114,18 +99,26 @@ jobs:
             echo "scripts/seed-dev-data.py not found — skipping."
           fi
 
-      - name: Validate Azure Function syntax
+      - name: Install Azure Function dependencies
         run: |
-          FUNC_INIT="azure/functions/fetch-supplier-feed/__init__.py"
-          if [ -f "$FUNC_INIT" ]; then
-            REQ="azure/functions/requirements.txt"
-            if [ -f "$REQ" ]; then
-              pip install -r "$REQ" -q
-            fi
-            python -m py_compile "$FUNC_INIT"
-            echo "fetch-supplier-feed/__init__.py: OK"
+          if [ -f azure/functions/requirements.txt ]; then
+            pip install -r azure/functions/requirements.txt -q
+          fi
+          pip install pytest -q
+
+      - name: Compile Azure Function (canonical entrypoints)
+        # Canonical v2 model: function_app.py + sku_matcher.py (Codex #7).
+        run: |
+          python -m py_compile azure/functions/function_app.py
+          python -m py_compile azure/functions/sku_matcher.py
+          echo "function_app.py + sku_matcher.py: OK"
+
+      - name: Run SKU matcher tests
+        run: |
+          if ls azure/functions/test_*.py >/dev/null 2>&1; then
+            pytest azure/functions -q
           else
-            echo "$FUNC_INIT not found — skipping."
+            echo "No azure/functions/test_*.py yet (added in P4) — skipping."
           fi
 
       # ── Node / Buyer Code App ──────────────────────────────
@@ -135,18 +128,14 @@ jobs:
           node-version: '20'
           cache-dependency-path: apps/buyer-code-app/package-lock.json
 
-      - name: Build Buyer Code App (React + Vite)
-        # The app scaffold may not be generated yet; continue-on-error keeps
-        # the PR green while the dev loop is in progress.
-        continue-on-error: true
+      - name: Lint & build Buyer Code App (React + Vite)
+        # Real gate (audit P1-1): no continue-on-error. Lint must pass and the
+        # production build must succeed.
         working-directory: apps/buyer-code-app
         run: |
-          if [ -f package.json ]; then
-            npm ci
-            npm run build
-          else
-            echo "package.json not found — app not scaffolded yet, skipping build."
-          fi
+          npm ci
+          npm run lint
+          npm run build
 
   # ────────────────────────────────────────────────────────────
   # JOB 3 — Post a summary comment to the PR

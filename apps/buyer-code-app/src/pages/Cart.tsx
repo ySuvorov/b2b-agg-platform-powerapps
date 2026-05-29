@@ -89,6 +89,7 @@ export default function Cart() {
           offerId: i.offerId,
           productName: i.productName,
           supplierName: i.supplierName,
+          warehouse: i.warehouse,
           unitPrice: i.unitPrice,
           qty: i.qty,
         })),
@@ -162,7 +163,7 @@ export default function Cart() {
               <div key={item.offerId} className={styles.tableRow}>
                 <Caption1>{item.productName}</Caption1>
                 <Caption1>{item.supplierName}</Caption1>
-                <Caption1>—</Caption1>
+                <Caption1>{item.warehouse || '—'}</Caption1>
                 <Caption1>${item.unitPrice.toFixed(2)}</Caption1>
                 <div className={styles.qtyControl}>
                   <Button

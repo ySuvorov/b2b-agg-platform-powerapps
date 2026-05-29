@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "appId": null,
+  "appId": "7b8ee8af-6b42-46cd-afbe-939830bc03dc",
   "appDisplayName": "B2BAgg Buyer Portal",
   "region": "prod",
   "environmentId": "07d24b90-f536-e197-8f64-13b16ce6cbe7",
@@ -10,5 +10,46 @@
   "localAppUrl": "http://localhost:3000",
   "logoPath": "Default",
   "connectionReferences": {},
-  "databaseReferences": {}
+  "databaseReferences": {
+    "default.cds": {
+      "dataSources": {
+        "supplieroffers": {
+          "entitySetName": "b2b_supplieroffers",
+          "logicalName": "b2b_supplieroffer",
+          "isHidden": false
+        },
+        "canonicalproducts": {
+          "entitySetName": "b2b_canonicalproducts",
+          "logicalName": "b2b_canonicalproduct",
+          "isHidden": false
+        },
+        "suppliers": {
+          "entitySetName": "b2b_suppliers",
+          "logicalName": "b2b_supplier",
+          "isHidden": false
+        },
+        "regions": {
+          "entitySetName": "b2b_regions",
+          "logicalName": "b2b_region",
+          "isHidden": false
+        },
+        "warehouses": {
+          "entitySetName": "b2b_warehouses",
+          "logicalName": "b2b_warehouse",
+          "isHidden": false
+        },
+        "orders": {
+          "entitySetName": "b2b_orders",
+          "logicalName": "b2b_order",
+          "isHidden": false
+        },
+        "orderlines": {
+          "entitySetName": "b2b_orderlines",
+          "logicalName": "b2b_orderline",
+          "isHidden": false
+        }
+      },
+      "environmentVariableName": ""
+    }
+  }
 }

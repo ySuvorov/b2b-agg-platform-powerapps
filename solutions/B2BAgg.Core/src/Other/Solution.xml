@@ -79,12 +79,15 @@
     </Publisher>
     <RootComponents>
       <RootComponent type="1" schemaName="b2b_canonicalproduct" behavior="0" />
+      <RootComponent type="1" schemaName="b2b_dataconflict" behavior="0" />
       <RootComponent type="1" schemaName="b2b_order" behavior="0" />
       <RootComponent type="1" schemaName="b2b_orderline" behavior="0" />
       <RootComponent type="1" schemaName="b2b_region" behavior="0" />
       <RootComponent type="1" schemaName="b2b_rfq" behavior="0" />
+      <RootComponent type="1" schemaName="b2b_skumap" behavior="0" />
       <RootComponent type="1" schemaName="b2b_supplier" behavior="0" />
       <RootComponent type="1" schemaName="b2b_supplieroffer" behavior="0" />
+      <RootComponent type="1" schemaName="b2b_warehouse" behavior="0" />
       <RootComponent type="29" id="{1821a52a-925a-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="62" schemaName="b2b_B2BAggOperations" behavior="0" />
       <RootComponent type="80" schemaName="b2b_B2BAggOperations" behavior="0" />

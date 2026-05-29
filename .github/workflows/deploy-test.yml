@@ -1,0 +1,66 @@
+# ============================================================
+# deploy-test.yml
+# Promote the B2BAgg_Core solution into B2BAgg-Test.
+#
+# Trigger: manual (workflow_dispatch) — promotion is a deliberate act.
+#
+# Auth: GitHub OIDC + Microsoft Entra Federated Identity Credentials (FIC) —
+# no client secret (P3 OIDC flip, audit M-3). Relies on the FIC `gh-env-test`
+# subject (repo:…:environment:test) and the b2bagg-github-actions app user in
+# B2BAgg-Test.
+#
+# Required secrets:
+#   PP_CLIENT_ID, PP_TENANT_ID, PP_TEST_URL
+# ============================================================
+
+name: Deploy → Test
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-test
+  cancel-in-progress: true
+
+permissions:
+  id-token: write       # exchange the GitHub OIDC token for an Entra token (FIC)
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    name: Pack & Import into Test
+    runs-on: ubuntu-latest
+
+    environment:
+      name: test
+      url: https://YOUR-TEST-ORG.crm.dynamics.com/
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Power Platform CLI
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      # Test mirrors the source-packed solution (managed flip happens at the
+      # Prod boundary per governance — see deploy-prod.yml). Offline pack.
+      - name: Pack solution from source
+        uses: microsoft/powerplatform-actions/pack-solution@v1
+        with:
+          solution-folder: solutions/B2BAgg.Core/src
+          solution-file: /tmp/B2BAgg_Core.zip
+          solution-type: Unmanaged
+
+      # Import via the marketplace action: OIDC/FIC auth (app-id + tenant-id, no
+      # secret), synchronous, force-overwrite.
+      - name: Import solution into Test (OIDC)
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: ${{ secrets.PP_TEST_URL }}
+          app-id: ${{ secrets.PP_CLIENT_ID }}
+          tenant-id: ${{ secrets.PP_TENANT_ID }}
+          solution-file: /tmp/B2BAgg_Core.zip
+          force-overwrite: true
+          activate-plugins: true
+          run-asynchronously: false

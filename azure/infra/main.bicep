@@ -28,10 +28,10 @@ param environmentName string = 'dev'
 @description('Azure region for all resources')
 param location string = resourceGroup().location
 
-@description('Name of the storage account (globally unique, 3-24 lowercase alphanumeric)')
+@description('Name of the storage account (globally unique, 3-24 lowercase alphanumeric). Default is uniquified from the resource group id.')
 @minLength(3)
 @maxLength(24)
-param storageAccountName string = 'b2baggstore'
+param storageAccountName string = 'b2bagg${uniqueString(resourceGroup().id)}'
 
 @description('Name of the Function App')
 param functionAppName string = 'func-b2bagg-${environmentName}'
@@ -41,6 +41,10 @@ param keyVaultName string = 'kv-b2bagg-${environmentName}'
 
 @description('Object ID of the AAD principal that should have Key Vault admin access (developer / CI service principal)')
 param keyVaultAdminObjectId string = ''
+
+@description('Principal type of keyVaultAdminObjectId (a user object needs "User", a CI service principal needs "ServicePrincipal").')
+@allowed(['User', 'Group', 'ServicePrincipal'])
+param keyVaultAdminPrincipalType string = 'ServicePrincipal'
 
 // ---------------------------------------------------------------------------
 // Variables
@@ -157,6 +161,9 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
   location: location
   tags: tags
   kind: 'functionapp,linux'
+  identity: {
+    type: 'SystemAssigned'  // used to resolve the Key Vault references below
+  }
   properties: {
     serverFarmId: appServicePlan.id
     reserved: true  // required for Linux
@@ -165,13 +172,14 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
-          // TODO MVP1: use Key Vault reference — @Microsoft.KeyVault(SecretUri=...)
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=core.windows.net'
+          // Key Vault reference — resolved at runtime via the Function App's
+          // managed identity (granted Key Vault Secrets User below). No secret
+          // material is inlined into app settings (audit Codex #8 / L-8).
+          value: '@Microsoft.KeyVault(SecretUri=${storageConnSecret.properties.secretUri})'
         }
         {
           name: 'AZURE_STORAGE_CONNECTION_STRING'
-          // TODO: replace with Key Vault reference once KV is wired
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=core.windows.net'
+          value: '@Microsoft.KeyVault(SecretUri=${storageConnSecret.properties.secretUri})'
         }
         {
           name: 'FUNCTIONS_EXTENSION_VERSION'
@@ -183,7 +191,7 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
         }
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: appInsights.properties.ConnectionString
+          value: '@Microsoft.KeyVault(SecretUri=${appInsightsConnSecret.properties.secretUri})'
         }
         {
           name: 'WEBSITE_RUN_FROM_PACKAGE'
@@ -198,7 +206,13 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
 }
 
 // ---------------------------------------------------------------------------
-// Key Vault (placeholder — secrets not yet stored here in MVP1)
+// Key Vault — backs the Function App's connection-string settings via
+// @Microsoft.KeyVault references (no secrets inlined in app settings).
+//
+// NOTE: the deployer principal (CI SP / developer) must hold "Key Vault
+// Secrets Officer" (or Administrator) on this vault for the secret writes
+// below to succeed against an RBAC-enabled vault — grant it via
+// keyVaultAdminObjectId, and allow for role-propagation delay on first deploy.
 // ---------------------------------------------------------------------------
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
@@ -227,7 +241,67 @@ resource kvAdminRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-
     // Key Vault Administrator built-in role ID
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')
     principalId: keyVaultAdminObjectId
+    principalType: keyVaultAdminPrincipalType
+  }
+}
+
+// Secrets that back the Function App's app settings (see appSettings above).
+// listKeys() is used HERE (at deploy time) to populate the vault — never inlined
+// into app settings, which only carry @Microsoft.KeyVault references.
+resource storageConnSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'storage-connection-string'
+  properties: {
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=core.windows.net'
+  }
+  dependsOn: [kvAdminRoleAssignment]  // best-effort: write after the deployer is granted access
+}
+
+resource appInsightsConnSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'appinsights-connection-string'
+  properties: {
+    value: appInsights.properties.ConnectionString
+  }
+  dependsOn: [kvAdminRoleAssignment]
+}
+
+// Let the Function App's managed identity READ the secrets (Key Vault Secrets User).
+resource functionKvSecretsUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyVault.id, functionApp.id, 'Key Vault Secrets User')
+  scope: keyVault
+  properties: {
+    // Key Vault Secrets User built-in role ID
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
+    principalId: functionApp.identity.principalId
     principalType: 'ServicePrincipal'
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Service Bus (MVP2) — push-ingestion from supplier systems
+// ---------------------------------------------------------------------------
+
+module serviceBus 'modules/servicebus.bicep' = {
+  name: 'serviceBusDeploy'
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Logic App — HTTP trigger → validate → publish to SB topic stock-updates
+// ---------------------------------------------------------------------------
+
+module logicApp 'modules/logicapp.bicep' = {
+  name: 'logicAppDeploy'
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    serviceBusConnectionString: serviceBus.outputs.sendConnectionString
   }
 }
 
@@ -240,3 +314,6 @@ output functionAppName string = functionApp.name
 output functionAppHostName string = functionApp.properties.defaultHostName
 output appInsightsConnectionString string = appInsights.properties.ConnectionString
 output keyVaultUri string = keyVault.properties.vaultUri
+output serviceBusNamespaceName string = serviceBus.outputs.namespaceName
+output serviceBusListenConnectionString string = serviceBus.outputs.listenConnectionString
+output logicAppName string = logicApp.outputs.logicAppName

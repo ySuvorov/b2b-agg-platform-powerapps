@@ -109,7 +109,7 @@ export default function Orders() {
                 }}
               >
                 {isExpanded ? <ChevronDownRegular /> : <ChevronRightRegular />}
-                <Body1Strong>{order.b2b_name}</Body1Strong>
+                <Body1Strong>{order.b2b_order_number ?? '(draft)'}</Body1Strong>
                 <Badge
                   appearance="filled"
                   color={ORDER_STATUS_COLOR[order.b2b_status]}
@@ -117,7 +117,7 @@ export default function Orders() {
                   {ORDER_STATUS[order.b2b_status] ?? order.b2b_status}
                 </Badge>
                 <Caption1>
-                  ${order.b2b_total_amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  ${(order.b2b_total_amount ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </Caption1>
                 <Caption1>
                   {new Date(order.createdon).toLocaleDateString('en-GB', {
@@ -143,9 +143,15 @@ export default function Orders() {
                       <span>{line.supplierName ?? '—'}</span>
                       <span>{line.warehouse ?? '—'}</span>
                       <span>{line.b2b_qty}</span>
-                      <span>${(line.b2b_unit_price * line.b2b_qty).toFixed(2)}</span>
+                      <span>${((line.b2b_unit_price ?? 0) * (line.b2b_qty ?? 0)).toFixed(2)}</span>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {isExpanded && (!order.orderlines || order.orderlines.length === 0) && (
+                <div className={styles.orderLines}>
+                  <Caption1>Line details unavailable.</Caption1>
                 </div>
               )}
             </div>

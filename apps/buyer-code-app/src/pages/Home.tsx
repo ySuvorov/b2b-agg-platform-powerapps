@@ -180,7 +180,7 @@ export default function Home() {
             {orders.map((order) => (
               <TableRow key={order.b2b_orderid}>
                 <TableCell>
-                  <Body1Strong>{order.b2b_name}</Body1Strong>
+                  <Body1Strong>{order.b2b_order_number ?? '(draft)'}</Body1Strong>
                 </TableCell>
                 <TableCell>
                   <Badge
@@ -190,7 +190,7 @@ export default function Home() {
                     {ORDER_STATUS[order.b2b_status]}
                   </Badge>
                 </TableCell>
-                <TableCell>${order.b2b_total_amount.toFixed(2)}</TableCell>
+                <TableCell>${(order.b2b_total_amount ?? 0).toFixed(2)}</TableCell>
                 <TableCell>
                   {new Date(order.createdon).toLocaleDateString('en-GB')}
                 </TableCell>

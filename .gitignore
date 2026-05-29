@@ -72,3 +72,7 @@ Thumbs.db
 coverage/
 .tmp/
 .obsidian/
+docs/progress-tracker.html
+
+# --- Azure: Bicep build output (compiled from main.bicep) ---
+azure/infra/main.json

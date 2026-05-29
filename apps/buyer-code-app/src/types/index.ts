@@ -1,40 +1,81 @@
-export interface CanonicalProduct {
-  b2b_canonicalproductid: string
-  b2b_name: string
-  b2b_brand: string
-  b2b_model: string
-  b2b_width: number
-  b2b_profile: number
-  b2b_diameter: number
-  b2b_season: number
-  b2b_load_index?: number
-  b2b_speed_index?: string
+// ---------------------------------------------------------------------------
+// Option-set enums (named — no magic ints). Values mirror the live Dev
+// environment exactly; see docs/schema-canonical.md. Do NOT renumber.
+// ---------------------------------------------------------------------------
+
+// `as const` objects (not TS `enum`) — the build runs with
+// `erasableSyntaxOnly`, which forbids enums. Same call-site ergonomics
+// (`Season.Summer`) but fully type-erasable.
+
+/** b2b_canonicalproduct.b2b_season */
+export const Season = {
+  Summer: 10000,
+  WinterStudded: 10001,
+  WinterFriction: 10002,
+  AllSeason: 10003,
+} as const
+export type Season = (typeof Season)[keyof typeof Season]
+
+/** b2b_order.b2b_status — note the 100000000 series (NOT the 10000 series) */
+export const OrderStatus = {
+  Draft: 100000000,
+  Confirmed: 100000001,
+  Shipped: 100000002,
+} as const
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+/** b2b_supplieroffer.b2b_match_method */
+export const MatchMethod = {
+  Cache: 10000,
+  ExactKey: 10001,
+  Fuzzy: 10002,
+  AI: 10003,
+  Manual: 10004,
+} as const
+export type MatchMethod = (typeof MatchMethod)[keyof typeof MatchMethod]
+
+/** b2b_canonicalproduct.b2b_homologation */
+export const Homologation = {
+  None: 10000,
+  Star_BMW: 10001,
+  MO_Mercedes: 10002,
+  MOE_Mercedes: 10003,
+  N0_Porsche: 10004,
+  N1_Porsche: 10005,
+  AO_Audi: 10006,
+  LR_LandRover: 10007,
+  VOL_Volvo: 10008,
+  MGT_Maserati: 10009,
+} as const
+export type Homologation = (typeof Homologation)[keyof typeof Homologation]
+
+export const SEASON: Record<number, string> = {
+  [Season.Summer]: 'Summer',
+  [Season.WinterStudded]: 'WinterStudded',
+  [Season.WinterFriction]: 'WinterFriction',
+  [Season.AllSeason]: 'AllSeason',
 }
 
-export interface SupplierOffer {
-  b2b_supplierofferid: string
-  b2b_raw_sku: string
-  b2b_raw_name: string
-  b2b_stock: number
-  b2b_price: number
-  b2b_warehouse: string
-  b2b_year?: number
-  b2b_country?: string
-  b2b_lead_days?: number
-  _b2b_canonical_product_value?: string
-  _b2b_supplier_id_value?: string
-  b2b_canonical_product?: CanonicalProduct
-  b2b_supplier_id?: Supplier
+export const ORDER_STATUS: Record<number, string> = {
+  [OrderStatus.Draft]: 'Draft',
+  [OrderStatus.Confirmed]: 'Confirmed',
+  [OrderStatus.Shipped]: 'Shipped',
 }
 
-export interface Supplier {
-  b2b_supplierid: string
-  b2b_name: string
+export const ORDER_STATUS_COLOR: Record<number, 'warning' | 'success' | 'informative'> = {
+  [OrderStatus.Draft]: 'warning',
+  [OrderStatus.Confirmed]: 'informative',
+  [OrderStatus.Shipped]: 'success',
 }
+
+// ---------------------------------------------------------------------------
+// View models — entity shapes come from src/generated/models (typed SDK).
+// These are the shapes the UI renders (Orders page + mock data).
+// ---------------------------------------------------------------------------
 
 export interface Order {
   b2b_orderid: string
-  b2b_name: string
+  b2b_order_number: string
   b2b_total_amount: number
   b2b_status: number
   createdon: string
@@ -43,6 +84,7 @@ export interface Order {
 
 export interface OrderLine {
   b2b_orderlineid: string
+  b2b_line_ref?: string
   b2b_qty: number
   b2b_unit_price: number
   productName?: string
@@ -50,27 +92,10 @@ export interface OrderLine {
   warehouse?: string
 }
 
-// Picklist mappings (option prefix 10000)
-export const SEASON: Record<number, string> = {
-  10000: 'Summer',
-  10001: 'WinterStudded',
-  10002: 'WinterFriction',
-  10003: 'AllSeason',
-}
+// ---------------------------------------------------------------------------
+// View models (Search page aggregation)
+// ---------------------------------------------------------------------------
 
-export const ORDER_STATUS: Record<number, string> = {
-  10000: 'Draft',
-  10001: 'Confirmed',
-  10002: 'Shipped',
-}
-
-export const ORDER_STATUS_COLOR: Record<number, 'warning' | 'success' | 'informative'> = {
-  10000: 'warning',
-  10001: 'informative',
-  10002: 'success',
-}
-
-// Aggregated view for Search page Level 1 rows
 export interface ProductSearchRow {
   canonicalProductId: string
   name: string
@@ -93,7 +118,5 @@ export interface OfferRow {
   warehouse: string
   stock: number
   price: number
-  year?: number
-  country?: string
   leadDays?: number
 }

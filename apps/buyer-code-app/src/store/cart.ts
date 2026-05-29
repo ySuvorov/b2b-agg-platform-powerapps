@@ -6,6 +6,7 @@ export interface CartItem {
   productName: string
   supplierId: string
   supplierName: string
+  warehouse: string
   unitPrice: number
   qty: number
 }

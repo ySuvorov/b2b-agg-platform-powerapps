@@ -1,31 +1,37 @@
-b2b_name,b2b_brand,b2b_model,b2b_season,b2b_width,b2b_profile,b2b_diameter,b2b_load_index,b2b_speed_index,b2b_ean
-Michelin Pilot Sport 4 225/45 R17,Michelin,Pilot Sport 4,1,225,45,17,94,Y,3528709876541
-Michelin Pilot Sport 4 235/45 R18,Michelin,Pilot Sport 4,1,235,45,18,98,Y,3528709876558
-Michelin Pilot Sport 4 245/40 R18,Michelin,Pilot Sport 4,1,245,40,18,97,Y,3528709876565
-Michelin Pilot Sport 4 255/40 R19,Michelin,Pilot Sport 4,1,255,40,19,100,Y,3528709876572
-Michelin CrossClimate 2 205/55 R16,Michelin,CrossClimate 2,4,205,55,16,94,V,3528709876589
-Michelin CrossClimate 2 215/55 R17,Michelin,CrossClimate 2,4,215,55,17,98,V,3528709876596
-Michelin CrossClimate 2 225/50 R17,Michelin,CrossClimate 2,4,225,50,17,98,V,3528709876602
-Michelin Alpin 6 195/65 R15,Michelin,Alpin 6,3,195,65,15,91,T,3528709876619
-Michelin Alpin 6 205/60 R16,Michelin,Alpin 6,3,205,60,16,96,H,3528709876626
-Michelin Alpin 6 215/55 R16,Michelin,Alpin 6,3,215,55,16,97,H,3528709876633
-Continental PremiumContact 6 205/55 R16,Continental,PremiumContact 6,1,205,55,16,94,V,4019238012347
-Continental PremiumContact 6 225/45 R17,Continental,PremiumContact 6,1,225,45,17,91,Y,4019238012354
-Continental PremiumContact 6 235/50 R18,Continental,PremiumContact 6,1,235,50,18,101,Y,4019238012361
-Continental WinterContact TS860 185/60 R15,Continental,WinterContact TS860,3,185,60,15,88,T,4019238012378
-Continental WinterContact TS860 195/65 R15,Continental,WinterContact TS860,3,195,65,15,91,T,4019238012385
-Continental WinterContact TS860 205/55 R16,Continental,WinterContact TS860,3,205,55,16,91,T,4019238012392
-Continental WinterContact TS860 215/60 R16,Continental,WinterContact TS860,3,215,60,16,99,H,4019238012408
-Continental AllSeasonContact 2 185/65 R15,Continental,AllSeasonContact 2,4,185,65,15,92,T,4019238012415
-Continental AllSeasonContact 2 205/55 R16,Continental,AllSeasonContact 2,4,205,55,16,94,H,4019238012422
-Bridgestone Turanza T005 205/55 R16,Bridgestone,Turanza T005,1,205,55,16,91,V,3286341234561
-Bridgestone Turanza T005 215/55 R17,Bridgestone,Turanza T005,1,215,55,17,98,W,3286341234578
-Bridgestone Turanza T005 225/50 R17,Bridgestone,Turanza T005,1,225,50,17,98,W,3286341234585
-Bridgestone Blizzak LM005 185/65 R15,Bridgestone,Blizzak LM005,3,185,65,15,92,T,3286341234592
-Bridgestone Blizzak LM005 205/55 R16,Bridgestone,Blizzak LM005,3,205,55,16,91,H,3286341234608
-Bridgestone Blizzak LM005 215/60 R16,Bridgestone,Blizzak LM005,3,215,60,16,99,H,3286341234615
-Bridgestone Weather Control A005 195/65 R15,Bridgestone,Weather Control A005,4,195,65,15,91,H,3286341234622
-Nokian Hakkapeliitta 10 205/55 R16,Nokian,Hakkapeliitta 10,2,205,55,16,91,T,6419440234561
-Nokian Hakkapeliitta 10 215/55 R17,Nokian,Hakkapeliitta 10,2,215,55,17,98,T,6419440234578
-Nokian Wetproof 195/65 R15,Nokian,Wetproof,1,195,65,15,91,H,6419440234585
-Nokian Wetproof 205/55 R16,Nokian,Wetproof,1,205,55,16,94,V,6419440234592
+b2b_name,b2b_brand,b2b_model,b2b_season,b2b_width,b2b_profile,b2b_diameter,b2b_load_index,b2b_speed_index,b2b_ean,b2b_homologation,b2b_runflat,b2b_extraload,b2b_canonical_key
+Michelin Pilot Sport 4 225/45 R17,Michelin,Pilot Sport 4,1,225,45,17,94,Y,3528709876541,None,false,false,MICHELIN|PILOTSPORT4|225|45|17|94|Y|None||
+Michelin Pilot Sport 4 235/45 R18,Michelin,Pilot Sport 4,1,235,45,18,98,Y,3528709876558,None,false,false,MICHELIN|PILOTSPORT4|235|45|18|98|Y|None||
+Michelin Pilot Sport 4 245/40 R18,Michelin,Pilot Sport 4,1,245,40,18,97,Y,3528709876565,None,false,false,MICHELIN|PILOTSPORT4|245|40|18|97|Y|None||
+Michelin Pilot Sport 4 255/40 R19,Michelin,Pilot Sport 4,1,255,40,19,100,Y,3528709876572,None,false,false,MICHELIN|PILOTSPORT4|255|40|19|100|Y|None||
+Michelin CrossClimate 2 205/55 R16,Michelin,CrossClimate 2,4,205,55,16,94,V,3528709876589,None,false,false,MICHELIN|CROSSCLIMATE2|205|55|16|94|V|None||
+Michelin CrossClimate 2 215/55 R17,Michelin,CrossClimate 2,4,215,55,17,98,V,3528709876596,None,false,false,MICHELIN|CROSSCLIMATE2|215|55|17|98|V|None||
+Michelin CrossClimate 2 225/50 R17,Michelin,CrossClimate 2,4,225,50,17,98,V,3528709876602,None,false,false,MICHELIN|CROSSCLIMATE2|225|50|17|98|V|None||
+Michelin Alpin 6 195/65 R15,Michelin,Alpin 6,3,195,65,15,91,T,3528709876619,None,false,false,MICHELIN|ALPIN6|195|65|15|91|T|None||
+Michelin Alpin 6 205/60 R16,Michelin,Alpin 6,3,205,60,16,96,H,3528709876626,None,false,false,MICHELIN|ALPIN6|205|60|16|96|H|None||
+Michelin Alpin 6 215/55 R16,Michelin,Alpin 6,3,215,55,16,97,H,3528709876633,None,false,false,MICHELIN|ALPIN6|215|55|16|97|H|None||
+Continental PremiumContact 6 205/55 R16,Continental,PremiumContact 6,1,205,55,16,94,V,4019238012347,None,false,false,CONTINENTAL|PREMIUMCONTACT6|205|55|16|94|V|None||
+Continental PremiumContact 6 225/45 R17,Continental,PremiumContact 6,1,225,45,17,91,Y,4019238012354,None,false,false,CONTINENTAL|PREMIUMCONTACT6|225|45|17|91|Y|None||
+Continental PremiumContact 6 235/50 R18,Continental,PremiumContact 6,1,235,50,18,101,Y,4019238012361,None,false,false,CONTINENTAL|PREMIUMCONTACT6|235|50|18|101|Y|None||
+Continental WinterContact TS860 185/60 R15,Continental,WinterContact TS860,3,185,60,15,88,T,4019238012378,None,false,false,CONTINENTAL|WINTERCONTACTTS860|185|60|15|88|T|None||
+Continental WinterContact TS860 195/65 R15,Continental,WinterContact TS860,3,195,65,15,91,T,4019238012385,None,false,false,CONTINENTAL|WINTERCONTACTTS860|195|65|15|91|T|None||
+Continental WinterContact TS860 205/55 R16,Continental,WinterContact TS860,3,205,55,16,91,T,4019238012392,None,false,false,CONTINENTAL|WINTERCONTACTTS860|205|55|16|91|T|None||
+Continental WinterContact TS860 215/60 R16,Continental,WinterContact TS860,3,215,60,16,99,H,4019238012408,None,false,false,CONTINENTAL|WINTERCONTACTTS860|215|60|16|99|H|None||
+Continental AllSeasonContact 2 185/65 R15,Continental,AllSeasonContact 2,4,185,65,15,92,T,4019238012415,None,false,false,CONTINENTAL|ALLSEASONCONTACT2|185|65|15|92|T|None||
+Continental AllSeasonContact 2 205/55 R16,Continental,AllSeasonContact 2,4,205,55,16,94,H,4019238012422,None,false,false,CONTINENTAL|ALLSEASONCONTACT2|205|55|16|94|H|None||
+Bridgestone Turanza T005 205/55 R16,Bridgestone,Turanza T005,1,205,55,16,91,V,3286341234561,None,false,false,BRIDGESTONE|TURANZAT005|205|55|16|91|V|None||
+Bridgestone Turanza T005 215/55 R17,Bridgestone,Turanza T005,1,215,55,17,98,W,3286341234578,None,false,false,BRIDGESTONE|TURANZAT005|215|55|17|98|W|None||
+Bridgestone Turanza T005 225/50 R17,Bridgestone,Turanza T005,1,225,50,17,98,W,3286341234585,None,false,false,BRIDGESTONE|TURANZAT005|225|50|17|98|W|None||
+Bridgestone Blizzak LM005 185/65 R15,Bridgestone,Blizzak LM005,3,185,65,15,92,T,3286341234592,None,false,false,BRIDGESTONE|BLIZZAKLM005|185|65|15|92|T|None||
+Bridgestone Blizzak LM005 205/55 R16,Bridgestone,Blizzak LM005,3,205,55,16,91,H,3286341234608,None,false,false,BRIDGESTONE|BLIZZAKLM005|205|55|16|91|H|None||
+Bridgestone Blizzak LM005 215/60 R16,Bridgestone,Blizzak LM005,3,215,60,16,99,H,3286341234615,None,false,false,BRIDGESTONE|BLIZZAKLM005|215|60|16|99|H|None||
+Bridgestone Weather Control A005 195/65 R15,Bridgestone,Weather Control A005,4,195,65,15,91,H,3286341234622,None,false,false,BRIDGESTONE|WEATHERCONTROLA005|195|65|15|91|H|None||
+Nokian Hakkapeliitta 10 205/55 R16,Nokian,Hakkapeliitta 10,2,205,55,16,91,T,6419440234561,None,false,false,NOKIAN|HAKKAPELIITTA10|205|55|16|91|T|None||
+Nokian Hakkapeliitta 10 215/55 R17,Nokian,Hakkapeliitta 10,2,215,55,17,98,T,6419440234578,None,false,false,NOKIAN|HAKKAPELIITTA10|215|55|17|98|T|None||
+Nokian Wetproof 195/65 R15,Nokian,Wetproof,1,195,65,15,91,H,6419440234585,None,false,false,NOKIAN|WETPROOF|195|65|15|91|H|None||
+Nokian Wetproof 205/55 R16,Nokian,Wetproof,1,205,55,16,94,V,6419440234592,None,false,false,NOKIAN|WETPROOF|205|55|16|94|V|None||
+Michelin Latitude Sport 3 245/45 R20 103W XL RunFlat,Michelin,Latitude Sport 3,1,245,45,20,103,W,3528700111017,None,true,true,MICHELIN|LATITUDESPORT3|245|45|20|103|W|None|RF|XL
+Michelin Latitude Sport 3 245/45 R20 103W XL RunFlat * (BMW),Michelin,Latitude Sport 3,1,245,45,20,103,W,3528700111024,Star_BMW,true,true,MICHELIN|LATITUDESPORT3|245|45|20|103|W|Star_BMW|RF|XL
+Michelin Latitude Sport 3 245/45 R20 103W XL RunFlat MO (Mercedes),Michelin,Latitude Sport 3,1,245,45,20,103,W,3528700111031,MO_Mercedes,true,true,MICHELIN|LATITUDESPORT3|245|45|20|103|W|MO_Mercedes|RF|XL
+Michelin Latitude Sport 3 245/45 R20 103W XL RunFlat N0 (Porsche),Michelin,Latitude Sport 3,1,245,45,20,103,W,3528700111048,N0_Porsche,true,true,MICHELIN|LATITUDESPORT3|245|45|20|103|W|N0_Porsche|RF|XL
+Michelin Pilot Sport 4 S 245/35 R20 95Y XL,Michelin,Pilot Sport 4 S,1,245,35,20,95,Y,3528700222017,None,false,true,MICHELIN|PILOTSPORT4S|245|35|20|95|Y|None||XL
+Continental PremiumContact 6 225/45 R17 94Y XL SSR RunFlat,Continental,PremiumContact 6,1,225,45,17,94,Y,4019238222017,None,true,true,CONTINENTAL|PREMIUMCONTACT6|225|45|17|94|Y|None|RF|XL

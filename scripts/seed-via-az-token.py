@@ -211,6 +211,12 @@ def seed_canonical_products(s: requests.Session) -> dict[str, str]:
     """Returns {name: id} map."""
     log.info("Seeding b2b_canonicalproduct...")
     season_map = {"1": 10000, "2": 10001, "3": 10002, "4": 10003}
+    # homologation label → local picklist option value (see create-matching-tables.py)
+    homolog_map = {
+        "None": 10000, "Star_BMW": 10001, "MO_Mercedes": 10002, "MOE_Mercedes": 10003,
+        "N0_Porsche": 10004, "N1_Porsche": 10005, "AO_Audi": 10006,
+        "LR_LandRover": 10007, "VOL_Volvo": 10008, "MGT_Maserati": 10009,
+    }
     product_ids: dict[str, str] = {}
     created = updated = errors = 0
 
@@ -222,6 +228,7 @@ def seed_canonical_products(s: requests.Session) -> dict[str, str]:
             "b2b_model": row.get("b2b_model", ""),
             "b2b_ean": row.get("b2b_ean", ""),
             "b2b_speed_index": row.get("b2b_speed_index", ""),
+            "b2b_canonical_key": row.get("b2b_canonical_key", ""),
         }
         for int_field in ["b2b_width", "b2b_profile", "b2b_diameter", "b2b_load_index"]:
             val = row.get(int_field, "").strip()
@@ -233,6 +240,11 @@ def seed_canonical_products(s: requests.Session) -> dict[str, str]:
         season = row.get("b2b_season", "").strip()
         if season in season_map:
             payload["b2b_season"] = season_map[season]
+        # homologation / run-flat / extra-load (new MVP2 discriminator columns)
+        homolog = (row.get("b2b_homologation", "") or "None").strip()
+        payload["b2b_homologation"] = homolog_map.get(homolog, homolog_map["None"])
+        payload["b2b_runflat"] = str(row.get("b2b_runflat", "")).strip().lower() in ("1", "true", "yes")
+        payload["b2b_extraload"] = str(row.get("b2b_extraload", "")).strip().lower() in ("1", "true", "yes")
 
         result = upsert(s, "b2b_canonicalproduct", payload, "b2b_name")
         if result == "created":

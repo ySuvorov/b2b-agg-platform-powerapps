@@ -6,11 +6,15 @@
 #   • Manual: workflow_dispatch (on-demand deploy from any branch)
 #   • Automatic: push to main that touches solutions/**
 #
+# Auth: GitHub OIDC + Microsoft Entra Federated Identity Credentials (FIC).
+# No client secret — the powerplatform-actions exchange the GitHub OIDC token
+# for an Entra access token (needs `id-token: write` + the FIC `gh-*` records on
+# the b2bagg-github-actions app registration).
+#
 # Required secrets:
-#   PP_CLIENT_ID     — Azure AD App Registration client ID
-#   PP_CLIENT_SECRET — client secret
-#   PP_TENANT_ID     — Entra tenant
-#   PP_DEV_URL       — Dev environment URL (https://YOUR-DATAVERSE-ORG.crm.dynamics.com/)
+#   PP_CLIENT_ID  — Azure AD App Registration (client) ID
+#   PP_TENANT_ID  — Entra tenant ID
+#   PP_DEV_URL    — Dev environment URL (https://YOUR-DATAVERSE-ORG.crm.dynamics.com/)
 # ============================================================
 
 name: Deploy → Dev
@@ -32,6 +36,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  id-token: write       # exchange the GitHub OIDC token for an Entra token (FIC)
   contents: read
   deployments: write    # needed to create GitHub deployment statuses
 
@@ -49,38 +54,32 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # pac CLI 1.52.1 targets net9.0; must pin dotnet to 9.x
-      - name: Set up .NET 9 SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.x'
+      # Installs the pac CLI on the runner. Pin a pac version that supports
+      # OIDC/FIC auth. (The macOS 1.52.1 pin is a local-only MSAL workaround and
+      # does not apply to the Linux runner.)
+      - name: Install Power Platform CLI
+        uses: microsoft/powerplatform-actions/actions-install@v1
 
-      - name: Install pac CLI 1.52.1
-        run: dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.52.1
-
-      - name: Authenticate with Power Platform (Dev)
-        run: |
-          pac auth create \
-            --kind ServicePrincipal \
-            --applicationId "${{ secrets.PP_CLIENT_ID }}" \
-            --clientSecret "${{ secrets.PP_CLIENT_SECRET }}" \
-            --tenant "${{ secrets.PP_TENANT_ID }}" \
-            --environment "${{ secrets.PP_DEV_URL }}"
-
+      # Pack the solution source into a zip. Offline — no auth needed.
       - name: Pack solution from source
-        run: |
-          pac solution pack \
-            --zipfile /tmp/B2BAgg_Core.zip \
-            --folder solutions/B2BAgg.Core \
-            --processCanvasApps
+        uses: microsoft/powerplatform-actions/pack-solution@v1
+        with:
+          solution-folder: solutions/B2BAgg.Core/src
+          solution-file: /tmp/B2BAgg_Core.zip
+          solution-type: Unmanaged
 
-      - name: Import solution into Dev
-        run: |
-          pac solution import \
-            --path /tmp/B2BAgg_Core.zip \
-            --activate-plugins \
-            --force-overwrite \
-            --async false
+      # Import via the marketplace action: OIDC/FIC auth (app-id + tenant-id, no
+      # secret), synchronous, force-overwrite to match the prior pac behaviour.
+      - name: Import solution into Dev (OIDC)
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: ${{ secrets.PP_DEV_URL }}
+          app-id: ${{ secrets.PP_CLIENT_ID }}
+          tenant-id: ${{ secrets.PP_TENANT_ID }}
+          solution-file: /tmp/B2BAgg_Core.zip
+          force-overwrite: true
+          activate-plugins: true
+          run-asynchronously: false
 
       - name: Create GitHub deployment status
         if: always()

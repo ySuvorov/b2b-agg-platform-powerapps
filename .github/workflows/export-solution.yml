@@ -6,12 +6,15 @@
 # Use this after making changes directly in the PP UI (forms,
 # views, BPF tweaks) so the solution source stays in sync.
 #
+# Auth: GitHub OIDC + Microsoft Entra Federated Identity Credentials (FIC) —
+# no client secret (P3 OIDC flip, audit M-3). Runs on main; relies on the FIC
+# `gh-main` subject (repo:…:ref:refs/heads/main).
+#
 # Required secrets:
-#   PP_CLIENT_ID     — Azure AD App Registration client ID
-#   PP_CLIENT_SECRET — client secret
-#   PP_TENANT_ID     — Entra tenant
-#   PP_DEV_URL       — Dev environment URL
-#   PP_TEST_URL      — Test environment URL
+#   PP_CLIENT_ID  — Azure AD App Registration (client) ID
+#   PP_TENANT_ID  — Entra tenant ID
+#   PP_DEV_URL    — Dev environment URL
+#   PP_TEST_URL   — Test environment URL
 # ============================================================
 
 name: Export Solution
@@ -39,7 +42,9 @@ concurrency:
   cancel-in-progress: false  # let exports finish rather than abort mid-commit
 
 permissions:
-  contents: write  # needed to push the unpacked changes back to the branch
+  id-token: write        # exchange the GitHub OIDC token for an Entra token (FIC)
+  contents: write        # push the bot export branch
+  pull-requests: write   # open the review PR (audit P2-4)
 
 jobs:
   export:
@@ -54,14 +59,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      # pac CLI 1.52.1 targets net9.0; must pin dotnet to 9.x
-      - name: Set up .NET 9 SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.x'
-
-      - name: Install pac CLI 1.52.1
-        run: dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.52.1
+      - name: Install Power Platform CLI
+        uses: microsoft/powerplatform-actions/actions-install@v1
 
       # Resolve the correct URL based on the selected environment input.
       - name: Resolve environment URL
@@ -73,37 +72,56 @@ jobs:
             echo "url=${{ secrets.PP_DEV_URL }}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Authenticate with Power Platform
-        run: |
-          pac auth create \
-            --kind ServicePrincipal \
-            --applicationId "${{ secrets.PP_CLIENT_ID }}" \
-            --clientSecret "${{ secrets.PP_CLIENT_SECRET }}" \
-            --tenant "${{ secrets.PP_TENANT_ID }}" \
-            --environment "${{ steps.env-url.outputs.url }}"
+      - name: Prepare export directory
+        run: mkdir -p /tmp/export
 
-      - name: Export solution from Power Platform
-        run: |
-          mkdir -p /tmp/export
-          pac solution export \
-            --name B2BAgg_Core \
-            --path /tmp/export \
-            --managed ${{ inputs.managed }}
+      # Export via the marketplace action: OIDC/FIC auth (app-id + tenant-id, no
+      # secret). `managed` comes from the workflow_dispatch input.
+      - name: Export solution from Power Platform (OIDC)
+        uses: microsoft/powerplatform-actions/export-solution@v1
+        with:
+          environment-url: ${{ steps.env-url.outputs.url }}
+          app-id: ${{ secrets.PP_CLIENT_ID }}
+          tenant-id: ${{ secrets.PP_TENANT_ID }}
+          solution-name: B2BAgg_Core
+          solution-output-file: /tmp/export/B2BAgg_Core.zip
+          managed: ${{ inputs.managed }}
 
+      # Unpack into the source tree. NOTE: the marketplace unpack-solution has no
+      # equivalent of the old `pac ... --allowDelete`, so components deleted in
+      # the source environment are not pruned from the tree automatically
+      # (overwrite-files defaults to true, so updates/additions still land).
+      # Tracked as a follow-up.
       - name: Unpack solution into source tree
-        run: |
-          pac solution unpack \
-            --zipfile /tmp/export/B2BAgg_Core.zip \
-            --folder solutions/B2BAgg.Core \
-            --processCanvasApps \
-            --allowDelete
+        uses: microsoft/powerplatform-actions/unpack-solution@v1
+        with:
+          solution-file: /tmp/export/B2BAgg_Core.zip
+          solution-folder: solutions/B2BAgg.Core/src
+          solution-type: Unmanaged
 
-      - name: Commit and push exported changes
+      # Open a PR from a dedicated bot branch instead of pushing straight to the
+      # checked-out branch / main (audit P2-4, Codex #5). Keeps main protected
+      # and lets exported schema drift be reviewed before it lands.
+      - name: Open PR with exported changes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add solutions/B2BAgg.Core
-          git diff --cached --quiet \
-            && echo "No solution changes detected — nothing to commit." \
-            || git commit -m "chore: export B2BAgg_Core from ${{ inputs.environment }} [skip ci]"
-          git push
+
+          if git diff --quiet -- solutions/B2BAgg.Core/src; then
+            echo "No solution changes detected — nothing to PR."
+            exit 0
+          fi
+
+          BRANCH="chore/export-${{ inputs.environment }}-${{ github.run_id }}"
+          git checkout -b "$BRANCH"
+          git add solutions/B2BAgg.Core/src
+          git commit -m "chore: export B2BAgg_Core from ${{ inputs.environment }} [skip ci]"
+          git push --set-upstream origin "$BRANCH"
+
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore: export B2BAgg_Core from ${{ inputs.environment }}" \
+            --body "Automated solution export from **${{ inputs.environment }}** (managed=${{ inputs.managed }}). Review the schema diff before merging."

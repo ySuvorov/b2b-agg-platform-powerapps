@@ -1,0 +1,227 @@
+// ============================================================
+// B2BAgg Market Intelligence — DAX Measures
+// Dataset: B2BAgg Market Data (push dataset)
+// Last updated: 2026-05-28
+// ============================================================
+// Usage: paste each measure into the "New Measure" dialog
+// in Power BI Desktop after connecting to the push dataset
+// or to Dataverse tables.
+// ============================================================
+
+
+// ============================================================
+// REPORT 1: Regional Demand & Stock
+// ============================================================
+
+Total Stock =
+SUM(SupplierOffers[Stock])
+
+Stock by Region =
+CALCULATE(
+    SUM(SupplierOffers[Stock]),
+    ALLEXCEPT(SupplierOffers, SupplierOffers[Region])
+)
+
+// Share of this selection vs. total across all regions
+Region Stock Share % =
+DIVIDE(
+    SUM(SupplierOffers[Stock]),
+    CALCULATE(SUM(SupplierOffers[Stock]), ALL(SupplierOffers[Region]))
+) * 100
+
+// Flag SKUs where current-context stock is below threshold
+Low Stock Alert =
+VAR threshold = 20
+RETURN
+IF(
+    CALCULATE(SUM(SupplierOffers[Stock])) < threshold,
+    "⚠ Low Stock",
+    "OK"
+)
+
+// Count of distinct SKUs per region (useful for map visual)
+Distinct SKU Count =
+DISTINCTCOUNT(SupplierOffers[RawSku])
+
+// Average lead days for visible selection
+Avg Lead Days =
+AVERAGE(SupplierOffers[LeadDays])
+
+
+// ============================================================
+// REPORT 2: Supplier Scorecard
+// ============================================================
+
+// Percentage of offer lines that have at least 1 unit in stock
+Fill Rate % =
+DIVIDE(
+    CALCULATE(
+        COUNTROWS(SupplierOffers),
+        SupplierOffers[Stock] > 0
+    ),
+    COUNTROWS(SupplierOffers)
+) * 100
+
+// Average price across all offers for the current supplier context
+Avg Price per Supplier =
+AVERAGEX(
+    VALUES(SupplierOffers[SupplierName]),
+    CALCULATE(AVERAGE(SupplierOffers[Price]))
+)
+
+// How much more expensive this supplier is vs. the cheapest offer
+// for the same product. Higher = less competitive.
+Price Competitiveness % =
+VAR minPrice =
+    MINX(
+        ALL(SupplierOffers),
+        SupplierOffers[Price]
+    )
+VAR thisPrice = AVERAGE(SupplierOffers[Price])
+RETURN
+DIVIDE(thisPrice - minPrice, minPrice) * 100
+
+// Supplier rank by total stock (1 = most stock)
+Supplier Stock Rank =
+RANKX(
+    ALL(SupplierOffers[SupplierName]),
+    CALCULATE(SUM(SupplierOffers[Stock])),
+    ,
+    DESC,
+    DENSE
+)
+
+// Offer count per supplier
+Offer Count =
+COUNTROWS(SupplierOffers)
+
+
+// ============================================================
+// REPORT 3: Top-moving SKUs
+// ============================================================
+
+// Dense rank of each product by total stock across all suppliers
+Stock Rank =
+RANKX(
+    ALL(SupplierOffers[ProductName]),
+    CALCULATE(SUM(SupplierOffers[Stock])),
+    ,
+    DESC,
+    DENSE
+)
+
+// Count of distinct SKUs that appear in the top-N by stock
+SKUs in Top 10 =
+CALCULATE(
+    DISTINCTCOUNT(SupplierOffers[RawSku]),
+    FILTER(
+        ALL(SupplierOffers),
+        [Stock Rank] <= 10
+    )
+)
+
+// Unique supplier count for each product (shows how contested a SKU is)
+Supplier Count per SKU =
+CALCULATE(
+    DISTINCTCOUNT(SupplierOffers[SupplierName]),
+    ALL(SupplierOffers[SupplierName])
+)
+
+// Best (lowest) price offered for each product across all suppliers
+Best Price =
+MINX(
+    ALL(SupplierOffers[SupplierName]),
+    CALCULATE(MIN(SupplierOffers[Price]))
+)
+
+// Total inventory value at current average price
+Inventory Value =
+SUMX(
+    SupplierOffers,
+    SupplierOffers[Stock] * SupplierOffers[Price]
+)
+
+
+// ============================================================
+// REPORT 4: Price Spread & Competitiveness
+// ============================================================
+
+// Minimum offer price for the season selected in a slicer
+Min Price this Season =
+CALCULATE(
+    MIN(SupplierOffers[Price]),
+    FILTER(
+        SupplierOffers,
+        SupplierOffers[Season] = SELECTEDVALUE(SupplierOffers[Season], "Summer")
+    )
+)
+
+// Max minus min price for visible selection (price volatility indicator)
+Price Spread =
+VAR maxP = MAX(SupplierOffers[Price])
+VAR minP = MIN(SupplierOffers[Price])
+RETURN maxP - minP
+
+// Average price for Summer SKUs
+Avg Summer Price =
+CALCULATE(
+    AVERAGE(SupplierOffers[Price]),
+    SupplierOffers[Season] = "Summer"
+)
+
+// Average price for Winter SKUs
+Avg Winter Price =
+CALCULATE(
+    AVERAGE(SupplierOffers[Price]),
+    SupplierOffers[Season] = "Winter"
+)
+
+// Ratio Summer/Winter avg prices (>1 means summer tyres cost more)
+Summer vs Winter Price Ratio =
+DIVIDE([Avg Summer Price], [Avg Winter Price])
+
+// Country-of-origin premium: difference from cheapest country average
+Country Price Premium =
+VAR cheapest =
+    MINX(
+        ALL(SupplierOffers[Country]),
+        CALCULATE(AVERAGE(SupplierOffers[Price]))
+    )
+VAR thisAvg = AVERAGE(SupplierOffers[Price])
+RETURN thisAvg - cheapest
+
+
+// ============================================================
+// ORDERS
+// ============================================================
+
+Total Revenue =
+SUM(Orders[TotalAmount])
+
+// Count of orders, split by status (use with Status on axis/legend)
+Orders by Status =
+CALCULATE(
+    COUNTROWS(Orders),
+    ALLEXCEPT(Orders, Orders[Status])
+)
+
+Avg Order Value =
+AVERAGE(Orders[TotalAmount])
+
+// Confirmed + Delivered revenue (excludes Draft and Cancelled)
+Realised Revenue =
+CALCULATE(
+    SUM(Orders[TotalAmount]),
+    Orders[Status] IN {"Confirmed", "Delivered"}
+)
+
+// Cancellation rate
+Cancellation Rate % =
+DIVIDE(
+    CALCULATE(COUNTROWS(Orders), Orders[Status] = "Cancelled"),
+    COUNTROWS(Orders)
+) * 100
+
+// Average line items per order
+Avg Lines per Order =
+AVERAGE(Orders[LineCount])

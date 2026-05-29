@@ -41,8 +41,13 @@ paths:
       operationId: GetSupplierFeed
       summary: Get supplier feed
       description: >
-        Returns the raw JSON feed for a given supplier. The response is an
-        array of FeedItem objects containing product, pricing, and stock data.
+        Returns the supplier's RAW feed blob, unchanged. Feeds are deliberately
+        heterogeneous (the whole point of the aggregator): rosshinaopt returns
+        an English JSON wrapper { supplier_id, items[] }; tyrecenter-spb returns
+        a Russian wrapper { postavschik, tovary[] }; koleso-ru returns
+        { source, format, payload } with an XML catalog embedded as a string.
+        The schema below documents the canonical English wrapper; the RU/XML
+        variants are normalised downstream by the sync flow + sku_matcher.
         Supported supplier IDs: numeric keys 1, 2, 3 and slugs
         rosshinaopt, tyrecenter-spb, koleso-ru.
       x-ms-visibility: important
@@ -57,7 +62,7 @@ paths:
             slug (rosshinaopt, tyrecenter-spb, koleso-ru).
       responses:
         "200":
-          description: Feed items array returned successfully
+          description: Raw supplier feed object returned successfully
           headers:
             X-Supplier-Id:
               type: string
@@ -66,9 +71,7 @@ paths:
               type: string
               description: Azure Blob Storage container name used to source the feed
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/FeedItem"
+            $ref: "#/definitions/SupplierFeed"
         "404":
           description: Supplier not found or feed file not found
           schema:
@@ -79,77 +82,66 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
 definitions:
+  SupplierFeed:
+    type: object
+    description: >
+      Raw supplier feed wrapper. This documents the canonical English variant
+      (rosshinaopt). Other suppliers return native-language equivalents that
+      are normalised downstream: tyrecenter-spb → { postavschik, versiya,
+      data_sozdaniya, tovary[] }; koleso-ru → { source, format, payload } where
+      payload is an XML <catalog> string. `additionalProperties` is allowed so
+      the connector tolerates those variants without failing.
+    additionalProperties: true
+    properties:
+      supplier_id:
+        type: string
+        description: Supplier slug echoed by the feed (e.g. rosshinaopt)
+        x-ms-summary: Supplier ID
+      schema_version:
+        type: string
+        description: Feed schema version stamped by the supplier
+        x-ms-summary: Schema version
+      generated_at:
+        type: string
+        description: ISO-8601 timestamp the feed was generated
+        x-ms-summary: Generated at
+      items:
+        type: array
+        description: Tire listings (canonical English variant)
+        items:
+          $ref: "#/definitions/FeedItem"
+
   FeedItem:
     type: object
-    description: A single tire product entry from a supplier feed
-    required:
-      - sku
+    description: >
+      A single tire listing in the canonical English feed. Field names are the
+      supplier's own (raw) — normalisation to b2b_ columns happens in the flow.
     properties:
+      product_name:
+        type: string
+        description: Raw free-text product name (e.g. "Michelin Pilot Sport 4 225/45R17")
+        x-ms-summary: Product name
       sku:
         type: string
         description: Raw SKU / article number as provided by the supplier
         x-ms-summary: Raw SKU
-      brand:
-        type: string
-        description: Tire brand name (e.g. Michelin, Continental)
-        x-ms-summary: Brand
-      model:
-        type: string
-        description: Tire model name (e.g. Pilot Sport 4)
-        x-ms-summary: Model
-      width:
-        type: integer
-        description: Section width in millimetres (e.g. 225)
-        x-ms-summary: Width (mm)
-      profile:
-        type: integer
-        description: Aspect ratio / profile percentage (e.g. 45)
-        x-ms-summary: Profile
-      diameter:
-        type: integer
-        description: Rim diameter in inches (e.g. 17)
-        x-ms-summary: Diameter (in)
-      load_index:
-        type: string
-        description: >
-          Load index value. Stored as string to accommodate suppliers that
-          use non-numeric codes (e.g. "91", "XL").
-        x-ms-summary: Load Index
-      speed_index:
-        type: string
-        description: Speed rating letter (e.g. Y, W, H, V)
-        x-ms-summary: Speed Index
-      season:
-        type: string
-        description: Season category
-        x-ms-summary: Season
-        enum:
-          - Summer
-          - Winter
-          - AllSeason
-          - WinterStudded
-          - WinterFriction
-      stock:
+      price_usd:
+        type: number
+        format: double
+        description: Supplier price (this feed quotes USD)
+        x-ms-summary: Price (USD)
+      stock_qty:
         type: integer
         description: Available stock quantity in the supplier warehouse
         x-ms-summary: Stock quantity
-      price:
-        type: number
-        format: double
-        description: Supplier price in local currency (RUB)
-        x-ms-summary: Price
       warehouse:
         type: string
-        description: Warehouse location label (e.g. Moscow-Nord)
+        description: Warehouse city label (e.g. Moscow)
         x-ms-summary: Warehouse
-      year:
+      lead_days:
         type: integer
-        description: Manufacturing year (e.g. 2023)
-        x-ms-summary: Year
-      country:
-        type: string
-        description: Country of manufacture (e.g. France)
-        x-ms-summary: Country of manufacture
+        description: Delivery lead time in days
+        x-ms-summary: Lead days
 
   ErrorResponse:
     type: object

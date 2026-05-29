@@ -24,6 +24,8 @@ from typing import Final
 
 import azure.functions as func
 
+import sku_matcher
+
 # ---------------------------------------------------------------------------
 # App bootstrap
 # ---------------------------------------------------------------------------
@@ -182,4 +184,84 @@ def fetch_supplier_feed(req: func.HttpRequest) -> func.HttpResponse:
             "X-Supplier-Id": supplier_id,
             "X-Container": container,
         },
+    )
+
+
+# ---------------------------------------------------------------------------
+# normalize-sku — deterministic + fuzzy SKU resolver (Stages 1–2)
+# ---------------------------------------------------------------------------
+
+
+@app.route(route="normalize-sku", methods=["POST"])
+def normalize_sku(req: func.HttpRequest) -> func.HttpResponse:
+    """Resolve a raw supplier name to a canonical product.
+
+    Request body (JSON):
+        {
+          "raw_name": "MICHELIN Latitude Sport 3 245/45R20 103W XL Run on Flat *",
+          "raw_sku":  "ML S3-24545R20-RFT-BMW",          # optional, echoed back
+          "catalog":  [ { "id", "name", "brand", "model",
+                          "width", "profile", "diameter",
+                          "load_index", "speed_index",
+                          "homologation", "runflat", "extraload" }, ... ]
+        }
+
+    `catalog` is normally supplied by the calling flow (a Dataverse "List rows"
+    of b2b_canonicalproduct). If omitted, a bundled snapshot (catalog.json next
+    to this file) is used so the endpoint is self-contained for testing.
+
+    Response (JSON): the MatchResult — decision/method/confidence, the parsed
+    attributes, and the ranked candidates. The flow uses `decision` to branch:
+    ExactKey/Fuzzy → auto-bind; Ambiguous → AI tie-break / admin; NewCandidate
+    → admin (new product).
+    """
+    try:
+        payload = req.get_json()
+    except ValueError:
+        return _build_error_response(400, "Request body must be valid JSON.")
+
+    raw_name = (payload or {}).get("raw_name", "").strip()
+    if not raw_name:
+        return _build_error_response(400, "Field 'raw_name' is required.")
+
+    catalog = (payload or {}).get("catalog")
+    if not catalog:
+        try:
+            snapshot = pathlib.Path(__file__).parent / "catalog.json"
+            catalog = json.loads(snapshot.read_text(encoding="utf-8")) if snapshot.exists() else []
+        except Exception:  # noqa: BLE001
+            catalog = []
+
+    if not catalog:
+        return _build_error_response(
+            422,
+            "No canonical catalog available: pass 'catalog' in the body or "
+            "deploy a catalog.json snapshot next to the function.",
+        )
+
+    try:
+        result = sku_matcher.match(raw_name, catalog)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("normalize-sku failed for raw_name=%s: %s", raw_name, exc)
+        return _build_error_response(500, "Matcher error — see Application Insights.")
+
+    body_obj = {
+        "raw_name": raw_name,
+        "raw_sku": (payload or {}).get("raw_sku", ""),
+        "decision": result.decision,
+        "method": result.method,
+        "confidence": result.confidence,
+        "canonical_id": result.canonical_id,
+        "canonical_name": result.canonical_name,
+        "parsed": result.parsed,
+        "candidates": result.candidates,
+    }
+    logger.info(
+        "normalize-sku | decision=%s conf=%.3f | %s → %s",
+        result.decision, result.confidence, raw_name, result.canonical_name,
+    )
+    return func.HttpResponse(
+        body=json.dumps(body_obj, ensure_ascii=False),
+        status_code=200,
+        mimetype="application/json",
     )

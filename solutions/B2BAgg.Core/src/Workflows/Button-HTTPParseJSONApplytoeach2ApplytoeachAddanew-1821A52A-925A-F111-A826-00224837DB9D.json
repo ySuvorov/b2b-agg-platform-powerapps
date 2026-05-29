@@ -35,7 +35,7 @@
           "type": "Http",
           "inputs": {
             "method": "GET",
-            "uri": "https://func-b2bagg-dev.azurewebsites.net/api/feed/1?code=***REMOVED***"
+            "uri": "https://func-b2bagg-dev.azurewebsites.net/api/feed/1?code=__FUNCTION_KEY_REMOVED_SEE_P5_REBUILD__"
           }
         },
         "Parse_JSON": {
@@ -120,7 +120,7 @@
                   "tenant": "<tenant-id>",
                   "audience": "https://YOUR-DATAVERSE-ORG.crm.dynamics.com",
                   "clientId": "<github-actions-app-id>",
-                  "secret": "***REMOVED***"
+                  "secret": "__CLIENT_SECRET_REMOVED_USE_CONNECTION_REFERENCE_SEE_P5__"
                 }
               }
             }
