@@ -1,0 +1,7 @@
+b2b_name,b2b_code,b2b_city,b2b_capacity,b2b_region
+Moscow DC,MSK-DC1,Moscow,48000,Central Federal District
+Saint Petersburg DC,SPB-DC1,Saint Petersburg,32000,Northwestern Federal District
+Krasnodar DC,KRD-DC1,Krasnodar,18000,Southern Federal District
+Kazan DC,KZN-DC1,Kazan,21000,Volga Federal District
+Yekaterinburg DC,EKB-DC1,Yekaterinburg,26000,Ural Federal District
+Novosibirsk DC,NSK-DC1,Novosibirsk,15000,Siberian Federal District

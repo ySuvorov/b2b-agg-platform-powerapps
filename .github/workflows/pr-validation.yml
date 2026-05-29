@@ -90,14 +90,11 @@ jobs:
             echo "No requirements-seed.txt found — skipping."
           fi
 
-      - name: Syntax-check seed data script
+      - name: Syntax-check seed/admin scripts
         run: |
-          if [ -f scripts/seed-dev-data.py ]; then
-            python -m py_compile scripts/seed-dev-data.py
-            echo "seed-dev-data.py: OK"
-          else
-            echo "scripts/seed-dev-data.py not found — skipping."
-          fi
+          # py_compile only parses — no need to install third-party imports.
+          python -m py_compile scripts/*.py
+          echo "scripts/*.py: OK"
 
       - name: Install Azure Function dependencies
         run: |

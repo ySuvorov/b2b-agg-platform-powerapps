@@ -38,22 +38,24 @@ SEED_DIR = REPO / "data" / "seed"
 DV_URL = "https://YOUR-DATAVERSE-ORG.crm.dynamics.com"
 API = f"{DV_URL}/api/data/v9.2"
 
-# ── Entity set names (verified from Dataverse) ───────────────────────────────
-# Dataverse auto-generates plural names; these were confirmed via API.
-# If import fails with 404, re-run /tmp/get_entity_sets.py to verify.
+# ── Entity set names (canonical — see docs/schema-canonical.md) ──────────────
+# These are the real EntitySetNames; main() still re-resolves them from the API
+# at runtime via get_entity_set_name() as a safety net.
 ENTITY_SETS: dict[str, str] = {
     "b2b_region":           "b2b_regions",
     "b2b_supplier":         "b2b_suppliers",
+    "b2b_warehouse":        "b2b_warehouses",
     "b2b_canonicalproduct": "b2b_canonicalproducts",
-    "b2b_supplieroffer":    "b2b_supplieroffersset",  # Dataverse sometimes appends 'set'
+    "b2b_supplieroffer":    "b2b_supplieroffers",
 }
 
 # Primary key logical names
 PK: dict[str, str] = {
     "b2b_region":           "b2b_regionid",
     "b2b_supplier":         "b2b_supplierid",
+    "b2b_warehouse":        "b2b_warehouseid",
     "b2b_canonicalproduct": "b2b_canonicalproductid",
-    "b2b_supplieroffer":    "b2b_supplyofferid",
+    "b2b_supplieroffer":    "b2b_supplierofferid",
 }
 
 
@@ -207,6 +209,56 @@ def seed_suppliers(s: requests.Session, region_ids: dict[str, str]) -> dict[str,
     return supplier_ids
 
 
+def seed_warehouses(
+    s: requests.Session,
+    region_ids: dict[str, str],
+) -> dict[str, str]:
+    """Seed b2b_warehouse (the M-4 analytics grain). Returns {city: id} map
+    used to bind the b2b_warehouse lookup on offers."""
+    log.info("Seeding b2b_warehouse...")
+    warehouse_by_city: dict[str, str] = {}
+    created = updated = errors = 0
+
+    rows = list(csv.DictReader(open(SEED_DIR / "warehouse.csv")))
+    for row in rows:
+        payload: dict[str, Any] = {
+            "b2b_name": row["b2b_name"],
+            "b2b_code": row.get("b2b_code", ""),
+            "b2b_city": row.get("b2b_city", ""),
+        }
+        cap = row.get("b2b_capacity", "").strip()
+        if cap:
+            try:
+                payload["b2b_capacity"] = int(cap)
+            except ValueError:
+                pass
+        region_name = row.get("b2b_region", "").strip()
+        region_id = region_ids.get(region_name)
+        if region_id:
+            payload["b2b_region@odata.bind"] = f"/{ENTITY_SETS['b2b_region']}({region_id})"
+        else:
+            log.warning(f"  Warehouse '{row['b2b_name']}': region '{region_name}' not found")
+
+        result = upsert(s, "b2b_warehouse", payload, "b2b_name")
+        if result == "created":
+            created += 1
+        elif result == "updated":
+            updated += 1
+        else:
+            errors += 1
+            log.warning(f"  Warehouse '{row['b2b_name']}': {result}")
+
+    # Fetch IDs keyed by city (offers join on warehouse_city)
+    r = s.get(f"{API}/{ENTITY_SETS['b2b_warehouse']}",
+              params={"$select": f"b2b_city,{PK['b2b_warehouse']}", "$top": 50}, timeout=20)
+    for rec in r.json().get("value", []):
+        if rec.get("b2b_city"):
+            warehouse_by_city[rec["b2b_city"]] = rec[PK["b2b_warehouse"]]
+
+    log.info(f"  Warehouses: created={created}, updated={updated}, errors={errors}")
+    return warehouse_by_city
+
+
 def seed_canonical_products(s: requests.Session) -> dict[str, str]:
     """Returns {name: id} map."""
     log.info("Seeding b2b_canonicalproduct...")
@@ -269,6 +321,7 @@ def seed_supplier_offers(
     s: requests.Session,
     supplier_ids: dict[str, str],
     product_ids: dict[str, str],
+    warehouse_by_city: dict[str, str],
 ) -> None:
     log.info("Seeding b2b_supplieroffer...")
     created = updated = skipped = errors = 0
@@ -290,18 +343,25 @@ def seed_supplier_offers(
             continue
 
         raw_sku = row.get("b2b_raw_sku", "").strip()
+        warehouse_city = row.get("b2b_warehouse_city", "").strip()
         payload: dict[str, Any] = {
             "b2b_name": f"{supplier_name} – {raw_sku}"[:300],
             "b2b_raw_name": row.get("b2b_raw_name", ""),
             "b2b_raw_sku": raw_sku,
             "b2b_currency": row.get("b2b_currency", "USD"),
-            "b2b_warehouse_city": row.get("b2b_warehouse_city", ""),
+            "b2b_warehouse_city": warehouse_city,  # denormalized cache (kept)
             # Bind supplier lookup
             f"b2b_supplier@odata.bind": f"/{ENTITY_SETS['b2b_supplier']}({sup_id})",
         }
         if prod_id:
             payload[f"b2b_canonical_product@odata.bind"] = (
                 f"/{ENTITY_SETS['b2b_canonicalproduct']}({prod_id})"
+            )
+        # Bind warehouse lookup (M-4 grain) by matching the city cache
+        wh_id = warehouse_by_city.get(warehouse_city)
+        if wh_id:
+            payload["b2b_warehouse@odata.bind"] = (
+                f"/{ENTITY_SETS['b2b_warehouse']}({wh_id})"
             )
         for int_field in ["b2b_stock", "b2b_lead_time_days"]:
             val = row.get(int_field, "").strip()
@@ -370,21 +430,24 @@ def main() -> None:
 
     # Resolve real entity set names from the API
     log.info("Resolving entity set names...")
-    for logical in ["b2b_region", "b2b_supplier", "b2b_canonicalproduct", "b2b_supplieroffer"]:
+    for logical in ["b2b_region", "b2b_supplier", "b2b_warehouse",
+                    "b2b_canonicalproduct", "b2b_supplieroffer"]:
         set_name = get_entity_set_name(s, logical)
         log.info(f"  {logical} → /{set_name} (pk={PK[logical]})")
 
-    # Seed in dependency order
-    region_ids   = seed_regions(s)
-    supplier_ids = seed_suppliers(s, region_ids)
-    product_ids  = seed_canonical_products(s)
-    seed_supplier_offers(s, supplier_ids, product_ids)
+    # Seed in dependency order (warehouse needs region; offer needs all three)
+    region_ids        = seed_regions(s)
+    supplier_ids      = seed_suppliers(s, region_ids)
+    warehouse_by_city = seed_warehouses(s, region_ids)
+    product_ids       = seed_canonical_products(s)
+    seed_supplier_offers(s, supplier_ids, product_ids, warehouse_by_city)
 
     log.info("")
     log.info("=== Seed complete ===")
-    log.info(f"  Regions loaded:   {len(region_ids)}")
-    log.info(f"  Suppliers loaded: {len(supplier_ids)}")
-    log.info(f"  Products loaded:  {len(product_ids)}")
+    log.info(f"  Regions loaded:    {len(region_ids)}")
+    log.info(f"  Suppliers loaded:  {len(supplier_ids)}")
+    log.info(f"  Warehouses loaded: {len(warehouse_by_city)}")
+    log.info(f"  Products loaded:   {len(product_ids)}")
 
 
 if __name__ == "__main__":
