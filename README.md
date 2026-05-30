@@ -30,10 +30,12 @@ ALM practices.
   cap) with a real pytest suite wired into CI.
 - **GitHub Actions ALM** on **OIDC federated credentials** (no client secret):
   PR validation gate, Dev deploy, Test/Prod import, and source export-via-PR.
+- **Custom security role** `B2B Procurement Ops` and a **solution-aware supplier-
+  sync flow** (`B2BAgg.Integration`, idempotent upsert on an alt-key triple).
 
 **Roadmap / stretch (not yet exported or wired):**
-- BPF + custom security roles; the `B2BAgg.AI` and `B2BAgg.Integration` solution
-  modules.
+- Business Process Flow on `b2b_order` (recipe ready — see governance); the
+  `B2BAgg.AI` solution module.
 - AI Builder SKU classifier; Copilot Studio agent "MarketBot".
 - Power BI workspace (Dataverse-backed) embedded tiles.
 - Power Platform Pipelines (the GitHub Actions path is the implemented ALM).
@@ -60,14 +62,15 @@ Analyst ── Power BI Workspace ───┘                       │
 |---|---|---|
 | **Dataverse** — 10 tables, relationships, seed data | ✅ Done | 7 regions, 3 suppliers, 6 warehouses, 36 products, 201 seeded offers (≈262 live incl. flow rows) in Dev |
 | **Buyer Code App** (React + Fluent UI v9) | ✅ Done | Power Apps SDK + generated services; Home / Search / Cart / Orders; deployed & smoke-tested in Dev |
-| **Model-driven App** `b2b_B2BAggOperations` | ✅ Done | Forms/views; sitemap exposes 7 of 10 tables (Warehouse / SKU Map / Data Conflict pending — audit A-3) |
+| **Model-driven App** `b2b_B2BAggOperations` | ✅ Done | Forms/views; sitemap exposes all 10 tables across Catalog / Operations / Inventory / Data Quality areas (Warehouse, SKU Map, Data Conflict added — audit A-3) |
 | **Azure Function** `fetch-supplier-feed` | ✅ Done | Python v4, deployed to `func-b2bagg-dev.azurewebsites.net` |
 | **Azure Infra** (Bicep) | ✅ Done | Functions, App Insights, Key Vault (refs), Storage, Service Bus, Logic App, Log Analytics |
 | **SKU-resolution engine** + pytest in CI | ✅ Done | Deterministic cascade; tests gate PRs |
 | **GitHub Actions ALM** (OIDC) | ✅ Done | PR gate + Dev deploy + Test/Prod import + export-via-PR, no client secret |
-| **Power Automate** — Supplier Sync flow | 🔄 Rebuilding | Audit **P5**: connection refs + env vars + idempotent upsert on the alt-key triple |
+| **Power Automate** — Supplier Sync flow | ✅ Done | Audit **P5**: solution-aware (`B2BAgg.Integration`), connection refs + env vars, idempotent upsert on the alt-key triple |
+| **Custom security role** `B2B Procurement Ops` | ✅ Done | CRUD on the `b2b_*` tables; exported in `B2BAgg.Core` (audit A-4) |
 | **Custom Connector** (OpenAPI → Azure Function) | 🔄 In progress | YAML ready at `azure/openapi/fetch-supplier-feed.yaml` |
-| **BPF + custom security roles** | ⏳ Roadmap | Claimed in design; not yet exported (audit A-4) |
+| **BPF on `b2b_order`** | ⏳ Roadmap | Designer recipe ready (`docs/governance.md`); ~5-min portal step |
 | **AI Builder SKU Classifier** | ⏳ Roadmap | Custom text classification model |
 | **Copilot Studio agent "MarketBot"** | ⏳ Roadmap | Embedded in Code App side panel |
 | **Power BI workspace** | ⏳ Roadmap | Regional demand, supplier scorecard (Dataverse-backed) |

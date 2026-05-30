@@ -23,16 +23,34 @@ envs without modification.
 
 | Solution | Contents | Status |
 |---|---|---|
-| `B2BAgg.Core` | All Dataverse tables, columns, choices, MDA, Code App | **implemented** (exported to `solutions/B2BAgg.Core/`) |
+| `B2BAgg.Core` | Dataverse tables, columns, choices, MDA, Code App, **custom security role** `B2B Procurement Ops` | **implemented** (exported to `solutions/B2BAgg.Core/`) |
+| `B2BAgg.Integration` | Power Automate supplier-sync flow, connection references, environment variables (Function base URLs, API key via env var) | **implemented** in audit **P5** (exported to `solutions/B2BAgg.Integration/`) |
 | `B2BAgg.AI` | AI Builder Custom Classification model, Copilot Studio agent definitions | roadmap (not yet exported) |
-| `B2BAgg.Integration` | Custom connectors, Power Automate flows, connection references, environment variables (Function base URLs, API keys via Key Vault refs) | introduced in audit **P5** (flow rebuild) |
 
-> **Current state (do not overclaim):** only `B2BAgg.Core` is exported today.
-> **BPF and custom security roles are a target, not yet exported** —
-> `Customizations.xml` ships empty `<Roles />` / `<Workflows />` (audit A-4).
-> The AI and Integration modules are deferred per `docs/schema-canonical.md`.
+> **Current state (do not overclaim):** `B2BAgg.Core` + `B2BAgg.Integration` are
+> exported. A real custom **security role** (`B2B Procurement Ops`, CRUD on the
+> `b2b_*` tables) is exported in Core (audit A-4). **BPF is roadmap** — a designer
+> recipe is below. `B2BAgg.AI` is deferred per `docs/schema-canonical.md`.
 
 Each solution has its own version (`x.y.z`) tracked in `solutions/<name>/Other/Solution.xml`.
+
+### BPF on `b2b_order` — designer recipe (roadmap, ~5 min portal step)
+
+A Business Process Flow is the one component best built in the App designer
+(hand-authoring the BPF `clientdata` via API is brittle). To add it:
+
+1. [make.powerapps.com](https://make.powerapps.com) → env **B2BAgg-Dev** →
+   **Solutions → B2BAgg.Core → New → Automation → Process → Business process flow**.
+2. Name **"B2B Order Lifecycle"**, table **Order** (`b2b_order`) → Create.
+3. In the designer add three stages on `b2b_order`:
+   **Draft → Confirmed → Shipped** (one stage per `b2b_status` option; add a data
+   step in each, e.g. require `b2b_total_amount` in Confirmed).
+4. **Save → Activate**.
+5. It's already in `B2BAgg.Core` (created inside the solution). Tell Claude →
+   `pac solution export` re-captures it into `solutions/B2BAgg.Core/src`.
+
+Until then, BPF is marked roadmap (not an audit gap — see
+`docs/audit/decisions-and-non-issues.md`).
 
 ## Dual deployment paths
 

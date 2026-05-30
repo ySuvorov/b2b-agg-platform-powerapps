@@ -11,12 +11,15 @@
   <NavigationType>0</NavigationType>
   <AppModuleComponents>
     <AppModuleComponent type="1" schemaName="b2b_canonicalproduct" />
+    <AppModuleComponent type="1" schemaName="b2b_dataconflict" />
     <AppModuleComponent type="1" schemaName="b2b_order" />
     <AppModuleComponent type="1" schemaName="b2b_orderline" />
     <AppModuleComponent type="1" schemaName="b2b_region" />
     <AppModuleComponent type="1" schemaName="b2b_rfq" />
+    <AppModuleComponent type="1" schemaName="b2b_skumap" />
     <AppModuleComponent type="1" schemaName="b2b_supplier" />
     <AppModuleComponent type="1" schemaName="b2b_supplieroffer" />
+    <AppModuleComponent type="1" schemaName="b2b_warehouse" />
     <AppModuleComponent type="62" schemaName="b2b_B2BAggOperations" />
   </AppModuleComponents>
   <AppModuleRoleMaps>

@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Role id="{9e3832ce-2f5c-f111-a826-00224837db9d}" name="B2B Procurement Ops" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsCustomizable>1</IsCustomizable>
+  <IsAutoAssigned>0</IsAutoAssigned>
+  <RolePrivileges>
+    <RolePrivilege name="prvAppendb2b_canonicalproduct" level="Global" />
+    <RolePrivilege name="prvAppendb2b_dataconflict" level="Global" />
+    <RolePrivilege name="prvAppendb2b_order" level="Global" />
+    <RolePrivilege name="prvAppendb2b_orderline" level="Global" />
+    <RolePrivilege name="prvAppendb2b_region" level="Global" />
+    <RolePrivilege name="prvAppendb2b_rfq" level="Global" />
+    <RolePrivilege name="prvAppendb2b_skumap" level="Global" />
+    <RolePrivilege name="prvAppendb2b_supplier" level="Global" />
+    <RolePrivilege name="prvAppendb2b_supplieroffer" level="Global" />
+    <RolePrivilege name="prvAppendb2b_warehouse" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_canonicalproduct" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_dataconflict" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_order" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_orderline" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_region" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_rfq" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_skumap" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_supplier" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_supplieroffer" level="Global" />
+    <RolePrivilege name="prvAppendTob2b_warehouse" level="Global" />
+    <RolePrivilege name="prvCreateb2b_canonicalproduct" level="Global" />
+    <RolePrivilege name="prvCreateb2b_dataconflict" level="Global" />
+    <RolePrivilege name="prvCreateb2b_order" level="Global" />
+    <RolePrivilege name="prvCreateb2b_orderline" level="Global" />
+    <RolePrivilege name="prvCreateb2b_region" level="Global" />
+    <RolePrivilege name="prvCreateb2b_rfq" level="Global" />
+    <RolePrivilege name="prvCreateb2b_skumap" level="Global" />
+    <RolePrivilege name="prvCreateb2b_supplier" level="Global" />
+    <RolePrivilege name="prvCreateb2b_supplieroffer" level="Global" />
+    <RolePrivilege name="prvCreateb2b_warehouse" level="Global" />
+    <RolePrivilege name="prvCreateSharePointData" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_canonicalproduct" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_dataconflict" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_order" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_orderline" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_region" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_rfq" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_skumap" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_supplier" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_supplieroffer" level="Global" />
+    <RolePrivilege name="prvDeleteb2b_warehouse" level="Global" />
+    <RolePrivilege name="prvReadb2b_canonicalproduct" level="Global" />
+    <RolePrivilege name="prvReadb2b_dataconflict" level="Global" />
+    <RolePrivilege name="prvReadb2b_order" level="Global" />
+    <RolePrivilege name="prvReadb2b_orderline" level="Global" />
+    <RolePrivilege name="prvReadb2b_region" level="Global" />
+    <RolePrivilege name="prvReadb2b_rfq" level="Global" />
+    <RolePrivilege name="prvReadb2b_skumap" level="Global" />
+    <RolePrivilege name="prvReadb2b_supplier" level="Global" />
+    <RolePrivilege name="prvReadb2b_supplieroffer" level="Global" />
+    <RolePrivilege name="prvReadb2b_warehouse" level="Global" />
+    <RolePrivilege name="prvReadPluginAssembly" level="Global" />
+    <RolePrivilege name="prvReadPluginType" level="Global" />
+    <RolePrivilege name="prvReadSdkMessage" level="Global" />
+    <RolePrivilege name="prvReadSdkMessageProcessingStep" level="Global" />
+    <RolePrivilege name="prvReadSdkMessageProcessingStepImage" level="Global" />
+    <RolePrivilege name="prvReadSharePointData" level="Global" />
+    <RolePrivilege name="prvReadSharePointDocument" level="Global" />
+    <RolePrivilege name="prvWriteb2b_canonicalproduct" level="Global" />
+    <RolePrivilege name="prvWriteb2b_dataconflict" level="Global" />
+    <RolePrivilege name="prvWriteb2b_order" level="Global" />
+    <RolePrivilege name="prvWriteb2b_orderline" level="Global" />
+    <RolePrivilege name="prvWriteb2b_region" level="Global" />
+    <RolePrivilege name="prvWriteb2b_rfq" level="Global" />
+    <RolePrivilege name="prvWriteb2b_skumap" level="Global" />
+    <RolePrivilege name="prvWriteb2b_supplier" level="Global" />
+    <RolePrivilege name="prvWriteb2b_supplieroffer" level="Global" />
+    <RolePrivilege name="prvWriteb2b_warehouse" level="Global" />
+    <RolePrivilege name="prvWriteSharePointData" level="Global" />
+  </RolePrivileges>
+</Role>

@@ -17,6 +17,7 @@
         <SubArea Id="subarea_de594fc8" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_region" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
         <SubArea Id="subarea_1a6aff0c" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_supplier" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
         <SubArea Id="subarea_e763599f" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_canonicalproduct" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+        <SubArea Id="subarea_aa11bb22" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_warehouse" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
       </Group>
       <Group Id="group_1be3ea37" ResourceId="SitemapDesigner.NewGroup" DescriptionResourceId="SitemapDesigner.NewGroup" IntroducedVersion="7.0.0.0" IsProfile="false" ToolTipResourseId="SitemapDesigner.Unknown">
         <Titles>
@@ -31,6 +32,13 @@
           <Title LCID="1033" Title="Inventory" />
         </Titles>
         <SubArea Id="subarea_389ff224" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_supplieroffer" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+      </Group>
+      <Group Id="group_cc33dd44" ResourceId="SitemapDesigner.NewGroup" DescriptionResourceId="SitemapDesigner.NewGroup" IntroducedVersion="7.0.0.0" IsProfile="false" ToolTipResourseId="SitemapDesigner.Unknown">
+        <Titles>
+          <Title LCID="1033" Title="Data Quality" />
+        </Titles>
+        <SubArea Id="subarea_ee55ff66" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_dataconflict" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+        <SubArea Id="subarea_07a807b8" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_skumap" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
       </Group>
     </Area>
   </SiteMap>
