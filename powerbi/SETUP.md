@@ -3,6 +3,12 @@
 > This guide walks through provisioning the `B2BAgg-Analytics` workspace,
 > connecting Power BI Desktop to Dataverse, importing DAX measures, and
 > publishing the four core reports.
+>
+> **Primary data source = Dataverse DirectQuery (Step 2).** The push-dataset
+> provisioning in **Step 1 is an optional legacy/demo stub** (24 mock rows) for a
+> quick standalone preview; it is not the analytics path and can be skipped.
+> Column names in this guide are canonical (`b2b_raw_sku`, `b2b_lead_time_days`;
+> there is no `b2b_country`) — see [`docs/schema-canonical.md`](../docs/schema-canonical.md).
 
 ## Requirements
 
@@ -20,7 +26,10 @@
 
 ---
 
-## Step 1 — Provision the Workspace and Push Dataset
+## Step 1 (optional, legacy stub) — Provision the Workspace + push dataset
+
+> Skip this unless you want a detached mock preview. The real reports use the
+> Dataverse connector in Step 2. This push dataset is a demo prototype only.
 
 Run the provisioning script once from the repo root:
 
@@ -79,11 +88,12 @@ section) and in `powerbi/workspace-ids.json`.
 
 ### Recommended transformations in Power Query
 
-- `b2b_supplieroffer`: keep columns `b2b_rawsku`, `b2b_price`, `b2b_stock`,
-  `b2b_warehouse`, `b2b_season`, `b2b_leaddays`, `createdon`,
-  and the related supplier/product lookups.
-- `b2b_canonicalproduct`: keep `b2b_brand`, `b2b_model`, `b2b_width`,
-  `b2b_profile`, `b2b_diameter`, `b2b_country`.
+- `b2b_supplieroffer`: keep columns `b2b_raw_sku`, `b2b_price`, `b2b_stock`,
+  `b2b_warehouse_city`, the `b2b_warehouse` lookup, `b2b_lead_time_days`,
+  `createdon`, and the related supplier/product lookups. (Season lives on the
+  canonical product.)
+- `b2b_canonicalproduct`: keep `b2b_brand`, `b2b_model`, `b2b_season`,
+  `b2b_width`, `b2b_profile`, `b2b_diameter`. (There is no `b2b_country` column.)
 - Rename columns to friendly names (strip the `b2b_` prefix).
 - Set correct data types (decimals for price, whole numbers for stock/dims).
 

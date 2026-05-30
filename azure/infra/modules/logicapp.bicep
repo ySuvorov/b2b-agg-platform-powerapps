@@ -12,9 +12,8 @@ param location string
 @description('Resource tags')
 param tags object
 
-@description('Service Bus connection string with Send rights (from servicebus module output)')
-@secure()
-param serviceBusConnectionString string
+@description('Resource ID of the Service Bus Send authorization rule (from the servicebus module). The connection string is resolved inline via listKeys() so it is never passed around as a value or surfaced as an output.')
+param serviceBusSendRuleId string
 
 // ---------------------------------------------------------------------------
 // Managed API connection for Service Bus
@@ -30,7 +29,7 @@ resource sbApiConnection 'Microsoft.Web/connections@2016-06-01' = {
       id: subscriptionResourceId('Microsoft.Web/locations/managedApis', location, 'servicebus')
     }
     parameterValues: {
-      connectionString: serviceBusConnectionString
+      connectionString: listKeys(serviceBusSendRuleId, '2022-10-01-preview').primaryConnectionString
     }
   }
 }

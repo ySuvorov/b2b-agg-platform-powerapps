@@ -1,5 +1,29 @@
 # Architecture
 
+> ℹ️ **Target architecture vs. current build.** This document describes the full
+> intended platform. For what is actually implemented today, see the
+> **Implementation status** table in [`README.md`](../README.md) and
+> [`PROGRESS.md`](../PROGRESS.md).
+>
+> **Implemented demo path (end-to-end, real):** Buyer Code App (Power Apps SDK)
+> searches live Dataverse offers → cart → per-supplier order creation → review in
+> the Model-driven App; deterministic SKU matcher with CI tests; Azure Function
+> serving heterogeneous feeds; GitHub Actions OIDC ALM (PR gate, deploy, export).
+>
+> **Roadmap / stretch (described below, not yet built):** 20-warehouse scale
+> (currently **6** regional DCs seeded), Stock Redistribution Advisor,
+> `b2b_marketsignal`, Copilot "MarketBot" side panel, `/rfq/new` and `/insights`
+> Code App routes, AI Builder classifier, Power BI tiles, BPF + security roles,
+> the supplier-sync flow chain (audit P5), and Power Pages.
+>
+> **Warehouse semantics (audit A-1):** warehouses are **platform-owned regional
+> distribution centres** (`b2b_warehouse → b2b_region`), not supplier-operated.
+>
+> **Orders (audit A-2):** `b2b_order` is a lightweight checkout artifact (order
+> number, status, total, currency). Buyer/account is not modelled (no buyer
+> entity in this MVP); supplier is implicit via the per-supplier cart split, and
+> region is reachable through the offer's warehouse.
+
 ## Context
 
 Buyers (mid-sized wholesale tire retailers) want one place to search inventory

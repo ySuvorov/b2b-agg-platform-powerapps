@@ -14,27 +14,36 @@ ALM practices.
 
 ## Highlights for reviewers
 
-- **Pro-code Power Apps Code App** (React + TypeScript + Fluent UI v9) for the
-  buyer experience, alongside a **Model-driven App** for operations admins.
-- **Dataverse** as the system of record (12 entities, BPF, security roles).
-- **AI Builder Custom Classification Model** auto-resolves heterogeneous
-  supplier SKUs to a canonical product catalog with confidence-based routing.
-- **Copilot Studio agent "MarketBot"** embedded in the Code App.
-- **Azure-side**: Functions (Python), Logic Apps, Service Bus, Blob —
-  simulating real third-party supplier APIs with three distinct schemas.
-- **Power BI** workspace with regional demand forecasting, supplier scorecard,
-  and data quality reports — tiles embedded into both apps.
-- **Dual ALM**: Power Platform Pipelines (Dev → Test → Prod) *and*
-  GitHub Actions using `pac` CLI for solution export/import.
-- **Governance**: DLP policy documentation, multi-environment strategy,
-  Service-Principal-based deployments.
+> The **Implementation status** table below is the source of truth for what is
+> built vs. roadmap. This list describes the overall design ambition.
+
+**Implemented today:**
+- **Pro-code Power Apps Code App** (React + TypeScript + Fluent UI v9, Power Apps
+  SDK + generated Dataverse services) for the buyer experience, alongside a
+  **Model-driven App** for operations admins.
+- **Dataverse** as the system of record — **10 custom tables** in `B2BAgg.Core`,
+  with seed data (regions, suppliers, warehouses, canonical products, offers).
+- **Azure Function** (Python) serving three deliberately heterogeneous supplier
+  feeds (EN/RU/XML), with modular **Bicep** infra (Functions, App Insights, Key
+  Vault, Storage, Service Bus, Logic App scaffolding).
+- **Deterministic SKU-resolution engine** (size hard-gate + homologation/run-flat
+  cap) with a real pytest suite wired into CI.
+- **GitHub Actions ALM** on **OIDC federated credentials** (no client secret):
+  PR validation gate, Dev deploy, Test/Prod import, and source export-via-PR.
+
+**Roadmap / stretch (not yet exported or wired):**
+- BPF + custom security roles; the `B2BAgg.AI` and `B2BAgg.Integration` solution
+  modules.
+- AI Builder SKU classifier; Copilot Studio agent "MarketBot".
+- Power BI workspace (Dataverse-backed) embedded tiles.
+- Power Platform Pipelines (the GitHub Actions path is the implemented ALM).
+- Power Pages supplier portal.
 
 ## Architecture (high level)
 
 See [`docs/architecture.md`](docs/architecture.md) for the full diagram and
-component-by-component breakdown.
-
-![Architecture](docs/diagrams/architecture.svg)
+component-by-component breakdown. The diagram source is
+[`docs/diagrams/architecture.mmd`](docs/diagrams/architecture.mmd) (Mermaid).
 
 ```
 Buyer ──── Code App (React+TS) ──┐
@@ -49,19 +58,21 @@ Analyst ── Power BI Workspace ───┘                       │
 
 | Component | Status | Notes |
 |---|---|---|
-| **Dataverse** — 7 tables, relationships, seed data | ✅ Done | 7 regions, 3 suppliers, 30 products, 193 offers in Dev |
-| **Power Automate** — Supplier Sync flow | ✅ Done | Manual trigger → Azure Function → upsert b2b_supplieroffer |
+| **Dataverse** — 10 tables, relationships, seed data | ✅ Done | 7 regions, 3 suppliers, 6 warehouses, 36 products, 201 seeded offers (≈262 live incl. flow rows) in Dev |
+| **Buyer Code App** (React + Fluent UI v9) | ✅ Done | Power Apps SDK + generated services; Home / Search / Cart / Orders; deployed & smoke-tested in Dev |
+| **Model-driven App** `b2b_B2BAggOperations` | ✅ Done | Forms/views; sitemap exposes 7 of 10 tables (Warehouse / SKU Map / Data Conflict pending — audit A-3) |
 | **Azure Function** `fetch-supplier-feed` | ✅ Done | Python v4, deployed to `func-b2bagg-dev.azurewebsites.net` |
-| **Azure Infra** (Bicep) | ✅ Done | Functions, App Insights, Key Vault, Storage, Log Analytics |
-| **Buyer Code App** (React + Fluent UI v9) | ✅ Done | Home / Search / Cart / Orders pages, 0 TS errors |
-| **Model-driven App** `b2b_B2BAggOperations` | ✅ Done | Views + forms for all 7 entities |
+| **Azure Infra** (Bicep) | ✅ Done | Functions, App Insights, Key Vault (refs), Storage, Service Bus, Logic App, Log Analytics |
+| **SKU-resolution engine** + pytest in CI | ✅ Done | Deterministic cascade; tests gate PRs |
+| **GitHub Actions ALM** (OIDC) | ✅ Done | PR gate + Dev deploy + Test/Prod import + export-via-PR, no client secret |
+| **Power Automate** — Supplier Sync flow | 🔄 Rebuilding | Audit **P5**: connection refs + env vars + idempotent upsert on the alt-key triple |
 | **Custom Connector** (OpenAPI → Azure Function) | 🔄 In progress | YAML ready at `azure/openapi/fetch-supplier-feed.yaml` |
-| **AI Builder SKU Classifier** | ⏳ MVP2 | Custom text classification model |
-| **Copilot Studio agent "MarketBot"** | ⏳ MVP2 | Embedded in Code App side panel |
-| **Logic App + Service Bus** | ⏳ MVP2 | Push-based supplier ingestion |
-| **Power BI workspace** | ⏳ MVP2 | Regional demand, supplier scorecard |
-| **PP Pipelines** Dev → Test → Prod | ⏳ MVP2 | |
-| **Power Pages** supplier portal | ⏳ MVP3 | External Entra B2B |
+| **BPF + custom security roles** | ⏳ Roadmap | Claimed in design; not yet exported (audit A-4) |
+| **AI Builder SKU Classifier** | ⏳ Roadmap | Custom text classification model |
+| **Copilot Studio agent "MarketBot"** | ⏳ Roadmap | Embedded in Code App side panel |
+| **Power BI workspace** | ⏳ Roadmap | Regional demand, supplier scorecard (Dataverse-backed) |
+| **PP Pipelines** Dev → Test → Prod | ⏳ Roadmap | GitHub Actions is the implemented ALM path |
+| **Power Pages** supplier portal | ⏳ Roadmap | External Entra B2B |
 
 See [`PROGRESS.md`](PROGRESS.md) for current stage and detailed roadmap.
 
@@ -101,14 +112,13 @@ environment, see:
 ```bash
 cd apps/buyer-code-app
 npm install
-npm run dev          # http://localhost:3000 — uses mock data fallback
+npm run dev          # http://localhost:3000
 ```
 
-For live Dataverse data, set in `.env.local`:
-```
-VITE_DATAVERSE_URL=https://YOUR-DATAVERSE-ORG.crm.dynamics.com
-VITE_DEV_TOKEN=<az account get-access-token --resource https://YOUR-DATAVERSE-ORG.crm.dynamics.com>
-```
+Live Dataverse data is brokered through the **Power Apps SDK** (generated
+services in `src/generated/`) once the app is pushed to the environment — there
+is no dev-token / raw-fetch path. For purely offline UI work, opt into mock data
+explicitly with `VITE_USE_MOCK=true` in `.env.local`.
 
 ### Deploy to Power Platform
 

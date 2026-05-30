@@ -1,5 +1,19 @@
 # Data model (Dataverse)
 
+> ⚠️ **Non-authoritative / historical design doc.** This file captures the
+> original 12-entity target model and uses older column spellings
+> (`b2b_rawsku`, `b2b_country`, `b2b_leaddays`, …) that do **not** match the
+> shipped schema. **The source of truth is
+> [`docs/schema-canonical.md`](schema-canonical.md)** — 10 exported entities,
+> `snake_case` logical names (`b2b_raw_sku`, `b2b_lead_time_days`; there is no
+> `b2b_country`). Treat the ERD below as a roadmap sketch, not the built schema.
+>
+> **Warehouse ownership (audit A-1):** warehouses are **platform-owned regional
+> distribution centres** (`b2b_warehouse → b2b_region`), *not* supplier-operated.
+> A `b2b_supplieroffer` references both its `b2b_supplier` and the `b2b_warehouse`
+> (regional DC) where that stock sits. The ERD line "SUPPLIER operates WAREHOUSE"
+> below is superseded by this model.
+
 > Solution publisher `b2bagg`, prefix `b2b_`. Every custom column uses the
 > prefix.
 

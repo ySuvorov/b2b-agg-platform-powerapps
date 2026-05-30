@@ -301,7 +301,7 @@ module logicApp 'modules/logicapp.bicep' = {
     environmentName: environmentName
     location: location
     tags: tags
-    serviceBusConnectionString: serviceBus.outputs.sendConnectionString
+    serviceBusSendRuleId: serviceBus.outputs.sendRuleId
   }
 }
 
@@ -309,11 +309,12 @@ module logicApp 'modules/logicapp.bicep' = {
 // Outputs
 // ---------------------------------------------------------------------------
 
+// Connection strings are deliberately NOT output — they would be persisted in
+// ARM deployment history. The App Insights / Storage connection strings live in
+// Key Vault; consumers read them via @Microsoft.KeyVault references.
 output storageAccountName string = storageAccount.name
 output functionAppName string = functionApp.name
 output functionAppHostName string = functionApp.properties.defaultHostName
-output appInsightsConnectionString string = appInsights.properties.ConnectionString
 output keyVaultUri string = keyVault.properties.vaultUri
 output serviceBusNamespaceName string = serviceBus.outputs.namespaceName
-output serviceBusListenConnectionString string = serviceBus.outputs.listenConnectionString
 output logicAppName string = logicApp.outputs.logicAppName

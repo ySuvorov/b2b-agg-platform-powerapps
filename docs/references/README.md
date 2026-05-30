@@ -1,5 +1,10 @@
 # UI Reference Screenshots
 
+> ⚠️ The field→column mappings further down use illustrative/older column
+> spellings (e.g. `b2b_country`, `b2b_leaddays`). Canonical logical names are in
+> [`docs/schema-canonical.md`](../schema-canonical.md): lead time is
+> `b2b_lead_time_days`, and there is no country column (dropped in audit P1/H-1).
+
 Source: https://www.media5.com/case/michelin/
 
 These screenshots are from the original Michelin B2B portal project by Media5

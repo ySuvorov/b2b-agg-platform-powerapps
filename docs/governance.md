@@ -17,15 +17,20 @@ and enforce that the source of truth is the solution package exported from Dev.
 
 ## Solution strategy
 
-Three solutions, each a separately deployable unit. Connection references and
-environment variables are used so the same solution moves across envs without
-modification.
+Target design = three solutions, each a separately deployable unit, using
+connection references and environment variables so the same package moves across
+envs without modification.
 
-| Solution | Contents |
-|---|---|
-| `B2BAgg.Core` | All Dataverse tables, columns, choices, BPF, security roles, MDA, Code App |
-| `B2BAgg.AI` | AI Builder Custom Classification model, Copilot Studio agent definitions |
-| `B2BAgg.Integration` | Custom connectors, Power Automate flows, connection references, environment variables (Azure Function base URLs, API keys via Key Vault refs) |
+| Solution | Contents | Status |
+|---|---|---|
+| `B2BAgg.Core` | All Dataverse tables, columns, choices, MDA, Code App | **implemented** (exported to `solutions/B2BAgg.Core/`) |
+| `B2BAgg.AI` | AI Builder Custom Classification model, Copilot Studio agent definitions | roadmap (not yet exported) |
+| `B2BAgg.Integration` | Custom connectors, Power Automate flows, connection references, environment variables (Function base URLs, API keys via Key Vault refs) | introduced in audit **P5** (flow rebuild) |
+
+> **Current state (do not overclaim):** only `B2BAgg.Core` is exported today.
+> **BPF and custom security roles are a target, not yet exported** —
+> `Customizations.xml` ships empty `<Roles />` / `<Workflows />` (audit A-4).
+> The AI and Integration modules are deferred per `docs/schema-canonical.md`.
 
 Each solution has its own version (`x.y.z`) tracked in `solutions/<name>/Other/Solution.xml`.
 
@@ -46,15 +51,17 @@ to git diff). Workflows under `.github/workflows/`:
 
 | Workflow | Trigger | Purpose |
 |---|---|---|
-| `pr-validation.yml` | PR opened/updated | `pac solution check` + lint Code App + Bicep what-if |
-| `export-solutions.yml` | manual / nightly | `pac solution export` from Dev → unpack → commit changes |
-| `deploy-test.yml` | manual dispatch | pack solution → `pac solution import` into Test |
-| `deploy-prod.yml` | release tag `vX.Y.Z` | pack managed → import into Prod |
+| `pr-validation.yml` | PR → `main` | `pac solution check` + lint/build Code App + compile Function + SKU-matcher pytest |
+| `deploy-dev.yml` | dispatch + push to `main` (`solutions/**`) | pack → import (unmanaged) into Dev |
+| `export-solution.yml` | manual dispatch | `pac solution export` from Dev/Test → unpack → **open a PR from a bot branch** |
+| `deploy-test.yml` | manual dispatch | pack → `pac solution import` into Test |
+| `deploy-prod.yml` | manual dispatch | pack managed → import into Prod (manual run = the approval gate) |
 
-Authentication: **Service Principal** (Entra app + federated credentials for
-GitHub Actions OIDC, no client secret in repo). In Dev plan limitations the
-SP must be added as an application user to each environment with the right
-security role.
+Authentication: **GitHub Actions OIDC + Entra federated credentials — no client
+secret in repo or CI** (the old `PP_CLIENT_SECRET` was deleted from GitHub and
+Entra in audit P0/P3). The app is added as an application user to each
+environment with a deploy-capable role. See `.github/workflows/README.md` and
+`docs/ci-secrets-todo.md`. (There is no Bicep what-if in CI today — roadmap.)
 
 ## DLP policies (documented, partially enforced)
 

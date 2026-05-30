@@ -312,7 +312,7 @@ export async function createOrder(items: OrderLineInput[]): Promise<string[]> {
 // Mock data — only used when VITE_USE_MOCK=true (explicit local dev opt-in)
 // ---------------------------------------------------------------------------
 
-const MOCK_STATS = { suppliers: 3, products: 30, offers: 193, regions: 7 }
+const MOCK_STATS = { suppliers: 3, products: 36, offers: 201, regions: 7 }
 
 const MOCK_SUPPLIERS = [
   { b2b_supplierid: 'sup-1', b2b_name: 'RosshinaOpt' },

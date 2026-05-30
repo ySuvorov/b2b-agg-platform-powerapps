@@ -25,8 +25,9 @@
 | `b2b_dataconflict` | `b2b_name` | `b2b_dataconflicts` |
 
 > ⚠️ `b2b_order` primary name is `b2b_order_number` (NOT `b2b_name`) and
-> `b2b_orderline` is `b2b_line_ref`. The Code App currently reads `b2b_name` and
-> omits `b2b_line_ref` on create — both wrong (audit P1-4 / Codex #2). Fix in P2.
+> `b2b_orderline` is `b2b_line_ref`. *(Historical: the Code App used to read
+> `b2b_name` and omit `b2b_line_ref` — fixed in P2; it now reads
+> `b2b_order_number` and generates `b2b_line_ref`. Audit P1-4 / Codex #2.)*
 
 ## Lookups & `$expand` navigation property names
 
@@ -91,15 +92,21 @@ There are two numbering series in the live environment. **Do not renumber**
 | `b2b_dataconflict.b2b_status` | `10000` Pending · `10001` NeedsReview · `10002` NewCandidate · `10003` Approved · `10004` Rejected · `10005` AutoResolved |
 | `b2b_canonicalproduct.b2b_homologation` | `10000` None · `10001` Star_BMW · `10002` MO_Mercedes · `10003` MOE_Mercedes · `10004` N0_Porsche · `10005` N1_Porsche · `10006` AO_Audi · `10007` LR_LandRover · `10008` VOL_Volvo · `10009` MGT_Maserati |
 
-> ⚠️ Code App writes `b2b_status: 10000` for orders — wrong; order status is the
-> `100000000` series (audit P1-4). Booleans `b2b_runflat`/`b2b_extraload` use
-> `1`/`0`. Define these as named TS enums in P2 (audit L-6).
+> Order status is the `100000000` series (Draft = `100000000`). Booleans
+> `b2b_runflat`/`b2b_extraload` use `1`/`0`. *(Historical: the Code App once
+> wrote `b2b_status: 10000` — fixed in P2, which also extracted these into named
+> TS constants. Audit P1-4 / L-6.)*
 
 ## Alternate keys (idempotent upsert — for P5 flow)
 
 - `b2b_skumap`: composite alt key on (`b2b_supplier`, `b2b_raw_sku`).
-- `b2b_supplieroffer`: upsert grain for the sync flow is (`b2b_warehouse`/city +
-  `b2b_raw_sku`). Verify/create the alt key before wiring the flow PATCH-upsert.
+- `b2b_supplieroffer`: alt key `b2b_offer_supplier_wh_sku` on the **triple**
+  (`b2b_supplier` + `b2b_warehouse` + `b2b_raw_sku`) — created by
+  `scripts/create-supplieroffer-altkey.py`. The same raw SKU at one warehouse can
+  come from different suppliers, and the same supplier+SKU can stock at different
+  warehouses, so all three segments are part of the offer identity. The seeder
+  dedup (`seed-via-az-token.py`) and the P5 flow PATCH-upsert use this same triple
+  so they never diverge.
 
 ## Solution membership
 

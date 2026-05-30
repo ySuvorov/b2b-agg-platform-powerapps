@@ -88,7 +88,10 @@ resource listenRule 'Microsoft.ServiceBus/namespaces/authorizationRules@2022-10-
 // Outputs
 // ---------------------------------------------------------------------------
 
+// Never output connection strings (they would be persisted in deployment
+// history). Surface only the auth-rule resource IDs; consumers call listKeys()
+// inline at the point of use, so the secret is never materialised as an output.
 output namespaceName string = serviceBusNamespace.name
 output namespaceId string = serviceBusNamespace.id
-output sendConnectionString string = listKeys(sendRule.id, '2022-10-01-preview').primaryConnectionString
-output listenConnectionString string = listKeys(listenRule.id, '2022-10-01-preview').primaryConnectionString
+output sendRuleId string = sendRule.id
+output listenRuleId string = listenRule.id

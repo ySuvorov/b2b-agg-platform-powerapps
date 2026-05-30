@@ -6,23 +6,21 @@ Fallback script that creates the 4 core B2BAgg Dataverse tables via the
 Web API (EntityDefinitions endpoint) when pac solution import is unavailable
 or fails.
 
+Auth: az-CLI token (QUIRK #1) — no device code, no client secret. The admin
+account must be logged into `az`. This matches every other schema/seed script
+(`create-warehouse-table.py`, `seed-via-az-token.py`, …); there is no MSAL /
+client-credentials path here any more (removed in audit P6 — the CI client
+secret was retired in P0/P3).
+
 Usage
 -----
-  # With service-principal credentials (non-interactive, CI-friendly):
-  export DATAVERSE_URL="https://YOUR-DATAVERSE-ORG.crm.dynamics.com"
-  export AZURE_TENANT_ID="<tenant-id>"
-  export AZURE_CLIENT_ID="<app-registration-client-id>"
-  export AZURE_CLIENT_SECRET="<client-secret>"
-  python scripts/create-tables-api.py
-
-  # Without service-principal creds the script falls back to device-code flow:
-  export DATAVERSE_URL="https://YOUR-DATAVERSE-ORG.crm.dynamics.com"
-  export AZURE_TENANT_ID="<tenant-id>"
+  az login            # as <admin-upn>, once
+  export DATAVERSE_URL="https://YOUR-DATAVERSE-ORG.crm.dynamics.com"   # optional override
   python scripts/create-tables-api.py
 
 Requirements
 ------------
-  pip install requests msal
+  pip install requests
 
 Design decisions
 ----------------
@@ -44,6 +42,7 @@ import os
 import sys
 import json
 import logging
+import subprocess
 from typing import Any
 
 import requests
@@ -62,9 +61,6 @@ log = logging.getLogger(__name__)
 DATAVERSE_URL: str = os.environ.get(
     "DATAVERSE_URL", "https://YOUR-DATAVERSE-ORG.crm.dynamics.com"
 ).rstrip("/")
-TENANT_ID: str = os.environ.get("AZURE_TENANT_ID", "<tenant-id>")
-CLIENT_ID: str = os.environ.get("AZURE_CLIENT_ID", "")
-CLIENT_SECRET: str = os.environ.get("AZURE_CLIENT_SECRET", "")
 
 # Dataverse Web API version — 9.2 supports all features we need
 API_VERSION = "v9.2"
@@ -78,46 +74,20 @@ OPTION_PREFIX = 10000
 # Authentication helpers
 # ──────────────────────────────────────────────────────────────────────────────
 
-def _get_token_client_credentials() -> str:
-    """Acquire an access token using client credentials (service principal)."""
-    import msal  # type: ignore
-    authority = f"https://login.microsoftonline.com/{TENANT_ID}"
-    app = msal.ConfidentialClientApplication(
-        CLIENT_ID,
-        authority=authority,
-        client_credential=CLIENT_SECRET,
-    )
-    result = app.acquire_token_for_client(scopes=[f"{DATAVERSE_URL}/.default"])
-    if "access_token" not in result:
-        raise RuntimeError(f"Failed to acquire token: {result.get('error_description')}")
-    log.info("Token acquired via client credentials.")
-    return result["access_token"]
-
-
-def _get_token_device_code() -> str:
-    """Acquire an access token using the device-code flow (interactive fallback)."""
-    import msal  # type: ignore
-    authority = f"https://login.microsoftonline.com/{TENANT_ID}"
-    # Use the well-known PowerShell client ID so we don't need an app registration
-    # for interactive sessions during dev.
-    POWERSHELL_CLIENT_ID = "1950a258-227b-4e31-a9cf-717495945fc2"
-    app = msal.PublicClientApplication(POWERSHELL_CLIENT_ID, authority=authority)
-    flow = app.initiate_device_flow(scopes=[f"{DATAVERSE_URL}/.default"])
-    if "user_code" not in flow:
-        raise RuntimeError(f"Failed to initiate device flow: {flow}")
-    log.info("Device code flow: %s", flow["message"])
-    result = app.acquire_token_by_device_flow(flow)
-    if "access_token" not in result:
-        raise RuntimeError(f"Device code auth failed: {result.get('error_description')}")
-    log.info("Token acquired via device code.")
-    return result["access_token"]
-
-
 def get_token() -> str:
-    if CLIENT_ID and CLIENT_SECRET:
-        return _get_token_client_credentials()
-    log.info("No service-principal credentials set — falling back to device code flow.")
-    return _get_token_device_code()
+    """Acquire a Dataverse access token from the logged-in az CLI (QUIRK #1)."""
+    r = subprocess.run(
+        ["az", "account", "get-access-token", "--resource", DATAVERSE_URL,
+         "--query", "accessToken", "-o", "tsv"],
+        capture_output=True, text=True, timeout=30,
+    )
+    if r.returncode != 0:
+        raise RuntimeError(
+            f"az get-access-token failed: {r.stderr.strip()} "
+            "(run `az login` as the admin account first)"
+        )
+    log.info("Token acquired via az CLI.")
+    return r.stdout.strip()
 
 
 def make_session(token: str) -> requests.Session:

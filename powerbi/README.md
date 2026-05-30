@@ -2,6 +2,10 @@
 
 Workspace name (cloud): `B2BAgg-Analytics`.
 
+> **Data source:** all reports use **Dataverse DirectQuery** (the operational
+> system of record). The `scripts/setup-powerbi.py` push dataset is an optional
+> legacy/demo stub (detached mock rows) — not part of the analytics path.
+
 ## Reports
 
 | Report | Datasource | Phase |

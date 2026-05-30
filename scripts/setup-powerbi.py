@@ -2,6 +2,12 @@
 """
 setup-powerbi.py — Provision Power BI workspace + push dataset for B2BAgg.
 
+⚠️ OPTIONAL LEGACY/DEMO STUB. The primary analytics path is **Dataverse
+DirectQuery** (see powerbi/SETUP.md Step 2). This script only stands up a
+detached push dataset with a handful of mock rows for a quick standalone
+preview; its table schema is illustrative and does not track the canonical
+Dataverse schema. Skip it unless you specifically want the mock preview.
+
 Usage:
     python3 scripts/setup-powerbi.py
 
