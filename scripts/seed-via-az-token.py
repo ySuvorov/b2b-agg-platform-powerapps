@@ -377,13 +377,20 @@ def seed_supplier_offers(
             except ValueError:
                 pass
 
-        # Check existence by supplier + raw_sku
+        # Check existence by the alt-key grain: supplier + warehouse + raw_sku
+        # (matches b2b_offer_supplier_wh_sku — see create-supplieroffer-altkey.py).
+        # The same raw_sku at one warehouse can come from different suppliers, and
+        # the same supplier+sku can stock at different warehouses, so all three
+        # segments are part of the offer's identity. Keep the seeder dedup and the
+        # flow's PATCH-upsert on the SAME triple so they never diverge.
         existing = None
         if sup_id and raw_sku:
             filt = (
                 f"b2b_raw_sku eq '{raw_sku}' and "
                 f"_b2b_supplier_value eq {sup_id}"
             )
+            if wh_id:
+                filt += f" and _b2b_warehouse_value eq {wh_id}"
             r = s.get(
                 f"{API}/{set_name}",
                 params={"$filter": filt, "$top": 1, "$select": PK["b2b_supplieroffer"]},

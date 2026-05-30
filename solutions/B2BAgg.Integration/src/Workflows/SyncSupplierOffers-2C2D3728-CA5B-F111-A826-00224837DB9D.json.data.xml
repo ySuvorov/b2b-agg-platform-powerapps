@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Workflow WorkflowId="{1821a52a-925a-f111-a826-00224837db9d}" Name="Button -&gt; HTTP,Parse JSON,Apply to each 2,Apply to each,Add a new row" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <JsonFileName>/Workflows/Button-HTTPParseJSONApplytoeach2ApplytoeachAddanew-1821A52A-925A-F111-A826-00224837DB9D.json</JsonFileName>
+<Workflow WorkflowId="{2c2d3728-ca5b-f111-a826-00224837db9d}" Name="Sync Supplier Offers" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonFileName>/Workflows/SyncSupplierOffers-2C2D3728-CA5B-F111-A826-00224837DB9D.json</JsonFileName>
   <Type>1</Type>
   <Subprocess>0</Subprocess>
   <Category>5</Category>
@@ -22,6 +22,6 @@
   <ModernFlowType>0</ModernFlowType>
   <PrimaryEntity>none</PrimaryEntity>
   <LocalizedNames>
-    <LocalizedName languagecode="1033" description="Button -&gt; HTTP,Parse JSON,Apply to each 2,Apply to each,Add a new row" />
+    <LocalizedName languagecode="1033" description="Sync Supplier Offers" />
   </LocalizedNames>
 </Workflow>

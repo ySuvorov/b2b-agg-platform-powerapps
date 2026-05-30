@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Connector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <connectorid>db4edcc0-56d0-4bee-9b28-0551233267d1</connectorid>
+  <description>Retrieves raw product feed data from B2B tire suppliers. Each supplier exposes a JSON array of tire listings including SKU, pricing, stock levels, and logistics metadata. Used by the B2B Market Intelligence &amp; Supplier Aggregation Platform to ingest supplier data into Dataverse via Power Automate flows.
+</description>
+  <displayname>FetchSupplierFeed</displayname>
+  <iconbrandcolor>#007ee5</iconbrandcolor>
+  <name>b2b_fetchsupplierfeed</name>
+  <connectortype>1</connectortype>
+  <openapidefinition>/Connector/b2b_fetchsupplierfeed_openapidefinition.json</openapidefinition>
+  <connectionparameters>/Connector/b2b_fetchsupplierfeed_connectionparameters.json</connectionparameters>
+  <policytemplateinstances>/Connector/b2b_fetchsupplierfeed_policytemplateinstances.json</policytemplateinstances>
+  <iconblob>/Connector/b2b_fetchsupplierfeed_iconblob.Png</iconblob>
+</Connector>

@@ -100,18 +100,26 @@ There are two numbering series in the live environment. **Do not renumber**
 ## Alternate keys (idempotent upsert — for P5 flow)
 
 - `b2b_skumap`: composite alt key on (`b2b_supplier`, `b2b_raw_sku`).
-- `b2b_supplieroffer`: alt key `b2b_offer_supplier_wh_sku` on the **triple**
-  (`b2b_supplier` + `b2b_warehouse` + `b2b_raw_sku`) — created by
+- `b2b_supplieroffer`: alt key **`b2b_offer_supplier_wh_sku`** on the **triple**
+  (`b2b_supplier` + `b2b_warehouse` + `b2b_raw_sku`), **Active** — created by
   `scripts/create-supplieroffer-altkey.py`. The same raw SKU at one warehouse can
   come from different suppliers, and the same supplier+SKU can stock at different
   warehouses, so all three segments are part of the offer identity. The seeder
   dedup (`seed-via-az-token.py`) and the P5 flow PATCH-upsert use this same triple
   so they never diverge.
+  > ⚠️ **Web API alt-key URL gotcha (P5):** lookup key segments MUST use the
+  > `_value` form, not the logical name. Working PATCH-upsert URL:
+  > `…/b2b_supplieroffers(_b2b_supplier_value=<guid>,_b2b_warehouse_value=<guid>,b2b_raw_sku='<sku>')`.
+  > The plain `b2b_supplier=<guid>` form returns `400 0x80060888`. The Dataverse
+  > connector "Update a row" cannot build this composite-lookup key URL (returns a
+  > bogus IIS 404) — the P5 sync flow upserts via the **HTTP with Microsoft Entra
+  > ID** connector (raw PATCH, connection-managed auth, no inline secret).
 
 ## Solution membership
 
 All 10 entities are RootComponents of **`B2BAgg_Core`** (unmanaged) and exported
-to `solutions/B2BAgg.Core/src/Entities/`. The sync flow lives under
-`src/Workflows/` (scrubbed; rebuilt in P5). Module split into `B2BAgg.AI`
-(skumap/dataconflict) and `B2BAgg.Integration` (flows) is **deferred** — noted in
-PROGRESS as a follow-up ALM refinement.
+to `solutions/B2BAgg.Core/src/Entities/`. The rebuilt **`Sync Supplier Offers`**
+flow + the **FetchSupplierFeed** custom connector live in **`B2BAgg_Integration`**
+(exported to `solutions/B2BAgg.Integration/src/`); the old scrubbed flow in
+`B2BAgg_Core/src/Workflows/` was deleted in P5. Module split for `B2BAgg.AI`
+(skumap/dataconflict) is still **deferred** — noted in PROGRESS as a follow-up.

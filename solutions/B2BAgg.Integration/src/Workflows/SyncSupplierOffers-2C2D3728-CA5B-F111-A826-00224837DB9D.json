@@ -1,0 +1,299 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharedcommondataserviceforapps_3bab7"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_fetchsupplierfeed-5ff2474a96290105f9-5f9b7b7ec1caa88f55": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharedfetchsupplierfeed5ff2474a96290105f95f9b7b7ec1caa88f55_167ad"
+        },
+        "api": {
+          "name": "shared_fetchsupplierfeed-5ff2474a96290105f9-5f9b7b7ec1caa88f55",
+          "logicalName": "b2b_fetchsupplierfeed"
+        }
+      },
+      "shared_webcontents": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharedwebcontents_9ffa6"
+        },
+        "api": {
+          "name": "shared_webcontents"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "4a7e2cbd-9101-4b8d-9402-310da91874b9"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_supplier": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "b1e6a06e-2fed-4814-adb0-80272a5d8477"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "b2b_suppliers",
+              "$filter": "b2b_name eq 'Rosshinaopt'",
+              "$top": 1
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Get_supplier_feed": {
+          "runAfter": {
+            "Get_supplier": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9ff5892b-d214-4990-971c-fa422a514572"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_fetchsupplierfeed-5ff2474a96290105f9-5f9b7b7ec1caa88f55",
+              "operationId": "GetSupplierFeed",
+              "apiId": ""
+            },
+            "parameters": {
+              "supplier_id": "1"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Parse_feed": {
+          "runAfter": {
+            "Get_supplier_feed": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "713e8747-1d3b-4c57-a4ac-f51b1781236b"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('Get_supplier_feed')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "supplier_id": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "properties": {
+                              "type": "object",
+                              "properties": {
+                                "product_name": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "sku": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "price_usd": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "stock_qty": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "warehouse": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "lead_days": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "For_each_offer": {
+          "foreach": "@body('Parse_feed')?['items']",
+          "actions": {
+            "City_normalized": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "2b37b01c-9210-4eb4-88c8-3c416e76069a"
+              },
+              "type": "Compose",
+              "inputs": "@replace(items('For_each_offer')?['warehouse'], 'Saint-Petersburg', 'Saint Petersburg')"
+            },
+            "Get_warehouse": {
+              "runAfter": {
+                "City_normalized": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "f9f43b05-642b-476d-937e-37d5f496505e"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "b2b_warehouses",
+                  "$filter": "b2b_city eq '@{outputs('City_normalized')}'",
+                  "$top": 1
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Upsert_offer": {
+              "runAfter": {
+                "Get_warehouse": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "de908eb1-ac6b-49bc-a648-43d740d1c406"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_webcontents",
+                  "operationId": "InvokeHttp",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_webcontents"
+                },
+                "parameters": {
+                  "request/method": "PATCH",
+                  "request/url": "https://YOUR-DATAVERSE-ORG.crm.dynamics.com/api/data/v9.2/b2b_supplieroffers(_b2b_supplier_value=@{first(outputs('Get_supplier')?['body/value'])?['b2b_supplierid']},_b2b_warehouse_value=@{first(outputs('Get_warehouse')?['body/value'])?['b2b_warehouseid']},b2b_raw_sku='@{items('For_each_offer')?['sku']}')",
+                  "request/headers": {
+                    "Content-Type": "application/json"
+                  },
+                  "request/body": "{\n  \"b2b_name\": \"Rosshinaopt – @{items('For_each_offer')?['sku']}\",\n  \"b2b_raw_name\": \"@{items('For_each_offer')?['product_name']}\",\n  \"b2b_price\": @{items('For_each_offer')?['price_usd']},\n  \"b2b_stock\": @{items('For_each_offer')?['stock_qty']},\n  \"b2b_currency\": \"USD\",\n  \"b2b_lead_time_days\": @{items('For_each_offer')?['lead_days']},\n  \"b2b_warehouse_city\": \"@{outputs('City_normalized')}\",\n  \"b2b_last_synced\": \"@{utcNow()}\"\n}"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Parse_feed": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bc01f276-6d1c-47b0-8e25-452d4e666571"
+          },
+          "type": "Foreach"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

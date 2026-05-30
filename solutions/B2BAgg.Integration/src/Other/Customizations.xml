@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26053.136" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26053.00136">
+  <Entities />
+  <Roles />
+  <Workflows />
+  <FieldSecurityProfiles />
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <EntityDataProviders />
+  <Connectors />
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="b2b_sharedfetchsupplierfeed5ff2474a96290105f95f9b7b7ec1caa88f55_167ad">
+      <connectionreferencedisplayname>FetchSupplierFeed B2BAgg_Integration-167ad</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_fetchsupplierfeed-5ff2474a96290105f9-5f9b7b7ec1caa88f55</connectorid>
+      <customconnectorid>
+        <connectorid>db4edcc0-56d0-4bee-9b28-0551233267d1</connectorid>
+      </customconnectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="b2b_sharedwebcontents_9ffa6">
+      <connectionreferencedisplayname>HTTP with Microsoft Entra ID (preauthorized) B2BAgg_Integration-9ffa6</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_webcontents</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="b2b_sharedwebcontentsv2_da8fa">
+      <connectionreferencedisplayname>HTTP With Microsoft Entra ID B2BAgg_Integration-da8fa</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_webcontentsv2</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+  </connectionreferences>
+  <Languages>
+    <Language>1033</Language>
+  </Languages>
+</ImportExportXml>
