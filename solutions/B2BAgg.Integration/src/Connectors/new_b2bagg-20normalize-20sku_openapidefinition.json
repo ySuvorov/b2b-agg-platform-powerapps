@@ -1,0 +1,300 @@
+{
+  "swagger": "2.0",
+  "x-ms-connector-name": "NormalizeSku",
+  "info": {
+    "title": "B2BAgg Normalize SKU",
+    "version": "1.0",
+    "description": "Resolves a free-text supplier product name to a canonical product. Deterministic parse (size / load / speed regex + brand / model / homologation dictionaries) builds a canonical key for an exact match; otherwise a size-gated, homologation-aware fuzzy ranker returns ranked candidates and a decision. Used by the \"Normalize SKU\" Power Automate flow (Stages 1\u20132 of the SKU Resolution Engine).\n"
+  },
+  "host": "func-b2bagg-dev.azurewebsites.net",
+  "basePath": "/api",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "apiKeyHeader": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-functions-key"
+    },
+    "apiKeyQuery": {
+      "type": "apiKey",
+      "in": "query",
+      "name": "code"
+    }
+  },
+  "security": [
+    {
+      "apiKeyHeader": []
+    },
+    {
+      "apiKeyQuery": []
+    }
+  ],
+  "paths": {
+    "/normalize-sku": {
+      "post": {
+        "operationId": "NormalizeSku",
+        "summary": "Resolve a raw supplier name to a canonical product",
+        "description": "Returns the match decision (ExactKey | Fuzzy | Ambiguous | NewCandidate), the parsed attributes, and the ranked candidates. The flow branches on `decision`: ExactKey/Fuzzy auto-bind; Ambiguous goes to the AI tie-break and admin queue; NewCandidate goes straight to the admin queue.\n",
+        "x-ms-visibility": "important",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NormalizeRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Match result returned successfully",
+            "schema": {
+              "$ref": "#/definitions/MatchResult"
+            }
+          },
+          "400": {
+            "description": "Missing or invalid request body",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "422": {
+            "description": "No canonical catalog available",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal matcher error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "NormalizeRequest": {
+      "type": "object",
+      "required": [
+        "raw_name"
+      ],
+      "properties": {
+        "raw_name": {
+          "type": "string",
+          "description": "Free-text product name as received from the supplier feed.",
+          "x-ms-summary": "Raw supplier name"
+        },
+        "raw_sku": {
+          "type": "string",
+          "description": "Supplier's internal SKU (echoed back; used by the flow for the memo cache).",
+          "x-ms-summary": "Raw SKU"
+        },
+        "catalog": {
+          "type": "array",
+          "description": "Canonical catalog to match against (normally the flow's Dataverse \"List rows\" of b2b_canonicalproduct). If omitted, the function uses a bundled snapshot.\n",
+          "items": {
+            "$ref": "#/definitions/CatalogItem"
+          }
+        }
+      }
+    },
+    "CatalogItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "x-ms-summary": "Canonical ID"
+        },
+        "name": {
+          "type": "string",
+          "x-ms-summary": "Canonical name"
+        },
+        "brand": {
+          "type": "string",
+          "x-ms-summary": "Brand"
+        },
+        "model": {
+          "type": "string",
+          "x-ms-summary": "Model"
+        },
+        "width": {
+          "type": "integer",
+          "x-ms-summary": "Width"
+        },
+        "profile": {
+          "type": "integer",
+          "x-ms-summary": "Profile"
+        },
+        "diameter": {
+          "type": "integer",
+          "x-ms-summary": "Diameter"
+        },
+        "load_index": {
+          "type": "integer",
+          "x-ms-summary": "Load index"
+        },
+        "speed_index": {
+          "type": "string",
+          "x-ms-summary": "Speed index"
+        },
+        "homologation": {
+          "type": "string",
+          "x-ms-summary": "Homologation"
+        },
+        "runflat": {
+          "type": "boolean",
+          "x-ms-summary": "Run-flat"
+        },
+        "extraload": {
+          "type": "boolean",
+          "x-ms-summary": "Extra load"
+        }
+      }
+    },
+    "MatchResult": {
+      "type": "object",
+      "properties": {
+        "raw_name": {
+          "type": "string",
+          "x-ms-summary": "Raw name"
+        },
+        "raw_sku": {
+          "type": "string",
+          "x-ms-summary": "Raw SKU"
+        },
+        "decision": {
+          "type": "string",
+          "description": "ExactKey | Fuzzy | Ambiguous | NewCandidate",
+          "x-ms-summary": "Decision",
+          "enum": [
+            "ExactKey",
+            "Fuzzy",
+            "Ambiguous",
+            "NewCandidate"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "description": "ExactKey | Fuzzy | null",
+          "x-ms-summary": "Method"
+        },
+        "confidence": {
+          "type": "number",
+          "format": "double",
+          "description": "0..1 confidence of the top candidate.",
+          "x-ms-summary": "Confidence"
+        },
+        "canonical_id": {
+          "type": "string",
+          "description": "Matched canonical id (only when decision is ExactKey or Fuzzy).",
+          "x-ms-summary": "Canonical ID"
+        },
+        "canonical_name": {
+          "type": "string",
+          "x-ms-summary": "Canonical name"
+        },
+        "parsed": {
+          "$ref": "#/definitions/ParsedTire"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Candidate"
+          }
+        }
+      }
+    },
+    "ParsedTire": {
+      "type": "object",
+      "properties": {
+        "brand": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer"
+        },
+        "profile": {
+          "type": "integer"
+        },
+        "diameter": {
+          "type": "integer"
+        },
+        "load_index": {
+          "type": "integer"
+        },
+        "speed_index": {
+          "type": "string"
+        },
+        "homologation": {
+          "type": "string"
+        },
+        "runflat": {
+          "type": "boolean"
+        },
+        "extraload": {
+          "type": "boolean"
+        },
+        "raw": {
+          "type": "string"
+        }
+      }
+    },
+    "Candidate": {
+      "type": "object",
+      "properties": {
+        "canonical_id": {
+          "type": "string",
+          "x-ms-summary": "Candidate ID"
+        },
+        "canonical_name": {
+          "type": "string",
+          "x-ms-summary": "Candidate name"
+        },
+        "score": {
+          "type": "number",
+          "format": "double",
+          "x-ms-summary": "Score"
+        },
+        "size_match": {
+          "type": "boolean",
+          "x-ms-summary": "Size match"
+        },
+        "homolog_match": {
+          "type": "boolean",
+          "x-ms-summary": "Homologation match"
+        },
+        "runflat_match": {
+          "type": "boolean",
+          "x-ms-summary": "Run-flat match"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "x-ms-summary": "Error message"
+        },
+        "status": {
+          "type": "integer",
+          "x-ms-summary": "Status code"
+        }
+      }
+    }
+  }
+}

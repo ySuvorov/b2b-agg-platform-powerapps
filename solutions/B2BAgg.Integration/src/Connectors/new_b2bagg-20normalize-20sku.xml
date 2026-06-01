@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Connector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <connectorid>e37e6b69-945c-f111-a826-00224837db9d</connectorid>
+  <description></description>
+  <displayname>B2BAgg Normalize SKU</displayname>
+  <iconbrandcolor>#3b4682</iconbrandcolor>
+  <name>new_b2bagg-20normalize-20sku</name>
+  <connectortype>1</connectortype>
+  <scriptoperations>[]</scriptoperations>
+  <openapidefinition>/Connector/new_b2bagg-20normalize-20sku_openapidefinition.json</openapidefinition>
+  <connectionparameters>/Connector/new_b2bagg-20normalize-20sku_connectionparameters.json</connectionparameters>
+  <policytemplateinstances>/Connector/new_b2bagg-20normalize-20sku_policytemplateinstances.json</policytemplateinstances>
+</Connector>

@@ -1,0 +1,1 @@
+{"api_key":{"type":"securestring","uiDefinition":{"displayName":"x-functions-key","description":"The x-functions-key for the normalize-sku Azure Function","tooltip":"Provide your x-functions-key","constraints":{"tabIndex":2,"clearText":false,"required":"true"}}}}

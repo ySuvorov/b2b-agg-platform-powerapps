@@ -112,14 +112,37 @@ Respond with strict JSON only:
 > ADR-004) — which is exactly why the deterministic engine is primary and the
 > Prompt enforces the homologation rule.
 
-## MDA "Data Conflicts" Kanban (in `b2b_B2BAggOperations`)
+## MDA "Data Conflicts" review board (in `b2b_B2BAggOperations`)
 
-- Add table **Data Conflict** to the **Operations** area.
+> **Decision (Option B):** the native **Kanban control is hard-locked to the
+> Opportunity and Activity tables only** (Microsoft docs:
+> <https://learn.microsoft.com/dynamics365/sales/add-kanban-control> — *"The
+> Kanban control works only on the Opportunity and Activity tables."*). It does
+> not appear in *Add Control* for a custom table, and BPF-Kanban is likewise
+> Opportunity-only. Rather than take a third-party PCF dependency into the
+> solution, we visualise the conflict queue natively with a **grouped view + a
+> status chart** — same demo story, zero non-Microsoft components, clean ALM.
+
+Built headless (committed scripts, idempotent, az-token auth):
+
+- **`scripts/create-dataconflict-chart.py`** → system chart **"Conflicts by
+  Status"** (`savedqueryvisualization`): count of conflicts grouped by
+  `b2b_status`. Verified live: Pending 2 / NeedsReview 1 / NewCandidate 1.
+- **`scripts/configure-dataconflict-view.py`** → public view **"Active Data
+  Conflicts"** columns = Raw SKU, Raw Supplier Name, Status, AI Confidence,
+  Suggested Canonical; sorted by Status then AI Confidence desc (same-status
+  rows cluster → reads as a grouped board; the read-only grid also offers a
+  runtime *Group by → Status*).
+
+YS browser step (the only one left here): Operations app → **Data Conflicts** →
+**Show Chart** → pick **"Conflicts by Status"**. Optionally demo runtime
+*Group by Status* on the grid.
+
 - Status column `b2b_status`: Pending / NeedsReview / NewCandidate / Approved /
-  Rejected / AutoResolved — use it as the Kanban swimlane field.
-- Main form fields: Raw Supplier Name, Raw SKU, Supplier Offer (lookup),
-  Suggested Canonical (lookup), AI Confidence, Candidates (JSON), Status,
-  Reviewed By.
+  Rejected / AutoResolved.
+- Main form fields (form polish, optional for demo): Raw Supplier Name, Raw SKU,
+  Supplier Offer (lookup), Suggested Canonical (lookup), AI Confidence,
+  Candidates (JSON), Status, Reviewed By.
 - Approve action (a flow or a model-driven command): set Status = Approved, set
   the offer's `b2b_canonical_product` = Suggested Canonical, and **upsert
   `b2b_skumap`** so the match is learned (Stage 0 next time).

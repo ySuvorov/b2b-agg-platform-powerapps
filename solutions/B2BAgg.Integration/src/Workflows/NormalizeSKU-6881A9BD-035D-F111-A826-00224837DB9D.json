@@ -1,0 +1,624 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharedcommondataserviceforapps_3bab7"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_new-5fb2bagg-20normalize-20sku-5ff2474a96290105f9": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharednew5fb2bagg20normalize20sku5ff2474a96290105f9_6d354"
+        },
+        "api": {
+          "name": "shared_new-5fb2bagg-20normalize-20sku-5ff2474a96290105f9",
+          "logicalName": "new_b2bagg-20normalize-20sku"
+        }
+      },
+      "shared_webcontents": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharedwebcontents_9ffa6"
+        },
+        "api": {
+          "name": "shared_webcontents"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "7b9ec380-c3f5-430c-8ba3-2ae4db209289"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "b2b_supplieroffer",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "b2b_raw_name,b2b_raw_sku,b2b_supplier,b2b_warehouse,b2b_canonical_product",
+              "subscriptionRequest/filterexpression": "b2b_canonical_product eq null"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Stage0_Cache": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "3676c1d6-5d0b-43b7-9caf-e9ee9f8cb838"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "b2b_skumaps",
+              "$filter": "_b2b_supplier_value eq @{triggerOutputs()?['body/_b2b_supplier_value']} and b2b_raw_sku eq '@{triggerOutputs()?['body/b2b_raw_sku']}'",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Stage0_Hit": {
+          "actions": {
+            "Update_a_row": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "7cc9f248-6dd8-49b5-b6fe-f4745f4cc2d8"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "b2b_supplieroffers",
+                  "recordId": "@triggerOutputs()?['body/b2b_supplierofferid']",
+                  "item/b2b_canonical_product@odata.bind": "b2b_canonicalproducts(@{first(outputs('Stage0_Cache')?['body/value'])?['_b2b_canonical_product_value']})",
+                  "item/b2b_last_synced": "@utcNow()",
+                  "item/b2b_match_confidence": 1,
+                  "item/b2b_match_method": 10000
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Terminate": {
+              "runAfter": {
+                "Update_a_row": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "597d85cc-af39-4bff-ac3f-2db69e583c5a"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {
+            "Stage0_Cache": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "greater": [
+              "@length(outputs('Stage0_Cache')?['body/value'])",
+              0
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0ff4767b-07ec-4be4-a3be-270e402c48c4"
+          },
+          "type": "If"
+        },
+        "ListCatalog": {
+          "runAfter": {
+            "Stage0_Hit": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "21ea767b-d15c-4d4b-bc9e-4ce127553ed9"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "b2b_canonicalproducts",
+              "$select": "b2b_canonicalproductid,b2b_name,b2b_brand,b2b_model,b2b_width,b2b_profile,b2b_diameter,b2b_load_index,b2b_speed_index,b2b_homologation,b2b_runflat,b2b_extraload",
+              "$top": 5000
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "ProjectCatalog": {
+          "runAfter": {
+            "ListCatalog": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1f74a465-a6ae-4929-8919-b3e621492383"
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('ListCatalog')?['body/value']",
+            "select": {
+              "id": "@{item()?['b2b_canonicalproductid']}",
+              "name": "@{item()?['b2b_name']}",
+              "brand": "@{item()?['b2b_brand']}",
+              "model": "@{item()?['b2b_model']}",
+              "width": "@item()?['b2b_width']",
+              "profile": "@item()?['b2b_profile']",
+              "diameter": "@item()?['b2b_diameter']",
+              "load_index": "@item()?['b2b_load_index']",
+              "speed_index": "@{item()?['b2b_speed_index']}",
+              "homologation": "@{if(equals(coalesce(item()?['b2b_homologation@OData.Community.Display.V1.FormattedValue'],'None'),'None'),'',item()?['b2b_homologation@OData.Community.Display.V1.FormattedValue'])}",
+              "runflat": "@coalesce(item()?['b2b_runflat'], false)",
+              "extraload": "@coalesce(item()?['b2b_extraload'], false)"
+            }
+          }
+        },
+        "CallEngine": {
+          "runAfter": {
+            "ProjectCatalog": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2a1292d5-2e79-4537-98fc-d5aa9537ca94"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_new-5fb2bagg-20normalize-20sku-5ff2474a96290105f9",
+              "operationId": "NormalizeSku",
+              "apiId": ""
+            },
+            "parameters": {
+              "body/raw_name": "@triggerOutputs()?['body/b2b_raw_name']",
+              "body/raw_sku": "@triggerOutputs()?['body/b2b_raw_sku']",
+              "body/catalog": "@body('ProjectCatalog')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "OnDecision": {
+          "runAfter": {
+            "CallEngine": [
+              "Succeeded"
+            ]
+          },
+          "cases": {
+            "Case": {
+              "case": "ExactKey",
+              "actions": {
+                "Update_a_row_2": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "447a5988-b161-4fd2-b3a6-8fa4aec005d9"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "b2b_supplieroffers",
+                      "recordId": "@triggerOutputs()?['body/b2b_supplierofferid']",
+                      "item/b2b_canonical_product@odata.bind": "b2b_canonicalproducts(@{body('CallEngine')?['canonical_id']})",
+                      "item/b2b_last_synced": "@utcNow()",
+                      "item/b2b_match_confidence": "@body('CallEngine')?['confidence']",
+                      "item/b2b_match_method": 10001
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "LearnMapping": {
+                  "runAfter": {
+                    "Update_a_row_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "8d0cf93d-23a8-4ef5-a85a-1c9d85357865"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_webcontents",
+                      "operationId": "InvokeHttp",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_webcontents"
+                    },
+                    "parameters": {
+                      "request/method": "PATCH",
+                      "request/url": "https://YOUR-DATAVERSE-ORG.crm.dynamics.com/api/data/v9.2/b2b_skumaps(_b2b_supplier_value=@{triggerOutputs()?['body/_b2b_supplier_value']},b2b_raw_sku='@{triggerOutputs()?['body/b2b_raw_sku']}')",
+                      "request/headers": {
+                        "Content-Type": "application/json"
+                      },
+                      "request/body": "{\n  \"b2b_name\": \"@{triggerOutputs()?['body/b2b_raw_sku']}\",\n  \"b2b_match_method\": 10001,\n  \"b2b_confidence\": @{body('CallEngine')?['confidence']},\n  \"b2b_canonical_product@odata.bind\": \"/b2b_canonicalproducts(@{body('CallEngine')?['canonical_id']})\"\n}"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              }
+            },
+            "Case_2": {
+              "case": "Fuzzy",
+              "actions": {
+                "Update_a_row_3": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "2987b537-b907-4e45-9a38-3a8533f72e04"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateOnlyRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "b2b_supplieroffers",
+                      "recordId": "@triggerOutputs()?['body/b2b_supplierofferid']",
+                      "item/b2b_canonical_product@odata.bind": "b2b_canonicalproducts(@{body('CallEngine')?['canonical_id']})",
+                      "item/b2b_last_synced": "@utcNow()",
+                      "item/b2b_match_confidence": "@body('CallEngine')?['confidence']",
+                      "item/b2b_match_method": 10002
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "LearnMapping2": {
+                  "runAfter": {
+                    "Update_a_row_3": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "690208eb-be11-479e-862b-9bfd29ec0966"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_webcontents",
+                      "operationId": "InvokeHttp",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_webcontents"
+                    },
+                    "parameters": {
+                      "request/method": "PATCH",
+                      "request/url": "https://YOUR-DATAVERSE-ORG.crm.dynamics.com/api/data/v9.2/b2b_skumaps(_b2b_supplier_value=@{triggerOutputs()?['body/_b2b_supplier_value']},b2b_raw_sku='@{triggerOutputs()?['body/b2b_raw_sku']}')",
+                      "request/headers": {
+                        "Content-Type": "application/json"
+                      },
+                      "request/body": "{\n  \"b2b_name\": \"@{triggerOutputs()?['body/b2b_raw_sku']}\",\n  \"b2b_match_method\": 10002,\n  \"b2b_confidence\": @{body('CallEngine')?['confidence']},\n  \"b2b_canonical_product@odata.bind\": \"/b2b_canonicalproducts(@{body('CallEngine')?['canonical_id']})\"\n}"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              }
+            },
+            "Case_3": {
+              "case": "NewCandidate",
+              "actions": {
+                "Add_a_new_row": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "c5c32572-95e7-4b6f-9f61-5fcc378bde3e"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "b2b_dataconflicts",
+                      "item/b2b_candidates_json": "@string(body('CallEngine')?['candidates'])",
+                      "item/b2b_name": "@substring(concat('Conflict: ', triggerOutputs()?['body/b2b_raw_name']), 0, min(100, length(concat('Conflict: ', triggerOutputs()?['body/b2b_raw_name']))))",
+                      "item/b2b_raw_sku": "@triggerOutputs()?['body/b2b_raw_sku']",
+                      "item/b2b_raw_name": "@triggerOutputs()?['body/b2b_raw_name']",
+                      "item/b2b_status": 10002,
+                      "item/b2b_supplier_offer@odata.bind": "b2b_supplieroffers(@{triggerOutputs()?['body/b2b_supplierofferid']})"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "actions": {
+              "Run_a_prompt": {
+                "runAfter": {
+                  "TopCandidates": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "84ef3a1f-b52c-4984-986f-f76bd4b6fe75",
+                  "flowSystemMetadata": {
+                    "portalOperationId": "aibuilderpredict_customprompt",
+                    "portalOperationGroup": "aibuilder",
+                    "portalOperationApiDisplayNameOverride": "AI Builder",
+                    "portalOperationIconOverride": "https://content.powerapps.com/resource/makerx/static/pauto/images/designeroperations/aibuilderIcon2026.8e878397.png",
+                    "portalOperationBrandColorOverride": "#0A76C4",
+                    "portalOperationApiTierOverride": "Standard"
+                  }
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "aibuilderpredict_customprompt",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "recordId": "abecd704-85d4-4d36-8237-e0108c0a1918",
+                    "item/requestv2/RawName": "@triggerOutputs()?['body/b2b_raw_name']",
+                    "item/requestv2/Candidates": "@outputs('TopCandidates')",
+                    "item/source": {
+                      "consumptionSource": "PowerAutomate",
+                      "partnerSource": "AIBuilder",
+                      "consumptionSourceVersion": "Flow",
+                      "partnerSourceVersion": "badcf764-78bf-fa61-21ef-91f5d3ed2657"
+                    }
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              },
+              "ParsePrompt": {
+                "runAfter": {
+                  "Run_a_prompt": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "a42b1bcd-c619-404a-a35e-2169976e3bb1"
+                },
+                "type": "ParseJson",
+                "inputs": {
+                  "content": "@outputs('Run_a_prompt')?['body/responsev2/predictionOutput/text']",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "canonical_id": {
+                        "type": "string"
+                      },
+                      "confidence": {
+                        "type": "number"
+                      },
+                      "reason": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "Predict": {
+                "runAfter": {
+                  "ParsePrompt": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "7589817e-e543-4ab7-973b-867f52dff297",
+                  "flowSystemMetadata": {
+                    "portalOperationId": "aibuilderpredict",
+                    "portalOperationGroup": "aibuilder",
+                    "portalOperationApiDisplayNameOverride": "AI Builder",
+                    "portalOperationIconOverride": "https://content.powerapps.com/resource/makerx/static/pauto/images/designeroperations/aibuilderIcon2026.8e878397.png",
+                    "portalOperationBrandColorOverride": "#0A76C4",
+                    "portalOperationApiTierOverride": "Standard"
+                  }
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_commondataserviceforapps",
+                    "operationId": "aibuilderpredict",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                  },
+                  "parameters": {
+                    "recordId": "2725b63b-6b48-4fdb-a205-51bb1d94f7f4",
+                    "item/requestv2/language": "English",
+                    "item/requestv2/text": "@triggerOutputs()?['body/b2b_raw_name']",
+                    "item/source": {
+                      "consumptionSource": "PowerAutomate",
+                      "partnerSource": "AIBuilder",
+                      "consumptionSourceVersion": "Flow",
+                      "partnerSourceVersion": "badcf764-78bf-fa61-21ef-91f5d3ed2657"
+                    }
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              },
+              "AIConfident": {
+                "actions": {
+                  "Update_a_row_4": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "fb2ab6a8-76ca-4c4e-a68d-65c8200359d0"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_commondataserviceforapps",
+                        "operationId": "UpdateOnlyRecord",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                      },
+                      "parameters": {
+                        "entityName": "b2b_supplieroffers",
+                        "recordId": "@triggerOutputs()?['body/b2b_supplierofferid']",
+                        "item/b2b_canonical_product@odata.bind": "b2b_canonicalproducts(@{body('ParsePrompt')?['canonical_id']})",
+                        "item/b2b_last_synced": "@utcNow()",
+                        "item/b2b_match_confidence": "@body('ParsePrompt')?['confidence']",
+                        "item/b2b_match_method": 10003
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  },
+                  "Invoke_an_HTTP_request": {
+                    "runAfter": {
+                      "Update_a_row_4": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "7708798d-b7cd-4a4b-867c-0eeba5a13e8c"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_webcontents",
+                        "operationId": "InvokeHttp",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_webcontents"
+                      },
+                      "parameters": {
+                        "request/method": "PATCH",
+                        "request/url": "https://YOUR-DATAVERSE-ORG.crm.dynamics.com/api/data/v9.2/b2b_skumaps(_b2b_supplier_value=@{triggerOutputs()?['body/_b2b_supplier_value']},b2b_raw_sku='@{triggerOutputs()?['body/b2b_raw_sku']}')",
+                        "request/headers": {
+                          "Content-Type": "application/json"
+                        },
+                        "request/body": "{\n  \"b2b_name\": \"@{triggerOutputs()?['body/b2b_raw_sku']}\",\n  \"b2b_match_method\": 10003,\n  \"b2b_confidence\": @{body('ParsePrompt')?['confidence']},\n  \"b2b_canonical_product@odata.bind\": \"/b2b_canonicalproducts(@{body('ParsePrompt')?['canonical_id']})\"\n}"
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  }
+                },
+                "runAfter": {
+                  "Predict": [
+                    "Succeeded"
+                  ]
+                },
+                "else": {
+                  "actions": {
+                    "Add_a_new_row_2": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "816461f8-5b22-4f99-b907-134efc366793"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "CreateRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "b2b_dataconflicts",
+                          "item/b2b_ai_confidence": "@body('ParsePrompt')?['confidence']",
+                          "item/b2b_candidates_json": "@string(body('CallEngine')?['candidates'])",
+                          "item/b2b_name": "@concat('Conflict: ', triggerOutputs()?['body/b2b_raw_name'])",
+                          "item/b2b_raw_sku": "@triggerOutputs()?['body/b2b_raw_sku']",
+                          "item/b2b_raw_name": "@triggerOutputs()?['body/b2b_raw_name']",
+                          "item/b2b_status": 10000,
+                          "item/b2b_suggested_canonical@odata.bind": "@if(equals(body('ParsePrompt')?['canonical_id'], 'NONE'), '', concat('b2b_canonicalproducts(', body('ParsePrompt')?['canonical_id'], ')'))",
+                          "item/b2b_supplier_offer@odata.bind": "b2b_supplieroffers(@{triggerOutputs()?['body/b2b_supplierofferid']})"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    }
+                  }
+                },
+                "expression": {
+                  "and": [
+                    {
+                      "not": {
+                        "equals": [
+                          "@body('ParsePrompt')?['canonical_id']",
+                          "NONE"
+                        ]
+                      }
+                    },
+                    {
+                      "greaterOrEquals": [
+                        "@body('ParsePrompt')?['confidence']",
+                        0.85
+                      ]
+                    }
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "3c71e973-f790-4f1d-b279-7ecdb2acde56"
+                },
+                "type": "If"
+              },
+              "CandidateLines": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "2d754cd7-cc60-4c69-be1d-483c7fe06a14"
+                },
+                "type": "Select",
+                "inputs": {
+                  "from": "@take(body('CallEngine')?['candidates'], 5)",
+                  "select": {
+                    "": "@{concat(item()?['canonical_id'], ' :: ', item()?['canonical_name'])}"
+                  }
+                }
+              },
+              "TopCandidates": {
+                "runAfter": {
+                  "CandidateLines": [
+                    "Succeeded"
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "17f15d11-a902-41b8-a080-106638efe1df"
+                },
+                "type": "Compose",
+                "inputs": "@join(body('CandidateLines'), decodeUriComponent('%0A'))"
+              }
+            }
+          },
+          "expression": "@body('CallEngine')?['decision']",
+          "metadata": {
+            "operationMetadataId": "aa279cab-6ff7-4e7d-bc07-135af6879609"
+          },
+          "type": "Switch"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

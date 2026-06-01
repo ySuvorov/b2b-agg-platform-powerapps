@@ -24,6 +24,17 @@
       <statecode>0</statecode>
       <statuscode>1</statuscode>
     </connectionreference>
+    <connectionreference connectionreferencelogicalname="b2b_sharednew5fb2bagg20normalize20sku5ff2474a96290105f9_6d354">
+      <connectionreferencedisplayname>B2BAgg Normalize SKU B2BAgg_Integration-6d354</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_new-5fb2bagg-20normalize-20sku-5ff2474a96290105f9</connectorid>
+      <customconnectorid>
+        <connectorid>e37e6b69-945c-f111-a826-00224837db9d</connectorid>
+      </customconnectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
     <connectionreference connectionreferencelogicalname="b2b_sharedwebcontents_9ffa6">
       <connectionreferencedisplayname>HTTP with Microsoft Entra ID (preauthorized) B2BAgg_Integration-9ffa6</connectionreferencedisplayname>
       <connectorid>/providers/Microsoft.PowerApps/apis/shared_webcontents</connectorid>

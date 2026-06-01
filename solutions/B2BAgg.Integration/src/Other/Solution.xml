@@ -79,20 +79,70 @@
     </Publisher>
     <RootComponents>
       <RootComponent type="29" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" behavior="0" />
+      <RootComponent type="29" id="{6881a9bd-035d-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="372" id="{db4edcc0-56d0-4bee-9b28-0551233267d1}" schemaName="b2b_fetchsupplierfeed" behavior="0" />
+      <RootComponent type="372" id="{e37e6b69-945c-f111-a826-00224837db9d}" schemaName="new_b2bagg-20normalize-20sku" behavior="0" />
     </RootComponents>
     <MissingDependencies>
       <MissingDependency>
+        <Required type="1" schemaName="b2b_canonicalproduct" displayName="Canonical Product" solution="Active" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_dataconflict" displayName="Data Conflict" solution="Active" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_skumap" displayName="SKU Map" solution="Active" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
         <Required type="1" schemaName="b2b_supplier" displayName="Supplier" solution="Active" />
         <Dependent type="29" displayName="Sync Supplier Offers" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_supplieroffer" displayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
         <Required type="1" schemaName="b2b_warehouse" displayName="Warehouse" solution="Active" />
         <Dependent type="29" displayName="Sync Supplier Offers" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
+        <Required type="2" schemaName="b2b_canonical_product" displayName="Canonical Product" parentSchemaName="b2b_supplieroffer" parentDisplayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="b2b_raw_name" displayName="Raw Supplier Name" parentSchemaName="b2b_supplieroffer" parentDisplayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="b2b_raw_sku" displayName="Raw SKU" parentSchemaName="b2b_supplieroffer" parentDisplayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="b2b_supplier" displayName="Supplier" parentSchemaName="b2b_supplieroffer" parentDisplayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="b2b_warehouse" displayName="Warehouse" parentSchemaName="b2b_supplieroffer" parentDisplayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="401" displayName="SKU Classifier" solution="Active" id="{2725b63b-6b48-4fdb-a205-51bb1d94f7f4}" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="401" displayName="SKU Matcher" solution="Active" id="{abecd704-85d4-4d36-8237-e0108c0a1918}" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
         <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
         <Dependent type="29" displayName="Sync Supplier Offers" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
+        <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
       </MissingDependency>
     </MissingDependencies>
   </SolutionManifest>
