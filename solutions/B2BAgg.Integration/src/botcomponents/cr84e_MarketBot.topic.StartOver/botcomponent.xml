@@ -1,0 +1,10 @@
+<botcomponent schemaname="cr84e_MarketBot.topic.StartOver">
+  <componenttype>9</componenttype>
+  <iscustomizable>0</iscustomizable>
+  <name>Start Over</name>
+  <parentbotid>
+    <schemaname>cr84e_MarketBot</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>

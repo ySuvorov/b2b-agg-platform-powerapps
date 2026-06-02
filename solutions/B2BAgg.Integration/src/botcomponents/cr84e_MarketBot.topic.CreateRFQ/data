@@ -1,0 +1,137 @@
+kind: AdaptiveDialog
+modelDescription: Creates a Request for Quotation (RFQ) for a product from a supplier. Trigger this when the user wants to create, send, or raise an RFQ, request a quote, request for quotation, or place an order.
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: Question
+      id: question_ahjwYV
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.RFQProduct
+      prompt: `Which product?`
+      entity: StringPrebuiltEntity
+
+    - kind: Question
+      id: question_MlhvP1
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.RFQSupplier
+      prompt: `Which supplier? (e.g. Rosshinaopt, Koleso.ru, TyreCenter SPB)`
+      entity: StringPrebuiltEntity
+
+    - kind: Question
+      id: question_dMLmA2
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.RFQQty
+      prompt: `How many units?`
+      entity: NumberPrebuiltEntity
+
+    - kind: SendActivity
+      id: sendActivity_ieGu0B
+      activity: |-
+        Please confirm the RFQ:
+        • Product: {Topic.RFQProduct}
+        • Supplier: {Topic.RFQSupplier}
+        • Quantity: {Topic.RFQQty}
+
+    - kind: Question
+      id: question_h5US8b
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.RFQConfirm
+      prompt: `Shall I create it?`
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: Confirm
+              displayName: Confirm
+
+            - id: Cancel
+              displayName: Cancel
+
+    - kind: ConditionGroup
+      id: conditionGroup_NGzJey
+      conditions:
+        - id: conditionItem_gWaVM7
+          condition: =Topic.RFQConfirm = 'cr84e_MarketBot.topic.CreateRFQ.main.question_h5US8b'.Confirm
+          actions:
+            - kind: InvokeFlowAction
+              id: invokeFlowAction_bSaEeB
+              input:
+                binding:
+                  number: =Topic.RFQQty
+                  text: =Topic.RFQSupplier
+                  text_1: =Topic.RFQProduct
+
+              output:
+                binding:
+                  message: Topic.RFQMessage
+                  rfq_id: Topic.RFQId
+                  status: Topic.RFQStatus
+
+              flowId: 62d887cb-1a5e-f111-a826-00224837db9d
+
+            - kind: Question
+              id: question_xTYJpF
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.AnythingElse
+              prompt: |-
+                ✅ {Topic.RFQMessage}
+
+                You can track it in the Operations app under RFQs.
+
+                Is there anything else I can help you with?
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: Yes
+                      displayName: Yes
+
+                    - id: No
+                      displayName: No
+
+            - kind: ConditionGroup
+              id: conditionGroup_aIYRqg
+              conditions:
+                - id: conditionItem_gfJDnT
+                  condition: =Topic.AnythingElse = 'cr84e_MarketBot.topic.CreateRFQ.main.question_xTYJpF'.Yes
+                  actions:
+                    - kind: SendActivity
+                      id: sendActivity_LtHuRq
+                      activity: _`Sure! What would you like to do next — compare prices or create another RFQ?`_
+
+                    - kind: EndDialog
+                      id: Vk9Seg
+
+                - id: conditionItem_UFqzTF
+                  condition: =Topic.AnythingElse = 'cr84e_MarketBot.topic.CreateRFQ.main.question_xTYJpF'.No
+                  actions:
+                    - kind: SendActivity
+                      id: sendActivity_neKXxf
+                      activity: `Great — glad I could help! 👋`
+
+                    - kind: EndDialog
+                      id: BAxJWg
+
+        - id: conditionItem_LXTggs
+          condition: =Topic.RFQConfirm = 'cr84e_MarketBot.topic.CreateRFQ.main.question_h5US8b'.Cancel
+          actions:
+            - kind: SendActivity
+              id: sendActivity_6oTAWj
+              activity: Okay, cancelled — no RFQ created.
+
+inputType: {}
+outputType: {}

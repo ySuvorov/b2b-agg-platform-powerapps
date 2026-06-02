@@ -72,8 +72,8 @@ Analyst ── Power BI Workspace ───┘                       │
 | **Custom Connector** (OpenAPI → Azure Function) | 🔄 In progress | YAML ready at `azure/openapi/fetch-supplier-feed.yaml` |
 | **BPF on `b2b_order`** | ⏳ Roadmap | Designer recipe ready (`docs/governance.md`); ~5-min portal step |
 | **AI Builder SKU Classifier** | ⏳ Roadmap | Custom text classification model |
-| **Copilot Studio agent "MarketBot"** | ⏳ Roadmap | Embedded in Code App side panel |
-| **Power BI workspace** | ⏳ Roadmap | Regional demand, supplier scorecard (Dataverse-backed) |
+| **Copilot Studio agent "MarketBot"** | ✅ Done | Hybrid: generative answers over Dataverse (price compare, inventory, with citations) + deterministic **Create RFQ** topic → Power Automate → Dataverse → MDA (ADR-006). Publish to a live channel needs Copilot Studio PAYG capacity (out of demo budget) — demoed from the test canvas; Code App embed pending capacity |
+| **Power BI workspace** | ✅ Done | Workspace `B2BAgg-Analytics`; report **B2BAgg Market Intelligence** (4 pages, 27 visuals) **code-generated** via Fabric PBIR REST, bound to live Dataverse; embedded as tiles in the Code App `/insights` |
 | **PP Pipelines** Dev → Test → Prod | ⏳ Roadmap | GitHub Actions is the implemented ALM path |
 | **Power Pages** supplier portal | ⏳ Roadmap | External Entra B2B |
 

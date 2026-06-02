@@ -1,0 +1,8 @@
+<botcomponent_workflowset>
+  <botcomponent_workflow botcomponentid.schemaname="cr84e_MarketBot.topic.CreateRFQ" workflowid.workflowid="62d887cb-1a5e-f111-a826-00224837db9d">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+  <botcomponent_workflow botcomponentid.schemaname="cr84e_MarketBot.topic.PriceCompare" workflowid.workflowid="bf55275d-ef5d-f111-a826-00224837db9d">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+</botcomponent_workflowset>

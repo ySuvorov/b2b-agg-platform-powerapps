@@ -1,0 +1,10 @@
+<dvtablesearchentity dvtablesearchentityid="120ccf18-8414-46f7-b35c-c2263b7b14a1">
+  <dvtablesearch>
+    <dvtablesearchid>a0ab75c8-a01c-4fb2-b0b2-dddfeb019fbd</dvtablesearchid>
+  </dvtablesearch>
+  <entitylogicalname>b2b_supplier</entitylogicalname>
+  <iscustomizable>0</iscustomizable>
+  <name>b2b_supplier</name>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</dvtablesearchentity>

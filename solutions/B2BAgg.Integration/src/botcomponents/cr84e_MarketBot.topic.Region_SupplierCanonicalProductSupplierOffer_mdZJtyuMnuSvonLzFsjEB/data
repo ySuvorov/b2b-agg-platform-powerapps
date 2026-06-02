@@ -1,0 +1,4 @@
+kind: KnowledgeSourceConfiguration
+source:
+  kind: DataverseStructuredSearchSource
+  skillConfiguration: Region_SupplierCanonicalProductSupplierOffer_5M2Ajy1yQbsLhxTeVWEhl

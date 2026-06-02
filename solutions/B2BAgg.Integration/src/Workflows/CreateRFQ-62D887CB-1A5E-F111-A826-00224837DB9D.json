@@ -1,0 +1,211 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharedcommondataserviceforapps_3bab7"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "",
+                  "title": "supplier_name",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "description": "",
+                  "title": "product_name",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "number": {
+                  "description": "",
+                  "title": "quantity",
+                  "type": "number",
+                  "x-ms-content-hint": "NUMBER",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "number"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "List_rows": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "b2b_suppliers",
+              "$filter": "b2b_name eq '@{triggerBody()?['text']}'",
+              "$top": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {}
+        },
+        "Condition": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@length(outputs('List_rows')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Add_a_new_row": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "b2b_rfqs",
+                  "item/b2b_notes": "RFQ via MarketBot: @{triggerBody()?['number']} units of @{triggerBody()?['text_1']} from @{triggerBody()?['text']}",
+                  "item/b2b_status": 100000000,
+                  "item/b2b_supplier_id@odata.bind": "/b2b_suppliers(@{first(outputs('List_rows')?['body/value'])?['b2b_supplierid']})"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "CreateRecord",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              }
+            },
+            "Respond_to_the_agent": {
+              "type": "Response",
+              "kind": "Skills",
+              "inputs": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "title": "status",
+                      "description": "",
+                      "type": "string",
+                      "x-ms-content-hint": "TEXT",
+                      "x-ms-dynamically-added": true
+                    },
+                    "rfq_id": {
+                      "title": "rfq_id",
+                      "description": "",
+                      "type": "string",
+                      "x-ms-content-hint": "TEXT",
+                      "x-ms-dynamically-added": true
+                    },
+                    "message": {
+                      "title": "message",
+                      "description": "",
+                      "type": "string",
+                      "x-ms-content-hint": "TEXT",
+                      "x-ms-dynamically-added": true
+                    }
+                  },
+                  "additionalProperties": {}
+                },
+                "statusCode": 200,
+                "body": {
+                  "status": "Created",
+                  "rfq_id": "@{outputs('Add_a_new_row')?['body/b2b_rfq_number']}",
+                  "message": "@{concat('RFQ ', outputs('Add_a_new_row')?['body/b2b_rfq_number'], ' created: ', triggerBody()?['number'], ' units of ', triggerBody()?['text_1'], ' from ', triggerBody()?['text'])}"
+                }
+              },
+              "runAfter": {
+                "Add_a_new_row": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Respond_to_the_agent_1": {
+                "type": "Response",
+                "kind": "Skills",
+                "inputs": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "title": "status",
+                        "description": "",
+                        "type": "string",
+                        "x-ms-content-hint": "TEXT",
+                        "x-ms-dynamically-added": true
+                      },
+                      "rfq_id": {
+                        "title": "rfq_id",
+                        "description": "",
+                        "type": "string",
+                        "x-ms-content-hint": "TEXT",
+                        "x-ms-dynamically-added": true
+                      },
+                      "message": {
+                        "title": "message",
+                        "description": "",
+                        "type": "string",
+                        "x-ms-content-hint": "TEXT",
+                        "x-ms-dynamically-added": true
+                      }
+                    },
+                    "additionalProperties": {}
+                  },
+                  "statusCode": 200,
+                  "body": {
+                    "status": "Supplier not found",
+                    "message": "Couldn't find a supplier named \"@{triggerBody()?['text']}\". Please check the name."
+                  }
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

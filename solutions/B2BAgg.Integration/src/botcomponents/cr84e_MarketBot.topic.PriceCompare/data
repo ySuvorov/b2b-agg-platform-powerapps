@@ -1,0 +1,54 @@
+kind: AdaptiveDialog
+modelDescription: Compares supplier prices for a given tire product. Trigger this when the user asks to compare prices, find the cheapest or lowest price, or asks which supplier is cheapest for a product.
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: Question
+      id: question_EBduJE
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.ProductName
+      prompt: `Which product would you like to compare prices for?`
+      entity: StringPrebuiltEntity
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_DNczgG
+      input:
+        binding:
+          text: =Topic.ProductName
+
+      output:
+        binding:
+          cheapest_price: Topic.CheapestPrice
+          cheapest_supplier: Topic.CheapestSupplier
+          comparison_json: Topic.ComparisonJson
+          result_count: Topic.ResultCount
+
+      flowId: bf55275d-ef5d-f111-a826-00224837db9d
+
+    - kind: ConditionGroup
+      id: conditionGroup_leqBhV
+      conditions:
+        - id: conditionItem_BntjRg
+          condition: =Topic.ResultCount > 0
+          actions:
+            - kind: SendActivity
+              id: sendActivity_PBiGIs
+              activity: |-
+                Here are the offers for {Topic.ProductName}, cheapest first:
+
+                {Topic.ComparisonJson}
+
+                💡 Cheapest: {Topic.CheapestSupplier} at {Topic.CheapestPrice}.
+                Want me to raise an RFQ with {Topic.CheapestSupplier}?
+
+      elseActions:
+        - kind: SendActivity
+          id: sendActivity_CLfS0V
+          activity: No offers found for {Topic.ProductName}. Try another product name.
+
+inputType: {}
+outputType: {}

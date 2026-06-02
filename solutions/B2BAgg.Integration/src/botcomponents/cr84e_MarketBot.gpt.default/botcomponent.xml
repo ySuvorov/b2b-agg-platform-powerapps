@@ -1,0 +1,11 @@
+<botcomponent schemaname="cr84e_MarketBot.gpt.default">
+  <componenttype>15</componenttype>
+  <description>B2B tire market intelligence assistant for procurement buyers.</description>
+  <iscustomizable>0</iscustomizable>
+  <name>MarketBot</name>
+  <parentbotid>
+    <schemaname>cr84e_MarketBot</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>

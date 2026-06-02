@@ -1,0 +1,151 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharedcommondataserviceforapps_3bab7"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "f34ad750-13e9-4465-9361-51221232b862"
+          },
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "ProductName",
+                  "title": "product_name",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "List_rows": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "3ee62b3e-23a1-4ada-b2d1-b5eff323a159"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "b2b_supplieroffers",
+              "$select": "b2b_raw_name,b2b_price,b2b_currency,b2b_stock,_b2b_supplier_value,b2b_warehouse_city,b2b_lead_time_days",
+              "$filter": "contains(b2b_raw_name,'@{triggerBody()?['text']}')",
+              "$orderby": "b2b_price asc",
+              "$top": 20
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Select": {
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d6497bba-dae5-4f8e-ace9-b8ef7e60b214"
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('List_rows')?['body/value']",
+            "select": {
+              "supplier": "@item()?['_b2b_supplier_value@OData.Community.Display.V1.FormattedValue']",
+              "product": "@item()?['b2b_raw_name']",
+              "price": "@item()?['b2b_price']",
+              "currency": "@item()?['b2b_currency']",
+              "stock": "@item()?['b2b_stock']",
+              "city": "@item()?['b2b_warehouse_city']",
+              "lead_days": "@item()?['b2b_lead_time_days']"
+            }
+          }
+        },
+        "Respond_to_the_agent": {
+          "runAfter": {
+            "Select": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3ff4b218-03f2-4abf-9cf3-84362a3c1def"
+          },
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "comparison_json": "@{string(body('Select'))}",
+              "cheapest_supplier": "@{first(body('Select'))?['supplier']}",
+              "cheapest_price": "@{first(body('Select'))?['price']}",
+              "result_count": "@length(body('Select'))"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comparison_json": {
+                  "title": "comparison_json",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "cheapest_supplier": {
+                  "title": "cheapest_supplier",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "cheapest_price": {
+                  "title": "cheapest_price",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "result_count": {
+                  "title": "result_count",
+                  "x-ms-dynamically-added": true,
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

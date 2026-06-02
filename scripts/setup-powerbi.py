@@ -16,6 +16,8 @@ Pre-requisites:
     az login (az account get-access-token must succeed)
 """
 
+import os
+import csv
 import subprocess
 import json
 import sys
@@ -27,6 +29,20 @@ from datetime import datetime, timezone
 # ---------------------------------------------------------------------------
 WORKSPACE_NAME = "B2BAgg-Analytics"
 PBI_BASE = "https://api.powerbi.com/v1.0/myorg"
+
+# Live data source (B2BAgg-Dev). Override with env DATAVERSE_URL.
+DATAVERSE_URL = os.environ.get(
+    "DATAVERSE_URL", "https://YOUR-DATAVERSE-ORG.crm.dynamics.com"
+).rstrip("/")
+
+# Choice-label maps (canonical, see docs/schema-canonical.md)
+SEASON_LABELS = {
+    10000: "Summer", 10001: "WinterStudded",
+    10002: "WinterFriction", 10003: "AllSeason",
+}
+ORDER_STATUS_LABELS = {
+    100000000: "Draft", 100000001: "Confirmed", 100000002: "Shipped",
+}
 
 # ---------------------------------------------------------------------------
 # Dataset schema
@@ -326,7 +342,241 @@ def pbi_post(token: str, path: str, body: dict) -> dict:
         # Already exists — return empty dict, caller handles
         return {"__conflict": True}
     r.raise_for_status()
+    # Some endpoints (e.g. push-rows) return 200/202 with an empty body.
+    if not r.content:
+        return {}
     return r.json()
+
+
+def pbi_delete(token: str, path: str) -> None:
+    r = requests.delete(
+        f"{PBI_BASE}/{path}",
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=30,
+    )
+    # 200/204 on success; ignore 404 (table empty / not yet created).
+    if r.status_code not in (200, 202, 204, 404):
+        r.raise_for_status()
+
+
+# ---------------------------------------------------------------------------
+# Seed-CSV loader — denormalizes data/seed/*.csv into the flat push schema.
+# This is the default real-data source: identical to what the idempotent seeder
+# loads into B2BAgg-Dev (201 offers / 36 products / 6 warehouses / 7 regions /
+# 3 suppliers), and needs no Dataverse token (works under any az identity).
+# ---------------------------------------------------------------------------
+SEASON_CSV_LABELS = {
+    "1": "Summer", "2": "WinterStudded", "3": "WinterFriction", "4": "AllSeason",
+}
+SEED_DIR = os.environ.get("SEED_DIR", "data/seed")
+
+
+def _csv_rows(name: str) -> list:
+    with open(f"{SEED_DIR}/{name}.csv", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def _int(v):
+    return int(v) if v not in (None, "") else None
+
+
+def _float(v):
+    return float(v) if v not in (None, "") else None
+
+
+def load_seed_data() -> dict:
+    suppliers = _csv_rows("supplier")
+    regions = _csv_rows("region")
+    warehouses = {w["b2b_city"]: w for w in _csv_rows("warehouse")}
+    products = {p["b2b_name"]: p for p in _csv_rows("canonicalproduct")}
+    offers = _csv_rows("supplieroffer")
+
+    offer_rows = []
+    for o in offers:
+        prod = products.get(o["b2b_canonical_name"], {})
+        wh = warehouses.get(o["b2b_warehouse_city"], {})
+        offer_rows.append({
+            "OfferId": f"{o['b2b_raw_sku']}|{o['b2b_supplier_name']}|{o['b2b_warehouse_city']}",
+            "RawSku": o["b2b_raw_sku"],
+            "SupplierName": o["b2b_supplier_name"],
+            "ProductName": o["b2b_canonical_name"],
+            "Brand": prod.get("b2b_brand"),
+            "Model": prod.get("b2b_model"),
+            "Width": _int(prod.get("b2b_width")),
+            "Profile": _int(prod.get("b2b_profile")),
+            "Diameter": _int(prod.get("b2b_diameter")),
+            "Season": SEASON_CSV_LABELS.get(prod.get("b2b_season")),
+            "Warehouse": o["b2b_warehouse_city"],
+            "Region": wh.get("b2b_region"),
+            "Stock": _int(o.get("b2b_stock")),
+            "Price": _float(o.get("b2b_price")),
+            "LeadDays": _int(o.get("b2b_lead_time_days")),
+            "SyncedAt": SYNCED_AT,
+        })
+
+    supplier_rows = []
+    for s in suppliers:
+        s_off = [r for r in offer_rows if r["SupplierName"] == s["b2b_name"]]
+        prices = [r["Price"] for r in s_off if r["Price"] is not None]
+        supplier_rows.append({
+            "SupplierId": s["b2b_name"],
+            "SupplierName": s["b2b_name"],
+            "OfferCount": len(s_off),
+            "TotalStock": sum(r["Stock"] or 0 for r in s_off),
+            "AvgPrice": round(sum(prices) / len(prices), 2) if prices else 0,
+        })
+
+    region_rows = []
+    for r in regions:
+        r_off = [x for x in offer_rows if x["Region"] == r["b2b_name"]]
+        region_rows.append({
+            "RegionCode": r["b2b_name"],
+            "RegionName": r["b2b_name"],
+            "TotalStock": sum(x["Stock"] or 0 for x in r_off),
+            "OfferCount": len(r_off),
+        })
+
+    return {
+        "SupplierOffers": offer_rows,
+        "Orders": SAMPLE_ORDERS,   # orders are runtime artifacts; mock for demo
+        "Suppliers": supplier_rows,
+        "Regions": region_rows,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Live Dataverse fetch (alternative source; needs an admin az identity).
+# Use DATA_SOURCE=dataverse to prefer this over the seed CSVs.
+# ---------------------------------------------------------------------------
+def get_dataverse_token() -> str:
+    return subprocess.run(
+        ["az", "account", "get-access-token", "--resource", DATAVERSE_URL,
+         "--query", "accessToken", "-o", "tsv"],
+        capture_output=True, text=True, check=True,
+    ).stdout.strip()
+
+
+def dv_get_all(token: str, entityset: str, query: str) -> list:
+    """GET all rows of an entity set, following @odata.nextLink paging."""
+    url = f"{DATAVERSE_URL}/api/data/v9.2/{entityset}?{query}"
+    rows = []
+    while url:
+        r = requests.get(
+            url,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Accept": "application/json",
+                "Prefer": 'odata.include-annotations="*"',
+            },
+            timeout=60,
+        )
+        r.raise_for_status()
+        body = r.json()
+        rows.extend(body.get("value", []))
+        url = body.get("@odata.nextLink")
+    return rows
+
+
+def fetch_live_data(token: str) -> dict:
+    """Pull live B2BAgg-Dev rows and denormalize into the flat push schema."""
+    regions = {r["b2b_regionid"]: r for r in dv_get_all(
+        token, "b2b_regions", "$select=b2b_regionid,b2b_name")}
+    suppliers = {s["b2b_supplierid"]: s for s in dv_get_all(
+        token, "b2b_suppliers", "$select=b2b_supplierid,b2b_name")}
+    warehouses = {w["b2b_warehouseid"]: w for w in dv_get_all(
+        token, "b2b_warehouses",
+        "$select=b2b_warehouseid,b2b_name,b2b_city,_b2b_region_value")}
+    products = {p["b2b_canonicalproductid"]: p for p in dv_get_all(
+        token, "b2b_canonicalproducts",
+        "$select=b2b_canonicalproductid,b2b_name,b2b_brand,b2b_model,"
+        "b2b_season,b2b_width,b2b_profile,b2b_diameter")}
+    offers = dv_get_all(
+        token, "b2b_supplieroffers",
+        "$select=b2b_supplierofferid,b2b_raw_sku,b2b_price,b2b_stock,"
+        "b2b_warehouse_city,b2b_lead_time_days,b2b_last_synced,"
+        "_b2b_supplier_value,_b2b_canonical_product_value,_b2b_warehouse_value")
+    orders = dv_get_all(
+        token, "b2b_orders",
+        "$select=b2b_orderid,b2b_order_number,b2b_total_amount,b2b_status,createdon")
+    orderlines = dv_get_all(
+        token, "b2b_orderlines", "$select=_b2b_order_id_value")
+
+    def region_name(wh_id):
+        wh = warehouses.get(wh_id)
+        if not wh:
+            return None
+        reg = regions.get(wh.get("_b2b_region_value"))
+        return reg.get("b2b_name") if reg else None
+
+    offer_rows = []
+    for o in offers:
+        prod = products.get(o.get("_b2b_canonical_product_value")) or {}
+        sup = suppliers.get(o.get("_b2b_supplier_value")) or {}
+        wh = warehouses.get(o.get("_b2b_warehouse_value")) or {}
+        offer_rows.append({
+            "OfferId": o["b2b_supplierofferid"],
+            "RawSku": o.get("b2b_raw_sku"),
+            "SupplierName": sup.get("b2b_name"),
+            "ProductName": prod.get("b2b_name"),
+            "Brand": prod.get("b2b_brand"),
+            "Model": prod.get("b2b_model"),
+            "Width": prod.get("b2b_width"),
+            "Profile": prod.get("b2b_profile"),
+            "Diameter": prod.get("b2b_diameter"),
+            "Season": SEASON_LABELS.get(prod.get("b2b_season"), None),
+            "Warehouse": wh.get("b2b_city") or o.get("b2b_warehouse_city"),
+            "Region": region_name(o.get("_b2b_warehouse_value")),
+            "Stock": o.get("b2b_stock"),
+            "Price": o.get("b2b_price"),
+            "LeadDays": o.get("b2b_lead_time_days"),
+            "SyncedAt": o.get("b2b_last_synced"),
+        })
+
+    # Orders + line counts
+    line_counts = {}
+    for ln in orderlines:
+        oid = ln.get("_b2b_order_id_value")
+        line_counts[oid] = line_counts.get(oid, 0) + 1
+    order_rows = [{
+        "OrderId": o["b2b_orderid"],
+        "OrderName": o.get("b2b_order_number"),
+        "TotalAmount": o.get("b2b_total_amount"),
+        "Status": ORDER_STATUS_LABELS.get(o.get("b2b_status"), None),
+        "CreatedOn": o.get("createdon"),
+        "LineCount": line_counts.get(o["b2b_orderid"], 0),
+    } for o in orders]
+
+    # Supplier aggregates
+    supplier_rows = []
+    for sid, s in suppliers.items():
+        s_off = [r for r in offer_rows if r["SupplierName"] == s.get("b2b_name")]
+        stocks = [r["Stock"] or 0 for r in s_off]
+        prices = [r["Price"] for r in s_off if r["Price"] is not None]
+        supplier_rows.append({
+            "SupplierId": sid,
+            "SupplierName": s.get("b2b_name"),
+            "OfferCount": len(s_off),
+            "TotalStock": sum(stocks),
+            "AvgPrice": round(sum(prices) / len(prices), 2) if prices else 0,
+        })
+
+    # Region aggregates
+    region_rows = []
+    for rid, r in regions.items():
+        r_off = [x for x in offer_rows if x["Region"] == r.get("b2b_name")]
+        region_rows.append({
+            "RegionCode": r.get("b2b_name"),
+            "RegionName": r.get("b2b_name"),
+            "TotalStock": sum(x["Stock"] or 0 for x in r_off),
+            "OfferCount": len(r_off),
+        })
+
+    return {
+        "SupplierOffers": offer_rows,
+        "Orders": order_rows,
+        "Suppliers": supplier_rows,
+        "Regions": region_rows,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -388,17 +638,41 @@ def main():
     # ------------------------------------------------------------------
     # 3. Push rows
     # ------------------------------------------------------------------
-    table_data = {
-        "SupplierOffers": SAMPLE_OFFERS,
-        "Orders":         SAMPLE_ORDERS,
-        "Suppliers":      SAMPLE_SUPPLIERS,
-        "Regions":        SAMPLE_REGIONS,
+    mock = {
+        "SupplierOffers": SAMPLE_OFFERS, "Orders": SAMPLE_ORDERS,
+        "Suppliers": SAMPLE_SUPPLIERS, "Regions": SAMPLE_REGIONS,
     }
+    source = os.environ.get("DATA_SOURCE", "seed").lower()
+    if os.environ.get("USE_MOCK") == "1" or source == "mock":
+        print("\nData source: bundled mock rows")
+        table_data = mock
+    elif source == "dataverse":
+        print("\nData source: live Dataverse query (needs admin az identity) …")
+        try:
+            table_data = fetch_live_data(get_dataverse_token())
+        except Exception as e:  # noqa: BLE001
+            print(f"  ⚠️  Dataverse fetch failed ({e}); falling back to mock")
+            table_data = mock
+    else:
+        print(f"\nData source: seed CSVs ({SEED_DIR}/) …")
+        try:
+            table_data = load_seed_data()
+        except Exception as e:  # noqa: BLE001
+            print(f"  ⚠️  Seed load failed ({e}); falling back to mock")
+            table_data = mock
+    print(f"  {len(table_data['SupplierOffers'])} offers, "
+          f"{len(table_data['Orders'])} orders, "
+          f"{len(table_data['Suppliers'])} suppliers, "
+          f"{len(table_data['Regions'])} regions")
 
-    print("\nPushing data rows …")
+    print("\nClearing + pushing data rows …")
     for table_name, rows in table_data.items():
         path = f"groups/{group_id}/datasets/{dataset_id}/tables/{table_name}/rows"
-        pbi_post(token, path, {"rows": rows})
+        # Push datasets are append-only — clear first so re-runs stay idempotent.
+        pbi_delete(token, path)
+        # Power BI push API caps at 10k rows/request; chunk to be safe.
+        for i in range(0, len(rows), 10000):
+            pbi_post(token, path, {"rows": rows[i:i + 10000]})
         print(f"  {table_name}: {len(rows)} rows pushed")
 
     # ------------------------------------------------------------------

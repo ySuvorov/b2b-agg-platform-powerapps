@@ -1,11 +1,15 @@
 // ============================================================
 // B2BAgg Market Intelligence — DAX Measures
-// Dataset: B2BAgg Market Data (push dataset)
-// Last updated: 2026-05-28
+// Model: import semantic model from B2BAgg-Analytics-data.xlsx
+//        (single flat SupplierOffers table + Orders table)
+// Last updated: 2026-06-01
 // ============================================================
-// Usage: paste each measure into the "New Measure" dialog
-// in Power BI Desktop after connecting to the push dataset
-// or to Dataverse tables.
+// Usage (browser, Mac-safe — see powerbi/SETUP.md):
+//   app.powerbi.com → workspace → dataset → Open data model →
+//   New measure → paste each block below.
+// All measures reference one flat table, so no relationships are
+// required. (Push datasets do NOT support custom DAX measures —
+// use the import model for these.)
 // ============================================================
 
 
@@ -180,11 +184,11 @@ CALCULATE(
 Summer vs Winter Price Ratio =
 DIVIDE([Avg Summer Price], [Avg Winter Price])
 
-// Country-of-origin premium: difference from cheapest country average
-Country Price Premium =
+// Brand price premium: difference from the cheapest brand's average price
+Brand Price Premium =
 VAR cheapest =
     MINX(
-        ALL(SupplierOffers[Country]),
+        ALL(SupplierOffers[Brand]),
         CALCULATE(AVERAGE(SupplierOffers[Price]))
     )
 VAR thisAvg = AVERAGE(SupplierOffers[Price])

@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Search from './pages/Search'
 import Cart from './pages/Cart'
 import Orders from './pages/Orders'
+import Insights from './pages/Insights'
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="search" element={<Search />} />
         <Route path="cart" element={<Cart />} />
         <Route path="orders" element={<Orders />} />
+        <Route path="insights" element={<Insights />} />
       </Route>
     </Routes>
   )

@@ -1,0 +1,11 @@
+<botcomponent schemaname="cr84e_MarketBot.topic.Region_SupplierCanonicalProductSupplierOffer_mdZJtyuMnuSvonLzFsjEB">
+  <componenttype>16</componenttype>
+  <description>This knowledge source answers questions found in the following Dataverse items: Region, Supplier, Canonical Product, Supplier Offer</description>
+  <iscustomizable>0</iscustomizable>
+  <name>Region, Supplier, Canonical Product, Supplier Offer</name>
+  <parentbotid>
+    <schemaname>cr84e_MarketBot</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>

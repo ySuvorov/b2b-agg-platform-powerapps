@@ -79,7 +79,9 @@
     </Publisher>
     <RootComponents>
       <RootComponent type="29" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" behavior="0" />
+      <RootComponent type="29" id="{62d887cb-1a5e-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="29" id="{6881a9bd-035d-f111-a826-00224837db9d}" behavior="0" />
+      <RootComponent type="29" id="{bf55275d-ef5d-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="372" id="{db4edcc0-56d0-4bee-9b28-0551233267d1}" schemaName="b2b_fetchsupplierfeed" behavior="0" />
       <RootComponent type="372" id="{e37e6b69-945c-f111-a826-00224837db9d}" schemaName="new_b2bagg-20normalize-20sku" behavior="0" />
     </RootComponents>
@@ -93,6 +95,10 @@
         <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
+        <Required type="1" schemaName="b2b_rfq" displayName="RFQ" solution="Active" />
+        <Dependent type="29" displayName="Create RFQ" id="{62d887cb-1a5e-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
         <Required type="1" schemaName="b2b_skumap" displayName="SKU Map" solution="Active" />
         <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
       </MissingDependency>
@@ -101,8 +107,16 @@
         <Dependent type="29" displayName="Sync Supplier Offers" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
+        <Required type="1" schemaName="b2b_supplier" displayName="Supplier" solution="Active" />
+        <Dependent type="29" displayName="Create RFQ" id="{62d887cb-1a5e-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
         <Required type="1" schemaName="b2b_supplieroffer" displayName="Supplier Offer" solution="Active" />
         <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_supplieroffer" displayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Compare Prices" id="{bf55275d-ef5d-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
         <Required type="1" schemaName="b2b_warehouse" displayName="Warehouse" solution="Active" />
@@ -142,7 +156,15 @@
       </MissingDependency>
       <MissingDependency>
         <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
+        <Dependent type="29" displayName="Create RFQ" id="{62d887cb-1a5e-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
         <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
+        <Dependent type="29" displayName="Compare Prices" id="{bf55275d-ef5d-f111-a826-00224837db9d}" />
       </MissingDependency>
     </MissingDependencies>
   </SolutionManifest>

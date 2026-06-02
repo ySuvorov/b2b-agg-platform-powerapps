@@ -1,0 +1,10 @@
+<botcomponent schemaname="cr84e_MarketBot.topic.PriceCompare">
+  <componenttype>9</componenttype>
+  <iscustomizable>0</iscustomizable>
+  <name>Price Compare</name>
+  <parentbotid>
+    <schemaname>cr84e_MarketBot</schemaname>
+  </parentbotid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</botcomponent>

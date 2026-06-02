@@ -1,0 +1,10 @@
+<botcomponent schemaname="cr84e_MarketBot.topic.CreateRFQ">
+  <componenttype>9</componenttype>
+  <iscustomizable>0</iscustomizable>
+  <name>Create RFQ</name>
+  <parentbotid>
+    <schemaname>cr84e_MarketBot</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>
