@@ -16,6 +16,8 @@ Run from repo root:
 import importlib.util
 import os
 from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.table import Table, TableStyleInfo
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(REPO)
@@ -41,6 +43,12 @@ def add_sheet(wb, title, cols, rows, first=False):
     ws.append(cols)
     for r in rows:
         ws.append([r.get(c) for c in cols])
+    # Format as a real Excel Table so Power BI reliably detects it on import.
+    ref = f"A1:{get_column_letter(len(cols))}{len(rows) + 1}"
+    tab = Table(displayName=title, ref=ref)
+    tab.tableStyleInfo = TableStyleInfo(
+        name="TableStyleMedium2", showRowStripes=True)
+    ws.add_table(tab)
 
 
 wb = Workbook()
