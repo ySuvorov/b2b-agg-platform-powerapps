@@ -11,6 +11,12 @@ export interface CartItem {
   qty: number
 }
 
+export interface SupplierGroup {
+  supplierName: string
+  items: CartItem[]
+  subtotal: number
+}
+
 interface CartState {
   items: CartItem[]
   addItem: (item: Omit<CartItem, 'qty'> & { qty?: number }) => void
@@ -19,6 +25,10 @@ interface CartState {
   clearCart: () => void
   totalItems: () => number
   totalPrice: () => number
+  // Per-supplier split — a multi-supplier cart becomes one order per supplier
+  // at checkout (audit L-4). Keyed on supplierName because search offers don't
+  // carry a supplierId. Mirrors the grouping in createOrder().
+  groupsBySupplier: () => SupplierGroup[]
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -39,4 +49,18 @@ export const useCartStore = create<CartState>((set, get) => ({
   clearCart: () => set({ items: [] }),
   totalItems: () => get().items.reduce((sum, i) => sum + i.qty, 0),
   totalPrice: () => get().items.reduce((sum, i) => sum + i.unitPrice * i.qty, 0),
+  groupsBySupplier: () => {
+    const byName = new Map<string, CartItem[]>()
+    for (const item of get().items) {
+      const key = item.supplierName || 'Unknown'
+      const bucket = byName.get(key)
+      if (bucket) bucket.push(item)
+      else byName.set(key, [item])
+    }
+    return Array.from(byName.entries()).map(([supplierName, items]) => ({
+      supplierName,
+      items,
+      subtotal: items.reduce((s, i) => s + i.unitPrice * i.qty, 0),
+    }))
+  },
 }))

@@ -12,6 +12,7 @@ export * as B2b_supplieroffersModel from './models/B2b_supplieroffersModel';
 export * as B2b_suppliersModel from './models/B2b_suppliersModel';
 export * as B2b_warehousesModel from './models/B2b_warehousesModel';
 export * as CommonModels from './models/CommonModels';
+export * as RFQBroadcastModel from './models/RFQBroadcastModel';
 
 // Services
 export * from './services/B2b_canonicalproductsService';
@@ -21,3 +22,4 @@ export * from './services/B2b_regionsService';
 export * from './services/B2b_supplieroffersService';
 export * from './services/B2b_suppliersService';
 export * from './services/B2b_warehousesService';
+export * from './services/RFQBroadcastService';

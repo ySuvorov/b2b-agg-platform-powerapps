@@ -79,6 +79,7 @@
     </Publisher>
     <RootComponents>
       <RootComponent type="29" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" behavior="0" />
+      <RootComponent type="29" id="{36dbd5e6-ee5e-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="29" id="{62d887cb-1a5e-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="29" id="{6881a9bd-035d-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="29" id="{bf55275d-ef5d-f111-a826-00224837db9d}" behavior="0" />
@@ -96,6 +97,10 @@
       </MissingDependency>
       <MissingDependency>
         <Required type="1" schemaName="b2b_rfq" displayName="RFQ" solution="Active" />
+        <Dependent type="29" displayName="RFQ Broadcast" id="{36dbd5e6-ee5e-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_rfq" displayName="RFQ" solution="Active" />
         <Dependent type="29" displayName="Create RFQ" id="{62d887cb-1a5e-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
@@ -105,6 +110,10 @@
       <MissingDependency>
         <Required type="1" schemaName="b2b_supplier" displayName="Supplier" solution="Active" />
         <Dependent type="29" displayName="Sync Supplier Offers" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_supplier" displayName="Supplier" solution="Active" />
+        <Dependent type="29" displayName="RFQ Broadcast" id="{36dbd5e6-ee5e-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
         <Required type="1" schemaName="b2b_supplier" displayName="Supplier" solution="Active" />
@@ -153,6 +162,10 @@
       <MissingDependency>
         <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
         <Dependent type="29" displayName="Sync Supplier Offers" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
+        <Dependent type="29" displayName="RFQ Broadcast" id="{36dbd5e6-ee5e-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
         <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />

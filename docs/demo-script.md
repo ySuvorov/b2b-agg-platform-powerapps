@@ -16,8 +16,20 @@ I'm showing what the Power Platform implementation looks like."
 - Search "Michelin Pilot Sport 4 225/45 R17"
 - Show one canonical SKU expanding into 3 supplier offers sorted by total
   landed cost, with stock and lead-time badges
-- Add two offers from different suppliers into the cart → checkout
-- "Notice the cart auto-splits into per-supplier orders"
+- Add two offers **from different suppliers** into the cart
+- Open the cart: it renders **one group per supplier** with per-supplier
+  subtotals. "A wholesale cart can't be one PO across vendors, so checkout
+  splits it — placing this creates **two orders, one per supplier**."
+- Click **Place 2 Orders** → success bar confirms "2 orders placed".
+
+## Act 1b — RFQ broadcast (Code App + Power Automate fan-out)
+- From the cart, click **Request quotes** → the `/rfq/new` composer opens,
+  pre-filled with the cart products and the two suppliers pre-selected.
+- (Optionally tick a third supplier.) Set a deadline → **Send RFQ to N suppliers**.
+- "One click fans out through the **RFQ Broadcast** flow — a Power Apps (V2)
+  trigger that loops the supplier list and writes one `b2b_rfq` per supplier."
+- Cut to the Operations MDA → **RFQs**: N new `RFQ-0000x` rows, status **Sent**,
+  each bound to the right supplier. (Or show the flow run history: N iterations.)
 
 ## Act 2 — Behind the scenes (Power Automate + Service Bus)
 - Open Power Automate run history

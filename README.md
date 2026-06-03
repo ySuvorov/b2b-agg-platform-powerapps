@@ -61,13 +61,14 @@ Analyst ── Power BI Workspace ───┘                       │
 | Component | Status | Notes |
 |---|---|---|
 | **Dataverse** — 10 tables, relationships, seed data | ✅ Done | 7 regions, 3 suppliers, 6 warehouses, 36 products, 201 seeded offers (≈262 live incl. flow rows) in Dev |
-| **Buyer Code App** (React + Fluent UI v9) | ✅ Done | Power Apps SDK + generated services; Home / Search / Cart / Orders; deployed & smoke-tested in Dev |
+| **Buyer Code App** (React + Fluent UI v9) | ✅ Done | Power Apps SDK + generated services; Home / Search / Cart / **New RFQ** / Orders; multi-supplier cart auto-splits into one order per supplier; deployed & smoke-tested in Dev |
 | **Model-driven App** `b2b_B2BAggOperations` | ✅ Done | Forms/views; sitemap exposes all 10 tables across Catalog / Operations / Inventory / Data Quality areas (Warehouse, SKU Map, Data Conflict added — audit A-3) |
 | **Azure Function** `fetch-supplier-feed` | ✅ Done | Python v4, deployed to `func-b2bagg-dev.azurewebsites.net` |
 | **Azure Infra** (Bicep) | ✅ Done | Functions, App Insights, Key Vault (refs), Storage, Service Bus, Logic App, Log Analytics |
 | **SKU-resolution engine** + pytest in CI | ✅ Done | Deterministic cascade; tests gate PRs |
 | **GitHub Actions ALM** (OIDC) | ✅ Done | PR gate + Dev deploy + Test/Prod import + export-via-PR, no client secret |
 | **Power Automate** — Supplier Sync flow | ✅ Done | Audit **P5**: solution-aware (`B2BAgg.Integration`), connection refs + env vars, idempotent upsert on the alt-key triple |
+| **Power Automate** — RFQ Broadcast flow | ✅ Done | Power Apps (V2) trigger invoked from the Code App `/rfq/new`; fans out one `b2b_rfq` per selected supplier (status Sent); solution-aware in `B2BAgg.Integration`, wired via `npx power-apps add-flow` |
 | **Custom security role** `B2B Procurement Ops` | ✅ Done | CRUD on the `b2b_*` tables; exported in `B2BAgg.Core` (audit A-4) |
 | **Custom Connector** (OpenAPI → Azure Function) | 🔄 In progress | YAML ready at `azure/openapi/fetch-supplier-feed.yaml` |
 | **BPF on `b2b_order`** | ⏳ Roadmap | Designer recipe ready (`docs/governance.md`); ~5-min portal step |

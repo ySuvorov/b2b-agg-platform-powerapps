@@ -1,6 +1,6 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { makeStyles, tokens, Badge } from '@fluentui/react-components'
-import { HomeRegular, SearchRegular, CartRegular, DocumentRegular, ChartMultipleRegular } from '@fluentui/react-icons'
+import { HomeRegular, SearchRegular, CartRegular, DocumentRegular, ChartMultipleRegular, MailRegular } from '@fluentui/react-icons'
 import { useCartStore } from '../store/cart'
 import BotPanel from './BotPanel'
 
@@ -100,6 +100,15 @@ export default function Layout() {
               </Badge>
             )}
           </span>
+        </NavLink>
+        <NavLink
+          to="/rfq/new"
+          className={({ isActive }) =>
+            `${styles.navItem} ${isActive ? styles.navItemActive : ''}`
+          }
+        >
+          <MailRegular fontSize={18} />
+          New RFQ
         </NavLink>
         <NavLink
           to="/orders"

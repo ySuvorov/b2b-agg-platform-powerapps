@@ -9,7 +9,20 @@
   "buildEntryPoint": "index.html",
   "localAppUrl": "http://localhost:3000",
   "logoPath": "Default",
-  "connectionReferences": {},
+  "connectionReferences": {
+    "d2d8c6cb-9e95-48ec-9770-f079b17542de": {
+      "id": "/providers/Microsoft.PowerApps/apis/shared_logicflows",
+      "displayName": "Logic flows",
+      "dataSources": [
+        "rfqbroadcast"
+      ],
+      "workflowDetails": {
+        "workflowEntityId": "36dbd5e6-ee5e-f111-a826-00224837db9d",
+        "workflowDisplayName": "RFQ Broadcast",
+        "workflowName": "5bd53a5e-6eca-f3b8-536a-2e4508df54a9"
+      }
+    }
+  },
   "databaseReferences": {
     "default.cds": {
       "dataSources": {
