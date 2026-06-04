@@ -43,14 +43,6 @@
       <statecode>0</statecode>
       <statuscode>1</statuscode>
     </connectionreference>
-    <connectionreference connectionreferencelogicalname="b2b_sharedwebcontentsv2_da8fa">
-      <connectionreferencedisplayname>HTTP With Microsoft Entra ID B2BAgg_Integration-da8fa</connectionreferencedisplayname>
-      <connectorid>/providers/Microsoft.PowerApps/apis/shared_webcontentsv2</connectorid>
-      <iscustomizable>1</iscustomizable>
-      <promptingbehavior>0</promptingbehavior>
-      <statecode>0</statecode>
-      <statuscode>1</statuscode>
-    </connectionreference>
   </connectionreferences>
   <Languages>
     <Language>1033</Language>

@@ -30,15 +30,17 @@ ALM practices.
   cap) with a real pytest suite wired into CI.
 - **GitHub Actions ALM** on **OIDC federated credentials** (no client secret):
   PR validation gate, Dev deploy, Test/Prod import, and source export-via-PR.
+- **Power Platform Pipelines** Dev → Test is green on Platform Host: Core,
+  AI, and Integration are imported into Test as managed solutions.
 - **Custom security role** `B2B Procurement Ops` and a **solution-aware supplier-
   sync flow** (`B2BAgg.Integration`, idempotent upsert on an alt-key triple).
 
-**Roadmap / stretch (not yet exported or wired):**
-- Business Process Flow on `b2b_order` (recipe ready — see governance); the
-  `B2BAgg.AI` solution module.
-- AI Builder SKU classifier; Copilot Studio agent "MarketBot".
-- Power BI workspace (Dataverse-backed) embedded tiles.
-- Power Platform Pipelines (the GitHub Actions path is the implemented ALM).
+**Roadmap / stretch / known limits:**
+- Full Dev → Test → Prod Pipelines promotion across all solution modules.
+- Test custom connector connection refs may need manual rebind before running
+  `Sync Supplier Offers` / `Normalize SKU` in Test.
+- Copilot Studio published channel/embed pending PAYG Copilot capacity.
+- Power BI anonymous/public embed pending tenant Publish-to-web setting.
 - Power Pages supplier portal.
 
 ## Architecture (high level)
@@ -71,11 +73,11 @@ Analyst ── Power BI Workspace ───┘                       │
 | **Power Automate** — RFQ Broadcast flow | ✅ Done | Power Apps (V2) trigger invoked from the Code App `/rfq/new`; fans out one `b2b_rfq` per selected supplier (status Sent); solution-aware in `B2BAgg.Integration`, wired via `npx power-apps add-flow` |
 | **Custom security role** `B2B Procurement Ops` | ✅ Done | CRUD on the `b2b_*` tables; exported in `B2BAgg.Core` (audit A-4) |
 | **Custom Connector** (OpenAPI → Azure Function) | 🔄 In progress | YAML ready at `azure/openapi/fetch-supplier-feed.yaml` |
-| **BPF on `b2b_order`** | ⏳ Roadmap | Designer recipe ready (`docs/governance.md`); ~5-min portal step |
-| **AI Builder SKU Classifier** | ⏳ Roadmap | Custom text classification model |
+| **BPF on `b2b_order`** | ✅ Done | `B2B Order Lifecycle` active on `b2b_order`, exported in `B2BAgg.Core` |
+| **AI Builder SKU Classifier** | ✅ Done | Custom text classification model in `B2BAgg.AI`; deterministic matcher remains the primary production path |
 | **Copilot Studio agent "MarketBot"** | ✅ Done | Hybrid: generative answers over Dataverse (price compare, inventory, with citations) + deterministic **Create RFQ** topic → Power Automate → Dataverse → MDA (ADR-006). Publish to a live channel needs Copilot Studio PAYG capacity (out of demo budget) — demoed from the test canvas; Code App embed pending capacity |
 | **Power BI workspace** | ✅ Done | Workspace `B2BAgg-Analytics`; report **B2BAgg Market Intelligence** (4 pages, 27 visuals) **code-generated** via Fabric PBIR REST, bound to live Dataverse; embedded as tiles in the Code App `/insights` |
-| **PP Pipelines** Dev → Test → Prod | ⏳ Roadmap | GitHub Actions is the implemented ALM path |
+| **PP Pipelines** Dev → Test | ✅ Done | Native Platform Host pipeline `B2BAgg Dev to Test`; Test has managed `B2BAgg_Core` `1.0.0.1`, `B2BAgg_AI` `1.0.0.0`, `B2BAgg_Integration` `1.0.0.1` |
 | **Power Pages** supplier portal | ⏳ Roadmap | External Entra B2B |
 
 See [`PROGRESS.md`](PROGRESS.md) for current stage and detailed roadmap.
