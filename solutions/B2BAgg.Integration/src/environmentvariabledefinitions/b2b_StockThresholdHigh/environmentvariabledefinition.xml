@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="b2b_StockThresholdHigh">
+  <defaultvalue>200</defaultvalue>
+  <description default="An adjacent district must hold more than this count to be recommended as a redistribution source.">
+    <label description="An adjacent district must hold more than this count to be recommended as a redistribution source." languagecode="1033" />
+  </description>
+  <displayname default="Stock Threshold — High (surplus)">
+    <label description="Stock Threshold — High (surplus)" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000001</type>
+</environmentvariabledefinition>

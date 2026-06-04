@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<visualization xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedqueryvisualizationid>{A9819DBE-5D5C-F111-A826-00224837DB9D}</savedqueryvisualizationid>
+  <datadescription>
+    <datadefinition>
+      <fetchcollection>
+        <fetch aggregate="true" mapping="logical">
+          <entity name="b2b_dataconflict">
+            <attribute name="b2b_dataconflictid" aggregate="countcolumn" alias="count_col" />
+            <attribute name="b2b_status" groupby="true" alias="groupby_status" />
+            <order alias="groupby_status" descending="false" />
+          </entity>
+        </fetch>
+      </fetchcollection>
+      <categorycollection>
+        <category>
+          <measurecollection>
+            <measure alias="count_col" />
+          </measurecollection>
+        </category>
+      </categorycollection>
+    </datadefinition>
+  </datadescription>
+  <presentationdescription>
+    <Chart Palette="BrightPastel" PaletteCustomColors="">
+      <Series>
+        <Series IsValueShownAsLabel="true" Color="59, 70, 130" ChartType="Column" Font="{0}, 9.5px" LabelForeColor="59, 59, 59">
+          <SmartLabelStyle Enabled="True" />
+          <Points />
+        </Series>
+      </Series>
+      <ChartAreas>
+        <ChartArea BorderColor="White" BorderDashStyle="Solid">
+          <AxisY LabelAutoFitMinFontSize="8" TitleForeColor="59, 59, 59">
+            <MajorGrid LineColor="239, 242, 246" />
+            <LabelStyle Font="{0}, 10.5px" ForeColor="59, 59, 59" />
+          </AxisY>
+          <AxisX LabelAutoFitMinFontSize="8" TitleForeColor="59, 59, 59">
+            <MajorGrid LineColor="239, 242, 246" />
+            <LabelStyle Font="{0}, 10.5px" ForeColor="59, 59, 59" />
+          </AxisX>
+        </ChartArea>
+      </ChartAreas>
+      <Legends>
+        <Legend Alignment="Center" LegendStyle="Table" Docking="Bottom" IsEquallySpacedItems="True" Font="{0}, 11px" ShadowColor="0, 0, 0, 0" ForeColor="59, 59, 59" />
+      </Legends>
+      <Titles>
+        <Title Alignment="TopLeft" DockingOffset="-3" Font="{0}, 13px, style=Bold" ForeColor="34, 40, 72" />
+      </Titles>
+    </Chart>
+  </presentationdescription>
+  <isdefault>0</isdefault>
+  <LocalizedNames>
+    <LocalizedName description="Conflicts by Status" languagecode="1033" />
+  </LocalizedNames>
+  <Descriptions>
+    <Description description="Review queue distribution across statuses (Pending / NeedsReview / NewCandidate / Approved / Rejected / AutoResolved). Demo visual for the SKU Resolution Engine conflict queue." languagecode="1033" />
+  </Descriptions>
+  <IsCustomizable>1</IsCustomizable>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CanBeDeleted>1</CanBeDeleted>
+</visualization>

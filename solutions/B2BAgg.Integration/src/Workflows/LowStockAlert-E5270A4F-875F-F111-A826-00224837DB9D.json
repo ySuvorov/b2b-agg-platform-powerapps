@@ -1,0 +1,104 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharedcommondataserviceforapps_3bab7"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "490507ae-8a41-4c97-9d61-7491fd0f736f"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "b2b_supplieroffer",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "b2b_stock",
+              "subscriptionRequest/filterexpression": "b2b_stock lt 12"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Get_a_row_by_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "27254e4b-42e5-4b95-a872-e8c67d36303b"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "b2b_warehouses",
+              "recordId": "@triggerOutputs()?['body/_b2b_warehouse_value']",
+              "$select": "_b2b_region_value"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Add_a_new_row": {
+          "runAfter": {
+            "Get_a_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a020c0f3-624b-4775-a1cd-918ce7952e45"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "b2b_marketsignals",
+              "item/b2b_aisummary": "@concat(triggerOutputs()?['body/b2b_suppliername'], ' @ ', triggerOutputs()?['body/b2b_warehouse_city'], ' — stock ', string(triggerOutputs()?['body/b2b_stock']), ' (below 20).')",
+              "item/b2b_name": "@concat('Low stock: ', triggerOutputs()?['body/b2b_raw_name'], ' (', string(triggerOutputs()?['body/b2b_stock']), ' left)')",
+              "item/b2b_region@odata.bind": "/b2b_regions(@{outputs('Get_a_row_by_ID')?['body/_b2b_region_value']})",
+              "item/b2b_severity": "@if(equals(triggerOutputs()?['body/b2b_stock'], 0), 10002, 10001)",
+              "item/b2b_source": "Low Stock Alert",
+              "item/b2b_type": 10002
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="b2b_StockThresholdLow">
+  <defaultvalue>50</defaultvalue>
+  <description default="District total stock for a SKU below this count is flagged a deficit by the Stock Redistribution Advisor flow.">
+    <label description="District total stock for a SKU below this count is flagged a deficit by the Stock Redistribution Advisor flow." languagecode="1033" />
+  </description>
+  <displayname default="Stock Threshold — Low (deficit)">
+    <label description="Stock Threshold — Low (deficit)" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000001</type>
+</environmentvariabledefinition>

@@ -10,22 +10,27 @@
     <layoutxml>
       <grid name="resultset" jump="b2b_name" select="1" icon="1" preview="1">
         <row name="result" id="b2b_dataconflictid">
-          <cell name="b2b_name" width="300" />
-          <cell name="createdon" width="125" />
+          <cell name="b2b_raw_sku" width="160" />
+          <cell name="b2b_raw_name" width="280" />
+          <cell name="b2b_status" width="130" />
+          <cell name="b2b_ai_confidence" width="110" />
+          <cell name="b2b_suggested_canonical" width="220" />
         </row>
       </grid>
     </layoutxml>
     <querytype>0</querytype>
     <fetchxml>
-      <fetch version="1.0" mapping="logical">
+      <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
         <entity name="b2b_dataconflict">
-          <attribute name="b2b_dataconflictid" />
+          <attribute name="b2b_raw_sku" />
+          <attribute name="b2b_raw_name" />
+          <attribute name="b2b_status" />
+          <attribute name="b2b_ai_confidence" />
+          <attribute name="b2b_suggested_canonical" />
           <attribute name="b2b_name" />
-          <attribute name="createdon" />
-          <order attribute="b2b_name" descending="false" />
-          <filter type="and">
-            <condition attribute="statecode" operator="eq" value="0" />
-          </filter>
+          <attribute name="b2b_dataconflictid" />
+          <order attribute="b2b_status" descending="false" />
+          <order attribute="b2b_ai_confidence" descending="true" />
         </entity>
       </fetch>
     </fetchxml>

@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{7742474a-42c3-4d30-974b-b7b584ae3c26}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{da6640f9-cbec-40c1-89e0-04b516b98fcf}" name="StageStep3" locklevel="0" expanded="true" visible="false" labelid="{51714035-3a41-4bc0-8426-852addebf73b}">
+          <labels>
+            <label description="Draft" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{e7d4c27a-fc7a-17a5-0690-d1922c253b25}" name="StageStep3_section1" labelid="{ca1215b6-b5cd-4b4a-875d-c4248c1e669c}">
+                  <labels>
+                    <label description="Draft" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{335f2b09-4b1e-45aa-9095-0e2964c6b4ba}" showlabel="true" visible="true" labelid="{b1fabfb4-e69c-4c48-8d99-607d82481864}">
+                        <labels>
+                          <label description="Order number" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_b2b_order_b2b_b2borderlifecycle:b2b_order_number" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="b2b_order_number" relationship="bpf_b2b_order_b2b_b2borderlifecycle" isrequired="true" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{541f8792-5176-45b3-8897-a49e835053c4}" name="StageStep7" locklevel="0" expanded="true" visible="false" labelid="{313b1a3a-1430-443f-ad30-2b31e58cbec4}">
+          <labels>
+            <label description="New Stage" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{29baf2d5-67b4-179d-f639-2e7e4bcfbd03}" name="StageStep7_section1" labelid="{6efb1f34-f2d8-44fd-bda2-eefee9a81477}">
+                  <labels>
+                    <label description="New Stage" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{4a114ceb-9a70-428f-8fb7-644535e008ef}" showlabel="true" visible="true" labelid="{7863fe13-c630-4b62-8316-dc683ff6422d}">
+                        <labels>
+                          <label description="Total amount" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_b2b_order_b2b_b2borderlifecycle:b2b_total_amount" classid="{533b9e00-756b-4312-95a0-dc888637ac78}" datafieldname="b2b_total_amount" relationship="bpf_b2b_order_b2b_b2borderlifecycle" isrequired="true" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{5befe769-7ec9-4335-b5b2-e0aca355f18b}" name="StageStep11" locklevel="0" expanded="true" visible="false" labelid="{57174d97-77a6-4772-b606-d9eedc81dfa9}">
+          <labels>
+            <label description="Shipped" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{a669a256-32d8-542e-5a57-f4dd4446586e}" name="StageStep11_section1" labelid="{9a2f9473-8c5a-47c4-9d4b-8d1032c18dac}">
+                  <labels>
+                    <label description="Shipped" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{15a2bfe4-a0f0-49af-a590-d8ab9e3ff046}" showlabel="true" visible="true" labelid="{80764418-69c4-4183-be6f-af39618b3411}">
+                        <labels>
+                          <label description="Status" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_b2b_order_b2b_b2borderlifecycle:statecode" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="statecode" relationship="bpf_b2b_order_b2b_b2borderlifecycle" isrequired="true" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

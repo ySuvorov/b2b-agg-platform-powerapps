@@ -3,6 +3,9 @@
   <EntityRelationship Name="b2b_dataconflict_b2b_canonicalproduct" />
   <EntityRelationship Name="b2b_dataconflict_b2b_supplieroffer" />
   <EntityRelationship Name="b2b_dataconflict_systemuser_reviewed" />
+  <EntityRelationship Name="b2b_marketsignal_b2b_canonicalproduct" />
+  <EntityRelationship Name="b2b_marketsignal_b2b_region" />
+  <EntityRelationship Name="b2b_marketsignal_b2b_targetregion" />
   <EntityRelationship Name="b2b_orderline_offer_rel" />
   <EntityRelationship Name="b2b_orderline_order_rel" />
   <EntityRelationship Name="b2b_rfq_order_rel" />
@@ -14,8 +17,10 @@
   <EntityRelationship Name="b2b_supplieroffer_canonical_rel" />
   <EntityRelationship Name="b2b_supplieroffer_supplier_rel" />
   <EntityRelationship Name="b2b_warehouse_b2b_region" />
+  <EntityRelationship Name="bpf_b2b_order_b2b_b2borderlifecycle" />
   <EntityRelationship Name="business_unit_b2b_canonicalproduct" />
   <EntityRelationship Name="business_unit_b2b_dataconflict" />
+  <EntityRelationship Name="business_unit_b2b_marketsignal" />
   <EntityRelationship Name="business_unit_b2b_order" />
   <EntityRelationship Name="business_unit_b2b_orderline" />
   <EntityRelationship Name="business_unit_b2b_region" />
@@ -24,10 +29,16 @@
   <EntityRelationship Name="business_unit_b2b_supplier" />
   <EntityRelationship Name="business_unit_b2b_supplieroffer" />
   <EntityRelationship Name="business_unit_b2b_warehouse" />
+  <EntityRelationship Name="lk_b2b_b2borderlifecycle_activestageid" />
+  <EntityRelationship Name="lk_b2b_b2borderlifecycle_createdby" />
+  <EntityRelationship Name="lk_b2b_b2borderlifecycle_modifiedby" />
+  <EntityRelationship Name="lk_b2b_b2borderlifecycle_processid" />
   <EntityRelationship Name="lk_b2b_canonicalproduct_createdby" />
   <EntityRelationship Name="lk_b2b_canonicalproduct_modifiedby" />
   <EntityRelationship Name="lk_b2b_dataconflict_createdby" />
   <EntityRelationship Name="lk_b2b_dataconflict_modifiedby" />
+  <EntityRelationship Name="lk_b2b_marketsignal_createdby" />
+  <EntityRelationship Name="lk_b2b_marketsignal_modifiedby" />
   <EntityRelationship Name="lk_b2b_order_createdby" />
   <EntityRelationship Name="lk_b2b_order_modifiedby" />
   <EntityRelationship Name="lk_b2b_orderline_createdby" />
@@ -44,8 +55,10 @@
   <EntityRelationship Name="lk_b2b_supplieroffer_modifiedby" />
   <EntityRelationship Name="lk_b2b_warehouse_createdby" />
   <EntityRelationship Name="lk_b2b_warehouse_modifiedby" />
+  <EntityRelationship Name="organization_b2b_b2borderlifecycle" />
   <EntityRelationship Name="owner_b2b_canonicalproduct" />
   <EntityRelationship Name="owner_b2b_dataconflict" />
+  <EntityRelationship Name="owner_b2b_marketsignal" />
   <EntityRelationship Name="owner_b2b_order" />
   <EntityRelationship Name="owner_b2b_orderline" />
   <EntityRelationship Name="owner_b2b_region" />
@@ -56,6 +69,7 @@
   <EntityRelationship Name="owner_b2b_warehouse" />
   <EntityRelationship Name="team_b2b_canonicalproduct" />
   <EntityRelationship Name="team_b2b_dataconflict" />
+  <EntityRelationship Name="team_b2b_marketsignal" />
   <EntityRelationship Name="team_b2b_order" />
   <EntityRelationship Name="team_b2b_orderline" />
   <EntityRelationship Name="team_b2b_region" />
@@ -69,6 +83,7 @@
   <EntityRelationship Name="TransactionCurrency_b2b_supplieroffer" />
   <EntityRelationship Name="user_b2b_canonicalproduct" />
   <EntityRelationship Name="user_b2b_dataconflict" />
+  <EntityRelationship Name="user_b2b_marketsignal" />
   <EntityRelationship Name="user_b2b_order" />
   <EntityRelationship Name="user_b2b_orderline" />
   <EntityRelationship Name="user_b2b_region" />

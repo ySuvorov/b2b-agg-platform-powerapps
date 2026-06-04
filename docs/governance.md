@@ -34,23 +34,33 @@ envs without modification.
 
 Each solution has its own version (`x.y.z`) tracked in `solutions/<name>/Other/Solution.xml`.
 
-### BPF on `b2b_order` — designer recipe (roadmap, ~5 min portal step)
+### BPF on `b2b_order` — `B2B Order Lifecycle` (Stage 4, ~15 min portal step)
 
 A Business Process Flow is the one component best built in the App designer
-(hand-authoring the BPF `clientdata` via API is brittle). To add it:
+(hand-authoring the BPF `clientdata` via API is brittle), so this is a **YS
+designer step** (Stage 4 task Y2 — step-by-step RU walkthrough:
+[`docs/handoff/order-bpf-ru.md`](handoff/order-bpf-ru.md)). Live `b2b_order.b2b_status` choices are
+**Draft (100000000) → Confirmed (100000001) → Shipped (100000002)** — the BPF
+stages map 1:1 to them. To build it:
 
 1. [make.powerapps.com](https://make.powerapps.com) → env **B2BAgg-Dev** →
    **Solutions → B2BAgg.Core → New → Automation → Process → Business process flow**.
 2. Name **"B2B Order Lifecycle"**, table **Order** (`b2b_order`) → Create.
-3. In the designer add three stages on `b2b_order`:
-   **Draft → Confirmed → Shipped** (one stage per `b2b_status` option; add a data
-   step in each, e.g. require `b2b_total_amount` in Confirmed).
+3. In the designer add **three stages** on `b2b_order`, each with one data step
+   (uses live columns only — `b2b_order` has `b2b_status`, `b2b_total_amount`,
+   `b2b_currency_code`, `b2b_order_number`; do **not** reference buyer/supplier/
+   region — those lookups are not on the live table):
+   - **Draft** — data step: `b2b_order_number` (required).
+   - **Confirmed** — data step: `b2b_total_amount` (required).
+   - **Shipped** — data step: `b2b_status` (required).
 4. **Save → Activate**.
-5. It's already in `B2BAgg.Core` (created inside the solution). Tell Claude →
-   `pac solution export` re-captures it into `solutions/B2BAgg.Core/src`.
+5. It lands in `B2BAgg.Core` (created inside the solution). Tell Claude →
+   `pac solution export B2BAgg_Core` re-captures it into `solutions/B2BAgg.Core/src`
+   (the previously empty `<Workflows/>` will then carry the BPF definition).
 
-Until then, BPF is marked roadmap (not an audit gap — see
-`docs/audit/decisions-and-non-issues.md`).
+> The 5-stage list in `docs/data-model.md` (Cart → Submitted → PO → Shipped →
+> Fulfilled) is aspirational; the **live, shipped** lifecycle is the 3-stage
+> Draft → Confirmed → Shipped above.
 
 ## Dual deployment paths
 

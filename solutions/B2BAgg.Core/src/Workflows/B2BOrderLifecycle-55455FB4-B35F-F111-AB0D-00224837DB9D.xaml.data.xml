@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Workflow WorkflowId="{55455fb4-b35f-f111-ab0d-00224837db9d}" Name="B2B Order Lifecycle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <XamlFileName>/Workflows/B2BOrderLifecycle-55455FB4-B35F-F111-AB0D-00224837DB9D.xaml</XamlFileName>
+  <Type>1</Type>
+  <Subprocess>0</Subprocess>
+  <Category>4</Category>
+  <Mode>0</Mode>
+  <Scope>4</Scope>
+  <OnDemand>0</OnDemand>
+  <TriggerOnCreate>1</TriggerOnCreate>
+  <TriggerOnDelete>0</TriggerOnDelete>
+  <AsyncAutodelete>0</AsyncAutodelete>
+  <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+  <StateCode>1</StateCode>
+  <StatusCode>2</StatusCode>
+  <processorder>100</processorder>
+  <RunAs>1</RunAs>
+  <UniqueName>b2b_b2borderlifecycle</UniqueName>
+  <IsTransacted>1</IsTransacted>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <BusinessProcessType>0</BusinessProcessType>
+  <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+  <ProcessTriggerScope>1</ProcessTriggerScope>
+  <ModernFlowType>0</ModernFlowType>
+  <PrimaryEntity>b2b_order</PrimaryEntity>
+  <LocalizedNames>
+    <LocalizedName languagecode="1033" description="B2B Order Lifecycle" />
+  </LocalizedNames>
+  <labels>
+    <steplabels id="{da6640f9-cbec-40c1-89e0-04b516b98fcf}">
+      <label languagecode="1033" description="Draft" />
+    </steplabels>
+    <steplabels id="{335f2b09-4b1e-45aa-9095-0e2964c6b4ba}">
+      <label languagecode="1033" description="Order number" />
+    </steplabels>
+    <steplabels id="{541f8792-5176-45b3-8897-a49e835053c4}">
+      <label languagecode="1033" description="New Stage" />
+    </steplabels>
+    <steplabels id="{4a114ceb-9a70-428f-8fb7-644535e008ef}">
+      <label languagecode="1033" description="Total amount" />
+    </steplabels>
+    <steplabels id="{5befe769-7ec9-4335-b5b2-e0aca355f18b}">
+      <label languagecode="1033" description="Shipped" />
+    </steplabels>
+    <steplabels id="{15a2bfe4-a0f0-49af-a590-d8ab9e3ff046}">
+      <label languagecode="1033" description="Status" />
+    </steplabels>
+  </labels>
+</Workflow>

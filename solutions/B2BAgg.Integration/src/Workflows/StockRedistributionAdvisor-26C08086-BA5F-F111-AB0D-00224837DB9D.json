@@ -1,0 +1,349 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "b2b_sharedcommondataserviceforapps_3bab7"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "startTime": "2026-06-03T09:00:00Z"
+          },
+          "metadata": {
+            "operationMetadataId": "c2350f7b-12ff-4fb7-8d6a-7c478b0a4fb1"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "Initialize_variable": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "ab7953c6-2248-4b87-afd4-ed8e16f08fae"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "thresholdLow",
+                "type": "integer",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "Initialize_variable_2": {
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "63541d2a-7cc0-4e6c-8c6e-9bd65d5810a3"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "thresholdHigh",
+                "type": "integer",
+                "value": 200
+              }
+            ]
+          }
+        },
+        "adjacency": {
+          "runAfter": {
+            "Initialize_variable_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9cb95d82-c1a6-4261-9594-bcd6f73fa4ab"
+          },
+          "type": "Compose",
+          "inputs": [
+            {
+              "district": "Central Federal District",
+              "neighbors": [
+                "Northwestern Federal District",
+                "Volga Federal District",
+                "Southern Federal District"
+              ]
+            },
+            {
+              "district": "Northwestern Federal District",
+              "neighbors": [
+                "Central Federal District"
+              ]
+            },
+            {
+              "district": "Southern Federal District",
+              "neighbors": [
+                "Central Federal District",
+                "North Caucasian Federal District"
+              ]
+            },
+            {
+              "district": "North Caucasian Federal District",
+              "neighbors": [
+                "Southern Federal District"
+              ]
+            },
+            {
+              "district": "Volga Federal District",
+              "neighbors": [
+                "Central Federal District",
+                "Ural Federal District"
+              ]
+            },
+            {
+              "district": "Ural Federal District",
+              "neighbors": [
+                "Volga Federal District",
+                "Siberian Federal District"
+              ]
+            },
+            {
+              "district": "Siberian Federal District",
+              "neighbors": [
+                "Ural Federal District"
+              ]
+            }
+          ]
+        },
+        "DistrictStock": {
+          "runAfter": {
+            "adjacency": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "036a69d6-10fe-4d4b-8f6e-b501fd5503f3"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "b2b_supplieroffers",
+              "fetchXml": "<fetch aggregate=\"true\">\n  <entity name=\"b2b_supplieroffer\">\n    <attribute name=\"b2b_stock\" alias=\"district_stock\" aggregate=\"sum\"/>\n    <link-entity name=\"b2b_warehouse\" from=\"b2b_warehouseid\" to=\"b2b_warehouse\" alias=\"wh\">\n      <link-entity name=\"b2b_region\" from=\"b2b_regionid\" to=\"b2b_region\" alias=\"reg\">\n        <attribute name=\"b2b_name\" alias=\"district\" groupby=\"true\"/>\n        <attribute name=\"b2b_regionid\" alias=\"district_id\" groupby=\"true\"/>\n      </link-entity>\n    </link-entity>\n    <order alias=\"district_stock\" descending=\"true\"/>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Regions": {
+          "runAfter": {
+            "DistrictStock": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6b182523-fcdc-4178-8fab-3e1e33b2563b"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "b2b_regions",
+              "$select": "b2b_name,b2b_regionid"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable_3": {
+          "runAfter": {
+            "Regions": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "937f57a0-0f48-418d-a28a-183f22d6266f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "signalsCreated",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('Regions')?['body/value']",
+          "actions": {
+            "Condition": {
+              "actions": {
+                "Condition_2": {
+                  "actions": {
+                    "Add_a_new_row": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "16ecd3b4-cd01-43c4-a17f-a431d7da3743"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "CreateRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "b2b_marketsignals",
+                          "item/b2b_aisummary": "@concat(items('Apply_to_each')?['b2b_name'], ' stock = ', string(outputs('stockForDistrict')), ' (below ', string(variables('thresholdLow')), '). Recommend transfer from ', first(body('FilterAdjacent'))?['district'], ' (stock ', string(first(body('FilterAdjacent'))?['district_stock']), ').')",
+                          "item/b2b_name": "@concat('Redistribution: ', items('Apply_to_each')?['b2b_name'], ' ← ', first(body('FilterAdjacent'))?['district'])",
+                          "item/b2b_region@odata.bind": "/b2b_regions(@{items('Apply_to_each')?['b2b_regionid']})",
+                          "item/b2b_severity": "@if(equals(outputs('stockForDistrict'), 0), 10002, 10001)",
+                          "item/b2b_source": "Stock Redistribution Advisor",
+                          "item/b2b_targetregion@odata.bind": "/b2b_regions(@{first(body('FilterAdjacent'))?['district_id']})",
+                          "item/b2b_type": 10003
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    },
+                    "Increment_variable": {
+                      "runAfter": {
+                        "Add_a_new_row": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "b9d1b487-7ec3-4d91-94eb-1be350cd436c"
+                      },
+                      "type": "IncrementVariable",
+                      "inputs": {
+                        "name": "signalsCreated",
+                        "value": 1
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "FilterAdjacent": [
+                      "Succeeded"
+                    ]
+                  },
+                  "expression": {
+                    "greater": [
+                      "@length(body('FilterAdjacent'))",
+                      0
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "7c293d80-f0b3-41b6-b792-fe17ccec3fd7"
+                  },
+                  "type": "If"
+                },
+                "FilterAdjMap": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "bc294367-6487-4cb5-ba34-43cd4b47c6b4"
+                  },
+                  "type": "Query",
+                  "inputs": {
+                    "from": "@outputs('adjacency')",
+                    "where": "@equals(item()?['district'], items('Apply_to_each')?['b2b_name'])"
+                  }
+                },
+                "FilterAdjacent": {
+                  "runAfter": {
+                    "FilterAdjMap": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "7b7e71b9-ee7e-45e8-87e5-e1ceb028449c"
+                  },
+                  "type": "Query",
+                  "inputs": {
+                    "from": "@outputs('DistrictStock')?['body/value']",
+                    "where": "@and(contains(coalesce(first(body('FilterAdjMap'))?['neighbors'], json('[]')), item()?['district']), greater(int(item()?['district_stock']), variables('thresholdHigh')))"
+                  }
+                }
+              },
+              "runAfter": {
+                "stockForDistrict": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "less": [
+                  "@outputs('stockForDistrict')",
+                  "@variables('thresholdLow')"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cc8ab98a-4211-4a78-8c7d-32325a5c4134"
+              },
+              "type": "If"
+            },
+            "FilterDistrict": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "67aff50b-98cb-4d47-bb19-c89b1545737a"
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@outputs('DistrictStock')?['body/value']",
+                "where": "@equals(item()?['district_id'], items('Apply_to_each')?['b2b_regionid'])"
+              }
+            },
+            "stockForDistrict": {
+              "runAfter": {
+                "FilterDistrict": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "f5b3c493-5852-4f16-908f-08f72d3d63c0"
+              },
+              "type": "Compose",
+              "inputs": "@if(empty(body('FilterDistrict')), 0, int(first(body('FilterDistrict'))?['district_stock']))"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c96c8bd7-0d8d-44a2-9732-563686932b4c"
+          },
+          "type": "Foreach"
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ImportExportXml version="9.2.26053.136" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26053.136" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26053.00136">
+<ImportExportXml version="9.2.26053.136" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26053.136" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26054.00132">
   <SolutionManifest>
     <UniqueName>B2BAgg_Integration</UniqueName>
     <LocalizedNames>
@@ -78,11 +78,13 @@
       </Addresses>
     </Publisher>
     <RootComponents>
+      <RootComponent type="29" id="{26c08086-ba5f-f111-ab0d-00224837db9d}" behavior="0" />
       <RootComponent type="29" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="29" id="{36dbd5e6-ee5e-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="29" id="{62d887cb-1a5e-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="29" id="{6881a9bd-035d-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="29" id="{bf55275d-ef5d-f111-a826-00224837db9d}" behavior="0" />
+      <RootComponent type="29" id="{e5270a4f-875f-f111-a826-00224837db9d}" behavior="0" />
       <RootComponent type="372" id="{db4edcc0-56d0-4bee-9b28-0551233267d1}" schemaName="b2b_fetchsupplierfeed" behavior="0" />
       <RootComponent type="372" id="{e37e6b69-945c-f111-a826-00224837db9d}" schemaName="new_b2bagg-20normalize-20sku" behavior="0" />
     </RootComponents>
@@ -94,6 +96,18 @@
       <MissingDependency>
         <Required type="1" schemaName="b2b_dataconflict" displayName="Data Conflict" solution="Active" />
         <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_marketsignal" displayName="Market Signal" solution="Active" />
+        <Dependent type="29" displayName="Stock Redistribution Advisor" id="{26c08086-ba5f-f111-ab0d-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_marketsignal" displayName="Market Signal" solution="Active" />
+        <Dependent type="29" displayName="Low Stock Alert" id="{e5270a4f-875f-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_region" displayName="Region" solution="Active" />
+        <Dependent type="29" displayName="Stock Redistribution Advisor" id="{26c08086-ba5f-f111-ab0d-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
         <Required type="1" schemaName="b2b_rfq" displayName="RFQ" solution="Active" />
@@ -121,6 +135,10 @@
       </MissingDependency>
       <MissingDependency>
         <Required type="1" schemaName="b2b_supplieroffer" displayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Stock Redistribution Advisor" id="{26c08086-ba5f-f111-ab0d-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_supplieroffer" displayName="Supplier Offer" solution="Active" />
         <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
@@ -128,8 +146,16 @@
         <Dependent type="29" displayName="Compare Prices" id="{bf55275d-ef5d-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
+        <Required type="1" schemaName="b2b_supplieroffer" displayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Low Stock Alert" id="{e5270a4f-875f-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
         <Required type="1" schemaName="b2b_warehouse" displayName="Warehouse" solution="Active" />
         <Dependent type="29" displayName="Sync Supplier Offers" id="{2c2d3728-ca5b-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="b2b_warehouse" displayName="Warehouse" solution="Active" />
+        <Dependent type="29" displayName="Low Stock Alert" id="{e5270a4f-875f-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
         <Required type="2" schemaName="b2b_canonical_product" displayName="Canonical Product" parentSchemaName="b2b_supplieroffer" parentDisplayName="Supplier Offer" solution="Active" />
@@ -142,6 +168,10 @@
       <MissingDependency>
         <Required type="2" schemaName="b2b_raw_sku" displayName="Raw SKU" parentSchemaName="b2b_supplieroffer" parentDisplayName="Supplier Offer" solution="Active" />
         <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="b2b_stock" displayName="Stock (units)" parentSchemaName="b2b_supplieroffer" parentDisplayName="Supplier Offer" solution="Active" />
+        <Dependent type="29" displayName="Low Stock Alert" id="{e5270a4f-875f-f111-a826-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
         <Required type="2" schemaName="b2b_supplier" displayName="Supplier" parentSchemaName="b2b_supplieroffer" parentDisplayName="Supplier Offer" solution="Active" />
@@ -158,6 +188,10 @@
       <MissingDependency>
         <Required type="401" displayName="SKU Matcher" solution="Active" id="{abecd704-85d4-4d36-8237-e0108c0a1918}" />
         <Dependent type="29" displayName="Normalize SKU" id="{6881a9bd-035d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
+        <Dependent type="29" displayName="Stock Redistribution Advisor" id="{26c08086-ba5f-f111-ab0d-00224837db9d}" />
       </MissingDependency>
       <MissingDependency>
         <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
@@ -178,6 +212,10 @@
       <MissingDependency>
         <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
         <Dependent type="29" displayName="Compare Prices" id="{bf55275d-ef5d-f111-a826-00224837db9d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="b2b_sharedcommondataserviceforapps_3bab7" solution="Active" id.connectionreferencelogicalname="b2b_sharedcommondataserviceforapps_3bab7" />
+        <Dependent type="29" displayName="Low Stock Alert" id="{e5270a4f-875f-f111-a826-00224837db9d}" />
       </MissingDependency>
     </MissingDependencies>
   </SolutionManifest>
