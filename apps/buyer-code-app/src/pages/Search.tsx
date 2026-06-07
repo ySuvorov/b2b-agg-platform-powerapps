@@ -68,6 +68,22 @@ const useStyles = makeStyles({
     height: '100%',
     overflowY: 'auto',
   },
+  // One cohesive search module: search input, popular sizes, and the filter
+  // groups share a single framed card. The card fills the available width
+  // (capped on ultra-wide screens) so the search row and the filter row line
+  // up on identical left/right edges.
+  searchPanel: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    width: '100%',
+    maxWidth: '1600px',
+    boxSizing: 'border-box',
+    padding: '16px',
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    borderRadius: tokens.borderRadiusLarge,
+    backgroundColor: tokens.colorNeutralBackground2,
+  },
   searchBar: {
     display: 'flex',
     gap: '8px',
@@ -82,34 +98,82 @@ const useStyles = makeStyles({
     gap: '8px',
     alignItems: 'center',
   },
-  // Horizontal filter bar across the top
+  // Responsive filter bar: three meaning-grouped, framed blocks that GROW to
+  // share the full width evenly (no gaps, no trailing void) on desktop, and
+  // wrap naturally (3 → 2 → 1 columns) as the viewport narrows.
   filterBar: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '16px',
-    alignItems: 'flex-end',
-    padding: '16px',
+    gap: '12px',
+    alignItems: 'stretch',
+  },
+  // A thin-bordered block grouping related controls (Season / Size / Source).
+  // `flex: 1 1 280px` → equal growth to fill the row; wraps once a block can no
+  // longer keep its ~280px basis.
+  filterGroup: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '280px',
+    minWidth: '240px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+    padding: '8px 12px 10px',
     border: `1px solid ${tokens.colorNeutralStroke2}`,
     borderRadius: tokens.borderRadiusMedium,
-    backgroundColor: tokens.colorNeutralBackground2,
+    backgroundColor: tokens.colorNeutralBackground1,
   },
+  // The Season block holds three non-shrinking buttons; reserve at least their
+  // intrinsic width so the "All-Season" button can never spill over the next
+  // block at intermediate widths — the whole block wraps instead.
+  seasonBlock: {
+    minWidth: 'fit-content',
+    flexBasis: 'auto',
+  },
+  filterGroupLabel: {
+    color: tokens.colorNeutralForeground3,
+    fontSize: '10px',
+    fontWeight: '600',
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+  },
+  filterGroupRow: {
+    display: 'flex',
+    gap: '8px',
+    alignItems: 'flex-end',
+    // Pin the controls to the bottom of the (equal-height) frame so the Season
+    // buttons share a baseline with the Size/Source dropdowns, which carry an
+    // extra per-field caption line above them.
+    marginTop: 'auto',
+  },
+  // Every control fills an equal share of its block, so blocks never look empty
+  // inside. `minWidth: 0` lets them shrink below their default Fluent width.
   field: {
     display: 'flex',
     flexDirection: 'column',
     gap: '4px',
-    minWidth: '120px',
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '0',
+    minWidth: 0,
   },
-  seasonField: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
+  fillDropdown: {
+    width: '100%',
+    minWidth: 0,
   },
   seasonGroup: {
     display: 'flex',
     gap: '0',
+    width: '100%',
   },
   seasonBtn: {
     borderRadius: '0',
+    // Grow to fill the block but never shrink below the label, so "All-Season"
+    // stays on one line.
+    flexGrow: 1,
+    flexShrink: 0,
+    flexBasis: 'auto',
+    whiteSpace: 'nowrap',
   },
   seasonBtnFirst: {
     borderTopLeftRadius: tokens.borderRadiusMedium,
@@ -118,9 +182,6 @@ const useStyles = makeStyles({
   seasonBtnLast: {
     borderTopRightRadius: tokens.borderRadiusMedium,
     borderBottomRightRadius: tokens.borderRadiusMedium,
-  },
-  dropdown: {
-    minWidth: '120px',
   },
   results: {
     flex: 1,
@@ -354,7 +415,7 @@ export default function Search() {
     <div className={styles.field}>
       <Caption1>{label}</Caption1>
       <Dropdown
-        className={styles.dropdown}
+        className={styles.fillDropdown}
         value={value !== null ? fmt(value) : `All`}
         selectedOptions={[value !== null ? String(value) : ALL]}
         onOptionSelect={(_, d) => set(d.optionValue === ALL ? null : Number(d.optionValue))}
@@ -376,13 +437,13 @@ export default function Search() {
     <div className={styles.field}>
       <Caption1>{label}</Caption1>
       <Dropdown
-        className={styles.dropdown}
+        className={styles.fillDropdown}
         placeholder={`All`}
-        value={value ?? `All ${label.toLowerCase()}`}
+        value={value ?? `All`}
         selectedOptions={[value ?? ALL]}
         onOptionSelect={(_, d) => set(d.optionValue === ALL ? null : (d.optionValue ?? null))}
       >
-        <Option value={ALL} text={`All ${label.toLowerCase()}`}>All {label.toLowerCase()}</Option>
+        <Option value={ALL} text="All">All</Option>
         {options.map((o) => (
           <Option key={o} value={o}>{o}</Option>
         ))}
@@ -394,26 +455,6 @@ export default function Search() {
     <div className={styles.root}>
       <Title2>Product Search</Title2>
 
-      <div className={styles.searchBar}>
-        <Input
-          contentBefore={<SearchRegular />}
-          placeholder="Search tires by brand, model or SKU..."
-          value={query}
-          onChange={(_, d) => setQuery(d.value)}
-          className={styles.searchInput}
-        />
-        {query && <Button onClick={() => setQuery('')}>Clear</Button>}
-      </div>
-
-      <div className={styles.popularSizes}>
-        <Caption1>Popular sizes:</Caption1>
-        {POPULAR_SIZES.map((size) => (
-          <Button key={size.label} size="small" appearance="outline" onClick={() => applySize(size)}>
-            {size.label}
-          </Button>
-        ))}
-      </div>
-
       {error && (
         <MessageBar intent="error">
           <MessageBarBody>
@@ -423,35 +464,77 @@ export default function Search() {
         </MessageBar>
       )}
 
-      {/* Top horizontal filter bar */}
-      <div className={styles.filterBar}>
-        <div className={styles.seasonField}>
-          <Caption1>Season</Caption1>
-          <div className={styles.seasonGroup}>
-            {SEASON_BUTTONS.map((b, i) => (
-              <Button
-                key={b.key}
-                icon={b.icon}
-                appearance={season === b.key ? 'primary' : 'outline'}
-                onClick={() => onSeasonClick(b.key)}
-                className={mergeClasses(
-                  styles.seasonBtn,
-                  i === 0 && styles.seasonBtnFirst,
-                  i === SEASON_BUTTONS.length - 1 && styles.seasonBtnLast,
-                )}
-              >
-                {b.label}
-              </Button>
-            ))}
+      {/* One cohesive search module — search input, popular sizes, and the
+          filter groups share a single framed card so they line up on the same
+          left/right edges and never stretch wider than the card. */}
+      <div className={styles.searchPanel}>
+        <div className={styles.searchBar}>
+          <Input
+            contentBefore={<SearchRegular />}
+            placeholder="Search tires by brand, model or SKU..."
+            value={query}
+            onChange={(_, d) => setQuery(d.value)}
+            className={styles.searchInput}
+          />
+          {query && <Button onClick={() => setQuery('')}>Clear</Button>}
+        </div>
+
+        <div className={styles.popularSizes}>
+          <Caption1>Popular sizes:</Caption1>
+          {POPULAR_SIZES.map((size) => (
+            <Button key={size.label} size="small" appearance="outline" onClick={() => applySize(size)}>
+              {size.label}
+            </Button>
+          ))}
+        </div>
+
+        {/* Top horizontal filter bar — three meaning-grouped, framed blocks,
+            laid out on one line: Season · Size · Brand/City/Supplier. */}
+        <div className={styles.filterBar}>
+        {/* Season */}
+        <div className={mergeClasses(styles.filterGroup, styles.seasonBlock)}>
+          <span className={styles.filterGroupLabel}>Season</span>
+          <div className={styles.filterGroupRow}>
+            <div className={styles.seasonGroup}>
+              {SEASON_BUTTONS.map((b, i) => (
+                <Button
+                  key={b.key}
+                  icon={b.icon}
+                  appearance={season === b.key ? 'primary' : 'outline'}
+                  onClick={() => onSeasonClick(b.key)}
+                  className={mergeClasses(
+                    styles.seasonBtn,
+                    i === 0 && styles.seasonBtnFirst,
+                    i === SEASON_BUTTONS.length - 1 && styles.seasonBtnLast,
+                  )}
+                >
+                  {b.label}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {numberDropdown('Width', width, availableWidths, setWidth)}
-        {numberDropdown('Profile', profile, availableProfiles, setProfile)}
-        {numberDropdown('Diameter', diameter, availableDiameters, setDiameter, (n) => `R${n}`)}
-        {textDropdown('City', city, availableCities, setCity)}
-        {textDropdown('Supplier', supplier, availableSuppliers, setSupplier)}
-        {textDropdown('Brand', brand, availableBrands, setBrand)}
+        {/* Size — width / profile / diameter (≤3 chars each, kept tight) */}
+        <div className={styles.filterGroup}>
+          <span className={styles.filterGroupLabel}>Size</span>
+          <div className={styles.filterGroupRow}>
+            {numberDropdown('Width', width, availableWidths, setWidth)}
+            {numberDropdown('Profile', profile, availableProfiles, setProfile)}
+            {numberDropdown('Diameter', diameter, availableDiameters, setDiameter, (n) => `R${n}`)}
+          </div>
+        </div>
+
+        {/* Source — brand, city, supplier */}
+        <div className={styles.filterGroup}>
+          <span className={styles.filterGroupLabel}>Source</span>
+          <div className={styles.filterGroupRow}>
+            {textDropdown('Brand', brand, availableBrands, setBrand)}
+            {textDropdown('City', city, availableCities, setCity)}
+            {textDropdown('Supplier', supplier, availableSuppliers, setSupplier)}
+          </div>
+        </div>
+      </div>
       </div>
 
       <div className={styles.results}>
