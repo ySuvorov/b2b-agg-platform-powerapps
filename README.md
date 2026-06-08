@@ -62,17 +62,17 @@ Analyst ── Power BI Workspace ───┘                       │
 
 | Component | Status | Notes |
 |---|---|---|
-| **Dataverse** — 10 tables, relationships, seed data | ✅ Done | 7 regions, 3 suppliers, 6 warehouses, 36 products, 201 seeded offers (≈262 live incl. flow rows) in Dev |
+| **Dataverse** — 11 tables, relationships, seed data | ✅ Done | 7 regions, 3 suppliers, 6 warehouses, 36 products, 201 seeded offers (≈262 live incl. flow rows) in Dev; `b2b_marketsignal` added in Stage 4 |
 | **Buyer Code App** (React + Fluent UI v9) | ✅ Done | Power Apps SDK + generated services; Home / Search / Cart / **New RFQ** / Orders; multi-supplier cart auto-splits into one order per supplier; deployed & smoke-tested in Dev |
-| **Model-driven App** `b2b_B2BAggOperations` | ✅ Done | Forms/views; sitemap exposes all 10 tables across Catalog / Operations / Inventory / Data Quality areas (Warehouse, SKU Map, Data Conflict added — audit A-3) |
+| **Model-driven App** `b2b_B2BAggOperations` | ✅ Done | Forms/views; sitemap exposes all 11 tables across Catalog / Operations / Inventory / Data Quality / **Intelligence** (Market Signals) areas |
 | **Azure Function** `fetch-supplier-feed` | ✅ Done | Python v4, deployed to `func-b2bagg-dev.azurewebsites.net` |
 | **Azure Infra** (Bicep) | ✅ Done | Functions, App Insights, Key Vault (refs), Storage, Service Bus, Logic App, Log Analytics |
 | **SKU-resolution engine** + pytest in CI | ✅ Done | Deterministic cascade; tests gate PRs |
-| **GitHub Actions ALM** (OIDC) | ✅ Done | PR gate + Dev deploy + Test/Prod import + export-via-PR, no client secret |
-| **Power Automate** — Supplier Sync flow | ✅ Done | Audit **P5**: solution-aware (`B2BAgg.Integration`), connection refs + env vars, idempotent upsert on the alt-key triple |
+| **GitHub Actions ALM** (OIDC) | ✅ Done | PR gate + Dev deploy + Test/Prod import + export-via-PR, no client secret. GitHub Actions gates **`B2BAgg.Core`**; PP Pipelines promotes all three solutions (see [`docs/governance.md`](docs/governance.md)) |
+| **Power Automate** — Supplier Sync flow | ✅ Done | Solution-aware (`B2BAgg.Integration`), connection refs + env vars, idempotent upsert on the alt-key triple. **As-built scope: single-supplier EN spine (Rosshinaopt); multi-supplier RU/XML fan-out is roadmap.** Raw HTTP Dataverse URLs use a placeholder host — set per-env via environment variable |
 | **Power Automate** — RFQ Broadcast flow | ✅ Done | Power Apps (V2) trigger invoked from the Code App `/rfq/new`; fans out one `b2b_rfq` per selected supplier (status Sent); solution-aware in `B2BAgg.Integration`, wired via `npx power-apps add-flow` |
 | **Custom security role** `B2B Procurement Ops` | ✅ Done | CRUD on the `b2b_*` tables; exported in `B2BAgg.Core` (audit A-4) |
-| **Custom Connector** (OpenAPI → Azure Function) | 🔄 In progress | YAML ready at `azure/openapi/fetch-supplier-feed.yaml` |
+| **Custom Connector** (OpenAPI → Azure Function) | ✅ Done | Two custom connectors exported in `B2BAgg.Integration` (`b2b_fetchsupplierfeed`, Normalize SKU); OpenAPI at `azure/openapi/fetch-supplier-feed.yaml` |
 | **BPF on `b2b_order`** | ✅ Done | `B2B Order Lifecycle` active on `b2b_order`, exported in `B2BAgg.Core` |
 | **AI Builder SKU Classifier** | ✅ Done | Custom text classification model in `B2BAgg.AI`; deterministic matcher remains the primary production path |
 | **Copilot Studio agent "MarketBot"** | ✅ Done | Hybrid: generative answers over Dataverse (price compare, inventory, with citations) + deterministic **Create RFQ** topic → Power Automate → Dataverse → MDA (ADR-006). Publish to a live channel needs Copilot Studio PAYG capacity (out of demo budget) — demoed from the test canvas; Code App embed pending capacity |

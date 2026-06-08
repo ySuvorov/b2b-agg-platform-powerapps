@@ -1,0 +1,7 @@
+{
+  "workspace_name": "B2BAgg-Analytics",
+  "workspace_id": "<workspace-id>",
+  "workspace_url": "https://app.powerbi.com/groups/<workspace-id>",
+  "dataset_name": "B2BAgg Market Data",
+  "dataset_id": "<dataset-id>"
+}

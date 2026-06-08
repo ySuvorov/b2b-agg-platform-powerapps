@@ -37,11 +37,11 @@ the real ALM story: the report definition lives in git, not only in the service.
 
 | Item | Value |
 |---|---|
-| Workspace | **B2BAgg-Analytics** — id `<workspace-id>` |
+| Workspace | **B2BAgg-Analytics** |
 | Push dataset | **B2BAgg Market Data** — real seed data (201 offers / 3 suppliers / 7 regions) |
 | Import workbook | [`powerbi/B2BAgg-Analytics-data.xlsx`](B2BAgg-Analytics-data.xlsx) — 201 offers + 7 orders |
 | Measures | [`powerbi/measures.dax`](measures.dax) — ~24 DAX measures (single flat table) |
-| IDs | [`powerbi/workspace-ids.json`](workspace-ids.json) |
+| IDs | Copy [`powerbi/workspace-ids.example.json`](workspace-ids.example.json) → `workspace-ids.json` (gitignored) and fill in your workspace/dataset IDs |
 
 Data is the same set the idempotent seeder loads into B2BAgg-Dev. Re-generate /
 re-push anytime (see [Refreshing the data](#refreshing-the-data)).

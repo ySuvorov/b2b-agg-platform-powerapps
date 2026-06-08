@@ -4,6 +4,18 @@ This template provides a minimal setup to get React working in Vite with HMR and
 
 It is preconfigured to work with Power Apps Code Apps.
 
+## Known dependency advisories
+
+`npm audit` reports 4 moderate advisories (`uuid <11.1.1`, GHSA-w5hq-g745-h8pq)
+reached transitively through Microsoft's own tooling chain:
+`@microsoft/power-apps` → `@microsoft/power-apps-cli` → `@azure/msal-node` → `uuid`.
+These cannot be resolved without `npm audit fix --force`, which would downgrade
+the Power Apps SDK and break the build. The advisory is a missing buffer-bounds
+check that only triggers when a `buf` argument is supplied to `uuid`; msal-node's
+GUID generation does not pass one, so this code path is not exercised here.
+Tracked as a temporary upstream limitation — to be cleared when Microsoft ships
+a `uuid >=11.1.1` dependency chain.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh

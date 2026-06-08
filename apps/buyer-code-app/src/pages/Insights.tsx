@@ -1,7 +1,7 @@
 import { makeStyles, tokens, Text, Badge } from '@fluentui/react-components'
 import { ChartMultipleRegular } from '@fluentui/react-icons'
 
-const PBI_WORKSPACE_URL = 'https://app.powerbi.com/groups/<workspace-id>'
+const PBI_WORKSPACE_URL = (import.meta.env.VITE_PBI_WORKSPACE_URL as string | undefined) || ''
 const REPORTS = import.meta.env.VITE_PBI_REPORTS as string | undefined
 
 const useStyles = makeStyles({

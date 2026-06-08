@@ -6,15 +6,18 @@
 > [`PROGRESS.md`](../PROGRESS.md).
 >
 > **Implemented demo path (end-to-end, real):** Buyer Code App (Power Apps SDK)
-> searches live Dataverse offers → cart → per-supplier order creation → review in
-> the Model-driven App; deterministic SKU matcher with CI tests; Azure Function
-> serving heterogeneous feeds; GitHub Actions OIDC ALM (PR gate, deploy, export).
+> searches live Dataverse offers → cart → per-supplier order creation → `/rfq/new`
+> RFQ broadcast → review in the Model-driven App; deterministic SKU matcher with
+> CI tests; AI Builder classifier; Azure Function serving heterogeneous feeds;
+> Supplier Sync / Normalize SKU / Low Stock Alert / Redistribution Advisor flows
+> writing `b2b_marketsignal`; BPF `B2B Order Lifecycle` + custom security role;
+> Copilot "MarketBot"; Power BI tiles on `/insights`; GitHub Actions OIDC ALM
+> (PR gate, deploy, export) plus PP Pipelines Dev → Test.
 >
 > **Roadmap / stretch (described below, not yet built):** 20-warehouse scale
-> (currently **6** regional DCs seeded), Stock Redistribution Advisor,
-> `b2b_marketsignal`, Copilot "MarketBot" side panel, `/rfq/new` and `/insights`
-> Code App routes, AI Builder classifier, Power BI tiles, BPF + security roles,
-> the supplier-sync flow chain (audit P5), and Power Pages.
+> (currently **6** regional DCs seeded), multi-supplier RU/XML sync fan-out
+> (current sync is a single-supplier EN spine), and the Power Pages supplier
+> portal.
 >
 > **Warehouse semantics (audit A-1):** warehouses are **platform-owned regional
 > distribution centres** (`b2b_warehouse → b2b_region`), not supplier-operated.

@@ -40,6 +40,12 @@
         <SubArea Id="subarea_ee55ff66" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_dataconflict" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
         <SubArea Id="subarea_07a807b8" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_skumap" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
       </Group>
+      <Group Id="group_a1b2c3d4" ResourceId="SitemapDesigner.NewGroup" DescriptionResourceId="SitemapDesigner.NewGroup" IntroducedVersion="7.0.0.0" IsProfile="false" ToolTipResourseId="SitemapDesigner.Unknown">
+        <Titles>
+          <Title LCID="1033" Title="Intelligence" />
+        </Titles>
+        <SubArea Id="subarea_b2c3d4e5" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="b2b_marketsignal" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+      </Group>
     </Area>
   </SiteMap>
   <LocalizedNames>

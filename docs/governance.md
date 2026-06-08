@@ -23,14 +23,16 @@ envs without modification.
 
 | Solution | Contents | Status |
 |---|---|---|
-| `B2BAgg.Core` | Dataverse tables, columns, choices, MDA, Code App, **custom security role** `B2B Procurement Ops` | **implemented** (exported to `solutions/B2BAgg.Core/`) |
-| `B2BAgg.Integration` | Power Automate supplier-sync flow, connection references, environment variables (Function base URLs, API key via env var) | **implemented** in audit **P5** (exported to `solutions/B2BAgg.Integration/`) |
-| `B2BAgg.AI` | AI Builder Custom Classification model, Copilot Studio agent definitions | roadmap (not yet exported) |
+| `B2BAgg.Core` | Dataverse tables, columns, choices, MDA, Code App, **custom security role** `B2B Procurement Ops`, **BPF** `B2B Order Lifecycle` | **implemented** (exported to `solutions/B2BAgg.Core/`) |
+| `B2BAgg.Integration` | Power Automate flows (Supplier Sync, RFQ Broadcast, Normalize SKU, Low Stock Alert, Redistribution Advisor), **two custom connectors**, connection references, environment variables | **implemented** (exported to `solutions/B2BAgg.Integration/`) |
+| `B2BAgg.AI` | AI Builder Custom Classification model, Copilot Studio agent definitions | **implemented** (exported to `solutions/B2BAgg.AI/`) |
 
-> **Current state (do not overclaim):** `B2BAgg.Core` + `B2BAgg.Integration` are
-> exported. A real custom **security role** (`B2B Procurement Ops`, CRUD on the
-> `b2b_*` tables) is exported in Core (audit A-4). **BPF is roadmap** — a designer
-> recipe is below. `B2BAgg.AI` is deferred per `docs/schema-canonical.md`.
+> **Current state (do not overclaim):** all three solutions are exported. A real
+> custom **security role** (`B2B Procurement Ops`, CRUD on the `b2b_*` tables) and
+> the **BPF** `B2B Order Lifecycle` are exported in Core. The supplier-sync flow
+> is a single-supplier EN spine (Rosshinaopt); multi-supplier RU/XML fan-out is
+> roadmap. GitHub Actions gates `B2BAgg.Core` only; **PP Pipelines** promotes all
+> three solutions Dev → Test.
 
 Each solution has its own version (`x.y.z`) tracked in `solutions/<name>/Other/Solution.xml`.
 

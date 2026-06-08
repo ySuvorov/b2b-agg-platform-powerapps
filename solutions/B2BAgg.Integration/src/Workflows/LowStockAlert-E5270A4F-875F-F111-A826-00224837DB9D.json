@@ -41,7 +41,7 @@
               "subscriptionRequest/entityname": "b2b_supplieroffer",
               "subscriptionRequest/scope": 4,
               "subscriptionRequest/filteringattributes": "b2b_stock",
-              "subscriptionRequest/filterexpression": "b2b_stock lt 12"
+              "subscriptionRequest/filterexpression": "b2b_stock lt 20"
             },
             "authentication": "@parameters('$authentication')"
           }

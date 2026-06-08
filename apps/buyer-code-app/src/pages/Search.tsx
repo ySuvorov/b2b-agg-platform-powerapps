@@ -356,7 +356,14 @@ export default function Search() {
   const filteredProducts = useMemo(() => {
     const q = query.trim().toLowerCase()
     return products.filter((p) => {
-      if (q && !p.name.toLowerCase().includes(q) && !p.brand.toLowerCase().includes(q) && !p.model.toLowerCase().includes(q)) return false
+      if (
+        q &&
+        !p.name.toLowerCase().includes(q) &&
+        !p.brand.toLowerCase().includes(q) &&
+        !p.model.toLowerCase().includes(q) &&
+        !p.offers.some((o) => o.rawSku.toLowerCase().includes(q))
+      )
+        return false
       if (season !== null && !matchesSeason(season, p.season)) return false
       if (brand !== null && p.brand !== brand) return false
       if (width !== null && p.width !== width) return false

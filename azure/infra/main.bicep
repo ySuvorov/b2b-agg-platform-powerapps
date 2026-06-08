@@ -3,7 +3,7 @@
 // MVP1 stub — not all resources wired yet
 //
 // Provisions:
-//   - Storage account (b2baggstore) with 3 feed containers
+//   - Storage account (name uniquified per resource group) with 3 feed containers
 //   - App Service Plan (Consumption) + Function App (Python 3.11)
 //   - Application Insights + Log Analytics workspace
 //   - Key Vault (placeholder — app settings wired as Key Vault references)

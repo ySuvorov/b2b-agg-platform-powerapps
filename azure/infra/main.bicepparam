@@ -10,8 +10,10 @@ param environmentName = 'dev'
 // westeurope — where the resource group rg-b2b-agg-demo lives
 param location = 'westeurope'
 
-// Storage account name must be globally unique; lowercase alphanumeric only
-param storageAccountName = 'b2baggstore'
+// Storage account name must be globally unique; lowercase alphanumeric only.
+// Intentionally NOT overridden here: the template defaults to
+// b2bagg${uniqueString(resourceGroup().id)} so it stays globally unique per
+// subscription/RG. Set a concrete name in a gitignored .bicepparam.local if needed.
 
 // Function App name (will be suffixed with environmentName in the template)
 param functionAppName = 'func-b2bagg-dev'

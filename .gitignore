@@ -43,6 +43,9 @@ local.settings.json
 *.bicepparam.local
 .azure/
 
+# --- Power BI: keep example template, exclude real workspace/dataset IDs ---
+powerbi/workspace-ids.json
+
 # --- Power Platform solutions: keep unpacked sources, exclude zips ---
 solutions/**/*.zip
 solutions/**/bin/
