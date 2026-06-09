@@ -12,7 +12,7 @@ deficit/surplus thresholds are not magic numbers baked into the flow:
 Both are added to the B2BAgg_Integration solution (via MSCRM.SolutionUniqueName
 header) so `pac solution export` captures them with the flow.
 
-Idempotent; az-CLI admin token (see PROGRESS QUIRK #1).
+Idempotent; az-CLI token (an account with Dataverse privileges).
 
 Usage:
     python3 scripts/create-stage4-envvars.py
@@ -97,7 +97,7 @@ def main() -> None:
     s = session(get_token())
     who = s.get(f"{API}/WhoAmI")
     if who.status_code != 200:
-        log.error("WhoAmI failed (%s) — az logged in as admin@…onmicrosoft.com?", who.status_code); sys.exit(1)
+        log.error("WhoAmI failed (%s) — az logged in with Dataverse privileges?", who.status_code); sys.exit(1)
 
     ensure_envvar(s, "b2b_StockThresholdLow", "Stock Threshold — Low (deficit)",
                   "District total stock for a SKU below this count is flagged a deficit by the "

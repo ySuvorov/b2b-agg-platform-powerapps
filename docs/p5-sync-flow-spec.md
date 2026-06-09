@@ -57,7 +57,7 @@ had four audit defects:
 ## 2. Target architecture
 
 Single solution-aware cloud flow, **manual (button) trigger** (no schedule — dev
-API-entitlement guardrail, CLAUDE.md). Supplier-agnostic via a parametrized loop.
+API-entitlement guardrail). Supplier-agnostic via a parametrized loop.
 
 ```
 [Manual trigger]  (optional input: supplier_id; empty = all)

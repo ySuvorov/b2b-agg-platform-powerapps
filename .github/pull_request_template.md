@@ -15,8 +15,7 @@
 
 - [ ] Solution changes exported and unpacked into `solutions/B2BAgg.Core/`
 - [ ] CI checks pass (PR Validation workflow is green)
-- [ ] `PROGRESS.md` updated if a milestone or phase was completed
-- [ ] New environment variables / secrets documented in `docs/setup-log.md`
+- [ ] New environment variables / secrets documented in `docs/local-setup.md`
 - [ ] No hardcoded secrets, URLs, or tenant IDs in source files
 
 ## Screenshots / recordings

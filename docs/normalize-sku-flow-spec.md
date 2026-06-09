@@ -43,7 +43,7 @@
    all other actions (Dataverse, AI Builder, HTTP-with-Entra) use standard or
    OIDC/Entra connections, no keys typed.
 
-Guardrail (CLAUDE.md "Forbidden"): **no recurrence/schedule trigger** — test via
+Guardrail (project "Forbidden" list): **no recurrence/schedule trigger** — test via
 manual row edits only (AI Builder credits are limited on the Dev plan).
 
 ## 1. Trigger — When a row is added or modified
@@ -291,7 +291,7 @@ Confirm no re-fire (trigger filter stops the second pass). Then tell Claude.
 
 Export `B2BAgg.Integration` (flow + connector + connection refs) and `B2BAgg.AI`
 (prompt + model), `pac solution unpack` into `solutions/`, scrub any inline
-secret, update PROGRESS.md, open the PR `feat/mvp2-sku-engine → main`.
+secret, open the PR `feat/mvp2-sku-engine → main`.
 
 ## 11. As-built deviations (fill in while building)
 

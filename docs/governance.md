@@ -40,8 +40,7 @@ Each solution has its own version (`x.y.z`) tracked in `solutions/<name>/Other/S
 
 A Business Process Flow is the one component best built in the App designer
 (hand-authoring the BPF `clientdata` via API is brittle), so this is a **YS
-designer step** (Stage 4 task Y2 — step-by-step RU walkthrough:
-[`docs/handoff/order-bpf-ru.md`](handoff/order-bpf-ru.md)). Live `b2b_order.b2b_status` choices are
+designer step** (Stage 4 — built in the Power Apps App designer). Live `b2b_order.b2b_status` choices are
 **Draft (100000000) → Confirmed (100000001) → Shipped (100000002)** — the BPF
 stages map 1:1 to them. To build it:
 
@@ -91,7 +90,7 @@ Authentication: **GitHub Actions OIDC + Entra federated credentials — no clien
 secret in repo or CI** (the old `PP_CLIENT_SECRET` was deleted from GitHub and
 Entra in audit P0/P3). The app is added as an application user to each
 environment with a deploy-capable role. See `.github/workflows/README.md` and
-`docs/ci-secrets-todo.md`. (There is no Bicep what-if in CI today — roadmap.)
+`docs/ci-oidc.md`. (There is no Bicep what-if in CI today — roadmap.)
 
 ## DLP policies (documented, partially enforced)
 

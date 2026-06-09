@@ -2,8 +2,7 @@
 
 > ℹ️ **Target architecture vs. current build.** This document describes the full
 > intended platform. For what is actually implemented today, see the
-> **Implementation status** table in [`README.md`](../README.md) and
-> [`PROGRESS.md`](../PROGRESS.md).
+> **Implementation status** table in [`README.md`](../README.md).
 >
 > **Implemented demo path (end-to-end, real):** Buyer Code App (Power Apps SDK)
 > searches live Dataverse offers → cart → per-supplier order creation → `/rfq/new`

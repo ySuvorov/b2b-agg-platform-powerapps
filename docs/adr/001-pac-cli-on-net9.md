@@ -36,7 +36,7 @@ the .NET 9 runtime into `/usr/local/share/dotnet/shared/...` so the default
 
 Login uses `--deviceCode` to bypass the macOS auth broker entirely.
 
-Exact commands are reproducible from `docs/setup-log.md` → "Problems
+Exact commands are reproducible from `docs/local-setup.md` → "Problems
 encountered" section 2.
 
 ## Consequences
@@ -49,7 +49,7 @@ encountered" section 2.
 - Two `.NET` runtimes installed (9 and 10) — ~700 MB extra disk. Acceptable.
 - The symlink workaround means a Homebrew upgrade of `dotnet@9` to a new
   patch (e.g. 9.0.17) will require re-running the symlink step. Documented
-  in `docs/setup-log.md`.
+  in `docs/local-setup.md`.
 
 Revisit: when pac 2.x publishes a build that works on macOS + .NET 10
 (track https://github.com/microsoft/powerplatform-cli/issues), drop this

@@ -32,7 +32,7 @@ relationships needed).
 
 - `B2BAgg-Analytics-data.xlsx` — import workbook (upload source).
 - `measures.dax` — DAX measures, grouped by report.
-- `workspace-ids.json` — workspace + dataset IDs.
+- `workspace-ids.example.json` — workspace + dataset ID template (real `workspace-ids.json` is gitignored).
 - `gen-workbook.py` — regenerates the workbook from seed CSVs.
 
 ## Embedding

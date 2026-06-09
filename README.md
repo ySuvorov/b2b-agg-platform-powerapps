@@ -80,14 +80,11 @@ Analyst ── Power BI Workspace ───┘                       │
 | **PP Pipelines** Dev → Test | ✅ Done | Native Platform Host pipeline `B2BAgg Dev to Test`; Test has managed `B2BAgg_Core` `1.0.0.1`, `B2BAgg_AI` `1.0.0.0`, `B2BAgg_Integration` `1.0.0.1` |
 | **Power Pages** supplier portal | ⏳ Roadmap | External Entra B2B |
 
-See [`PROGRESS.md`](PROGRESS.md) for current stage and detailed roadmap.
 
 ## Repository layout
 
 ```
 .
-├── CLAUDE.md            # operator's notes for AI-assisted sessions
-├── PROGRESS.md          # current stage and what's next
 ├── docs/                # architecture, ADRs, governance, demo script
 ├── solutions/           # exported Dataverse solutions (XML, source of truth)
 ├── apps/
@@ -99,7 +96,6 @@ See [`PROGRESS.md`](PROGRESS.md) for current stage and detailed roadmap.
 ├── powerbi/             # .pbix and report documentation
 ├── data/                # mock CSV seeds
 ├── scripts/             # seed scripts and helpers
-├── deck/                # architecture deck (PPTX/PDF)
 └── .github/workflows/   # CI for solution validation and deployment
 ```
 
@@ -108,10 +104,9 @@ See [`PROGRESS.md`](PROGRESS.md) for current stage and detailed roadmap.
 This repo is a working artifact, not a one-click deploy. To reproduce the
 environment, see:
 
-1. [`docs/setup-log.md`](docs/setup-log.md) — local tooling + tenant setup
+1. [`docs/local-setup.md`](docs/local-setup.md) — local tooling setup
 2. [`docs/architecture.md`](docs/architecture.md) — what each component does
 3. [`docs/governance.md`](docs/governance.md) — environments, solutions, ALM
-4. [`deck/`](deck/) — the architecture deck used in the interview walkthrough
 
 ### Run the Buyer Code App locally
 

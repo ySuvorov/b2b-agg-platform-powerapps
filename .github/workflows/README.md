@@ -36,7 +36,7 @@ warnings for those component types (see below).
 **GitHub Actions OIDC + Entra federated credentials — no long-lived client
 secret.** Every workflow sets `permissions: id-token: write` and authenticates
 via `microsoft/powerplatform-actions` (`actions-install` + `who-am-i`) using the
-app id + tenant id. See [`docs/ci-secrets-todo.md`](../../docs/ci-secrets-todo.md)
+app id + tenant id. See [`docs/ci-oidc.md`](../../docs/ci-oidc.md)
 for the federated-credential subjects and the (non-secret) repo variables.
 
 Required access: the `b2bagg-github-actions` app is an Application User with a

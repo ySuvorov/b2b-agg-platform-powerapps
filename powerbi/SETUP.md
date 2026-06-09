@@ -10,10 +10,10 @@ The final pipeline turned out **more headless than this guide originally assumed
 
 | Layer | How it was actually built | Artifact |
 |---|---|---|
-| Workspace | headless via REST | `B2BAgg-Analytics` (`<workspace-id>-…`) |
+| Workspace | headless via REST | `B2BAgg-Analytics` |
 | Semantic model | **live Dataverse connector** (browser, Get data → Dataverse, Import) | `dataverse_report` (`0e72f1a8-…`) — tables `b2b_supplieroffer`, `b2b_canonicalproduct`, `b2b_supplier`, `b2b_region` |
 | DAX measures | typed once in web data-model editor | 18 measures on `b2b_canonicalproduct` |
-| **Report (4 pages, 27 visuals)** | **100% code via Fabric REST + PBIR** — `powerbi/build_report.py` | `B2BAgg Market Intelligence` (`<report-id>-…`) |
+| **Report (4 pages, 27 visuals)** | **100% code via Fabric REST + PBIR** — `powerbi/build_report.py` | `B2BAgg Market Intelligence` |
 
 **Report build is reproducible from code** (`python3 powerbi/build_report.py`,
 idempotent create/update via Fabric Items API). Visuals bind to the live model by

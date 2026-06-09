@@ -66,7 +66,7 @@ DATAVERSE_URL: str = os.environ.get(
 API_VERSION = "v9.2"
 API_BASE = f"{DATAVERSE_URL}/api/data/{API_VERSION}"
 
-# Publisher option-value prefix (matches Solution.xml / CLAUDE.md)
+# Publisher option-value prefix (matches Solution.xml)
 OPTION_PREFIX = 10000
 
 

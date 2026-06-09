@@ -63,7 +63,7 @@ Trigger: **When a row is added or modified** → `b2b_supplieroffer`
                                      candidates_json, suggested_canonical = 5a id)
 ```
 
-Guardrails (CLAUDE.md "Forbidden"): manual/test runs only — **no** real schedule
+Guardrails (project "Forbidden" list): manual/test runs only — **no** real schedule
 trigger (AI Builder credits are limited on the Developer Plan).
 
 ## AI Builder Prompt "SKU Matcher" — exact prompt text

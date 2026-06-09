@@ -6,7 +6,7 @@ Stage 4 prerequisite: creates b2b_marketsignal — the table the
 **Stock Redistribution Advisor** flow writes into (type=RedistributionAdvice),
 also reused by Low Stock / demand signals. Visible in MDA + Power BI.
 
-Idempotent; uses an az-CLI token (admin@…onmicrosoft.com — see PROGRESS QUIRK #1).
+Idempotent; uses an az-CLI token (an account with Dataverse privileges).
 Mirrors the metadata builders in scripts/create-matching-tables.py.
 
 What it does:
@@ -236,7 +236,7 @@ def main() -> None:
     s = make_session(get_token())
     who = s.get(f"{API}/WhoAmI")
     if who.status_code != 200:
-        log.error("WhoAmI failed: %s %s — is az logged in as admin@…onmicrosoft.com?",
+        log.error("WhoAmI failed: %s %s — is az logged in with Dataverse privileges?",
                   who.status_code, who.text[:200]); sys.exit(1)
     log.info("Authenticated UserId=%s", who.json().get("UserId"))
 
@@ -275,7 +275,7 @@ def main() -> None:
     log.info("Creating saved view …")
     create_redist_view(s)
 
-    log.info("Done. Next: build the Stock Redistribution Advisor flow (docs/redistribution-advisor-flow-spec.md), "
+    log.info("Done. Next: build the Stock Redistribution Advisor flow, "
              "then pac solution export %s.", SOLUTION)
 
 
