@@ -79,3 +79,20 @@ docs/progress-tracker.html
 
 # --- Azure: Bicep build output (compiled from main.bicep) ---
 azure/infra/main.json
+
+# --- Internal / operator-only (kept out of the public mirror) ---
+# These exist in the PRIVATE repo but must never land in this public mirror.
+# (deck/ is intentionally NOT ignored — reserved for the GitHub Pages deck.)
+/CLAUDE.md
+/AGENTS.md
+/PROGRESS.md
+/PUBLIC_REPO_CLEANUP_HANDOFF.md
+docs/public-repo-mirror-runbook.md
+docs/setup-log.md
+docs/ci-secrets-todo.md
+docs/normalize-sku-flow-debug-log.md
+docs/handoff/
+docs/audit/
+docs/redistribution-advisor-flow-spec.md
+docs/rfq-broadcast-flow-spec.md
+docs/low-stock-alert-flow-spec.md
