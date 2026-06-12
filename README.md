@@ -21,7 +21,7 @@ ALM practices.
 - **Pro-code Power Apps Code App** (React + TypeScript + Fluent UI v9, Power Apps
   SDK + generated Dataverse services) for the buyer experience, alongside a
   **Model-driven App** for operations admins.
-- **Dataverse** as the system of record — **10 custom tables** in `B2BAgg.Core`,
+- **Dataverse** as the system of record — **11 custom tables** in `B2BAgg.Core`,
   with seed data (regions, suppliers, warehouses, canonical products, offers).
 - **Azure Function** (Python) serving three deliberately heterogeneous supplier
   feeds (EN/RU/XML), with modular **Bicep** infra (Functions, App Insights, Key
